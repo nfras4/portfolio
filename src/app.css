@@ -1,0 +1,139 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+@import './styles/components.css';
+
+/*
+ * Tailwind v4 theme mapping.
+ * Tokens defined in src/styles/tokens.css are surfaced as Tailwind utilities
+ * here via the @theme directive (CSS-first config, no tailwind.config.js).
+ */
+
+@theme {
+	--color-bg: var(--color-bg);
+	--color-surface: var(--color-surface);
+	--color-surface-2: var(--color-surface-2);
+	--color-border: var(--color-border);
+	--color-text: var(--color-text);
+	--color-text-muted: var(--color-text-muted);
+	--color-accent: var(--color-accent);
+	--color-accent-soft: var(--color-accent-soft);
+	--color-focus: var(--color-focus);
+
+	--font-display: var(--font-display);
+	--font-sans: var(--font-sans);
+	--font-mono: var(--font-mono);
+
+	--radius-sm: var(--radius-sm);
+	--radius-md: var(--radius-md);
+	--radius-lg: var(--radius-lg);
+	--radius-xl: var(--radius-xl);
+}
+
+/*
+ * Self-hosted fonts.
+ *
+ * TODO (Wave 2 or pre-launch): drop the WOFF2 files below into static/fonts/.
+ * Until they are in place these @font-face rules will 404 silently and the
+ * browser will fall through to the system fallbacks declared in tokens.css.
+ *
+ * Required files (variable WOFF2, latin subset only):
+ *   static/fonts/Inter-roman.var.woff2
+ *     Source: https://rsms.me/inter/ (download "Inter Web", take Inter-roman.var.woff2)
+ *   static/fonts/Inter-italic.var.woff2
+ *     Source: https://rsms.me/inter/ (download "Inter Web", take Inter-italic.var.woff2)
+ *   static/fonts/Fraunces[opsz,wght].woff2
+ *     Source: https://fonts.google.com/specimen/Fraunces
+ *     (download family, convert variable TTF to WOFF2 via fonttools or hosted converter)
+ *   static/fonts/Fraunces-Italic[opsz,wght].woff2
+ *     Source: same as Fraunces, italic axis
+ *   static/fonts/JetBrainsMono[wght].woff2
+ *     Source: https://fonts.google.com/specimen/JetBrains+Mono
+ *     (download family, convert variable TTF to WOFF2)
+ *
+ * All declarations use font-display: swap so first paint never blocks on font load.
+ */
+
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Inter-roman.var.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Inter';
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Inter-italic.var.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Fraunces';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Fraunces[opsz,wght].woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Fraunces';
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/Fraunces-Italic[opsz,wght].woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 100 800;
+	font-display: swap;
+	src: url('/fonts/JetBrainsMono[wght].woff2') format('woff2-variations');
+}
+
+/* Base resets and document defaults */
+
+html,
+body {
+	background: var(--color-bg);
+	color: var(--color-text);
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	min-height: 100vh;
+}
+
+::selection {
+	background: var(--color-accent-soft);
+	color: var(--color-text);
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+	border-radius: var(--radius-sm);
+}
+
+/* Skip-link visible only on focus */
+.skip-link {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translateY(-200%);
+	padding: var(--space-3) var(--space-4);
+	background: var(--color-accent);
+	color: var(--color-bg);
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	z-index: 100;
+	transition: transform 0.15s ease-out;
+}
+
+.skip-link:focus {
+	transform: translateY(0);
+}
