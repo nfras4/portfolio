@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { PORTFOLIO_DATA as d } from "./data.js";
+import AnimatedTextCycle from "./components/ui/animated-text-cycle.jsx";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -92,7 +93,21 @@ export function Hero() {
         </div>
 
         <h1 className="hero-pitch fade-up" style={{ animationDelay: "0.18s" }}>
-          I build software for <span className="accent">Brisbane clinicians</span>.{" "}
+          I build software for
+          <br />
+          <AnimatedTextCycle
+            className="accent"
+            interval={2600}
+            words={[
+              "Brisbane clinicians",
+              "MBS billing",
+              "fuel resellers",
+              "party games",
+              "small clinics",
+              "low-latency tools",
+            ]}
+          />
+          <br />
           <span className="muted">Real-time multiplayer arcade games at the edge on the side.</span>
         </h1>
 
