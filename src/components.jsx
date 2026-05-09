@@ -182,15 +182,34 @@ export function AboutSection() {
 
 function ProjectMedia({ p }) {
   const [failed, setFailed] = useState(false);
+  const hasLiveImage = p.id === "gocard" || p.id === "monkeybarrel";
+  const liveHref = hasLiveImage && p.url
+    ? `https://${p.url.replace(/^https?:\/\//, "")}`
+    : null;
+
   if (p.image && !failed) {
+    const imgEl = (
+      <img
+        src={p.image}
+        alt={`${p.name} screenshot`}
+        loading="lazy"
+        onError={() => setFailed(true)}
+      />
+    );
     return (
       <div className="proj-media">
-        <img
-          src={p.image}
-          alt={`${p.name} screenshot`}
-          loading="lazy"
-          onError={() => setFailed(true)}
-        />
+        {liveHref ? (
+          <a
+            href={liveHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="proj-media-link"
+            onClick={(e) => e.stopPropagation()}
+            aria-label={`Open ${p.name} live site`}
+          >
+            {imgEl}
+          </a>
+        ) : imgEl}
       </div>
     );
   }

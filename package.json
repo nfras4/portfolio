@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && wrangler pages deploy dist"
+    "deploy": "vite build && bunx wrangler pages deploy dist --project-name=nickwfraser-portfolio --branch=main"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
