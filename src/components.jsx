@@ -101,7 +101,7 @@ export function Hero() {
             words={[
               "Brisbane clinicians",
               "MBS billing",
-              "fuel resellers",
+              "API dashboards",
               "party games",
               "small clinics",
               "low-latency tools",
