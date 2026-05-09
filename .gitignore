@@ -7,6 +7,7 @@ node_modules
 .wrangler
 /.svelte-kit
 /build
+/dist
 
 # OS
 .DS_Store
@@ -25,3 +26,10 @@ vite.config.ts.timestamp-*
 # OMC dev tooling
 .omc
 .omc/
+
+# Obsidian junction artifacts (added by vault migration)
+.obsidian/
+.trash/
+Trash/
+*.tmp
+.obsidian.vimrc
