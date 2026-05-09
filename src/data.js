@@ -1,20 +1,20 @@
 export const PORTFOLIO_DATA = {
   identity: {
     name: "Nicholas Wei-Han Fraser",
-    pitch: "Analytics student keeping a Brisbane medical clinic running and shipping MBS billing software to a paediatric surgeon, with arcade games on Cloudflare's edge as the build proof.",
+    pitch: "Building software for Brisbane clinicians. Real-time multiplayer arcade games at the edge on the side.",
     location: "Brisbane, AU",
     status: "Open to grad roles · 2027",
     email: "nickwfraser@gmail.com",
   },
 
   about: [
-    "Business Analytics undergrad at UQ, graduating 2027. I run IT for a Brisbane medical clinic on retainer through my registered business, Tek Monkeys, and I ship Tally — an MBS billing copilot — to a paediatric orthopaedic surgeon at St Andrew's Brisbane.",
-    "On the side I build multiplayer arcade games on Cloudflare's edge as proof of how I think about real-time systems end to end. The shared theme: real users on the other side, which means more time fixing edge cases than designing them.",
-    "Looking for grad roles in healthtech analytics, clinical ops, fintech, or anywhere SQL, R, and TypeScript live in the same repo.",
+    "Studying Finance and Business Analytics at UQ, graduating 2027. I run the IT support for a Brisbane medical clinic through my registered business, Tek Monkeys, and ship Tally, an MBS billing tool, to a paediatric ortho surgeon at St Andrew's.",
+    "On the side I build multiplayer arcade games on Cloudflare's edge. Real users find edge cases I never would have.",
+    "Looking for grad roles in healthtech analytics, clinical ops, or fintech. Bonus if SQL, R, and TypeScript all show up in the same repo.",
   ],
 
   glance: [
-    { label: "Major", value: "Business Analytics" },
+    { label: "Major", value: "Finance + Business Analytics" },
     { label: "School", value: "UQ" },
     { label: "Grad year", value: "2027" },
     { label: "Live projects", value: "03" },
@@ -103,11 +103,11 @@ export const PORTFOLIO_DATA = {
       url: "arcade.nickwfraser.dev",
       image: "/projects/monkeybarrel.png",
       tagline: "Multiplayer party-games platform on Cloudflare's edge. Three lobbies (party, casino, RPG), seven games, one shared chip economy and XP system.",
-      description: "Solo-built multiplayer arcade with no signup friction: land on the URL, get a room code, play. Three category lobbies feed the same backbone — party games (Impostor, Wavelength, Snap…), casino (Poker, Blackjack, Roulette…), and an RPG mode with quests and dungeons. Chip economy and XP carry across games; cosmetics unlock at milestones. Built as a deliberate stress-test of how real-time systems behave on a $0/mo edge stack.",
+      description: "Solo-built multiplayer arcade with no signup friction: land on the URL, get a room code, play. Three category lobbies feed the same backbone: party games (Impostor, Wavelength, Snap…), casino (Poker, Blackjack, Roulette…), and an RPG mode with quests and dungeons. Chip economy and XP carry across games; cosmetics unlock at milestones. Built as a deliberate stress-test of how real-time systems behave on a $0/mo edge stack.",
       build_notes: [
         "Durable Objects hold per-room state, so one object owns the lock for one game's logic without cross-region race conditions. Raw parameterised SQL against D1 instead of an ORM.",
         "Each game has its own bot AI tuned to that game's rules. Bots fill empty seats and double as fuzz-tests for the state machines.",
-        "Caught a Svelte 5 production-build bug where Vite was tree-shaking onMount/onDestroy lifecycle callbacks — the app worked in dev and shipped blank in prod. Diagnosed by reading the compiled JS and switching to $effect-based wiring; now documented as a project-wide rule.",
+        "Caught a Svelte 5 production-build bug where Vite was tree-shaking onMount/onDestroy lifecycle callbacks, so the app worked in dev and shipped blank in prod. Diagnosed by reading the compiled JS and switching to $effect-based wiring; now documented as a project-wide rule.",
         "Auth hardened with PBKDF2 600k iterations + rehash-on-login, rate-limited login endpoints, SHA-256 session tokens. Auto-deployed from main via GitHub Actions; Wrangler handles Workers and D1 migrations.",
       ],
       stack: ["SvelteKit 5", "TypeScript", "Cloudflare Workers", "D1", "Durable Objects", "Bun"],
@@ -135,7 +135,7 @@ export const PORTFOLIO_DATA = {
 
   education: {
     school: "University of Queensland",
-    degree: "Bachelor of Business Management, Business Analytics major",
+    degree: "Bachelor of Business Management, Finance & Business Analytics",
     grad: "Expected 2027",
     coursework: [
       "BSAN4204: Advanced Analytics",

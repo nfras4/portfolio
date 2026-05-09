@@ -92,8 +92,8 @@ export function Hero() {
         </div>
 
         <h1 className="hero-pitch fade-up" style={{ animationDelay: "0.18s" }}>
-          UQ analytics student. I run IT and ship billing software for <span className="accent">Brisbane clinicians</span>,{" "}
-          <span className="muted">and build multiplayer arcade games on Cloudflare's edge as the build proof.</span>
+          I build software for <span className="accent">Brisbane clinicians</span>.{" "}
+          <span className="muted">Real-time multiplayer arcade games at the edge on the side.</span>
         </h1>
 
         <div className="hero-meta fade-up" style={{ animationDelay: "0.28s" }}>
