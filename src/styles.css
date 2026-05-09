@@ -263,6 +263,49 @@ button {
 }
 
 /* ============================================
+   Glow (warm radial halo behind sections)
+   ============================================ */
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.glow::before,
+.glow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: var(--glow-y, 0%);
+  border-radius: 50%;
+  transform: translate(-50%, var(--glow-ty, 0%));
+  filter: blur(48px);
+  pointer-events: none;
+}
+
+.glow::before {
+  width: 70%;
+  height: 55%;
+  background: radial-gradient(ellipse at center, color-mix(in oklch, var(--accent) 18%, transparent), transparent 65%);
+}
+
+.glow::after {
+  width: 42%;
+  height: 32%;
+  background: radial-gradient(ellipse at center, color-mix(in oklch, var(--accent) 12%, transparent), transparent 60%);
+  filter: blur(28px);
+}
+
+.glow[data-pos="top"] { --glow-y: 0%; --glow-ty: -25%; }
+.glow[data-pos="center"] { --glow-y: 50%; --glow-ty: -50%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .glow { opacity: 0.6; }
+}
+
+/* ============================================
    Hero
    ============================================ */
 .hero {

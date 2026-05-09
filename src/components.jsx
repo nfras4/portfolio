@@ -81,6 +81,7 @@ export function Nav() {
 export function Hero() {
   return (
     <header className="hero" id="top">
+      <div className="glow" data-pos="top" aria-hidden="true" />
       <div className="shell hero-shell">
         <div className="hero-status fade-up" style={{ animationDelay: "0.05s" }}>
           <span className="hero-status-dot" />
@@ -358,6 +359,7 @@ export function ExperienceSection() {
 export function ContactSection() {
   return (
     <section className="section" id="contact" aria-labelledby="hd-contact">
+      <div className="glow" data-pos="center" aria-hidden="true" />
       <div className="shell contact-block">
         <h2 className="section-num" id="hd-contact">05 / contact</h2>
         <h2 className="contact-pitch">
