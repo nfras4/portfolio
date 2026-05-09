@@ -3,15 +3,15 @@
    ============================================ */
 :root {
   --bg: oklch(0.96 0.015 75);
-  --bg-elev: oklch(0.94 0.02 70);
-  --bg-card: oklch(0.92 0.025 70);
-  --border: oklch(0.85 0.03 70);
-  --border-strong: oklch(0.75 0.05 60);
-  --fg: oklch(0.27 0.04 50);
-  --fg-muted: oklch(0.46 0.05 55);
-  --fg-dim: oklch(0.55 0.04 60);
-  --accent: oklch(0.55 0.14 45);
-  --accent-soft: oklch(0.55 0.14 45 / 0.12);
+  --bg-elev: oklch(0.93 0.022 70);
+  --bg-card: oklch(0.89 0.028 70);
+  --border: oklch(0.78 0.04 70);
+  --border-strong: oklch(0.62 0.06 60);
+  --fg: oklch(0.21 0.04 50);
+  --fg-muted: oklch(0.36 0.05 55);
+  --fg-dim: oklch(0.46 0.05 60);
+  --accent: oklch(0.46 0.16 42);
+  --accent-soft: oklch(0.46 0.16 42 / 0.14);
 
   --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-serif: "Lora", "Iowan Old Style", Georgia, serif;
