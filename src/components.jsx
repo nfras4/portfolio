@@ -99,7 +99,7 @@ export function Hero() {
         <div className="hero-meta fade-up" style={{ animationDelay: "0.28s" }}>
           <div className="hero-meta-item">
             <span className="hero-meta-key">studying</span>
-            <span className="hero-meta-val">Business Analytics @ UQ</span>
+            <span className="hero-meta-val">Finance + Business Analytics @ UQ</span>
           </div>
           <div className="hero-meta-item">
             <span className="hero-meta-key">building</span>
