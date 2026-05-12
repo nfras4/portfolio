@@ -4,6 +4,10 @@ import FloatingShapes from "./demos/FloatingShapes.jsx";
 import ParticleField from "./demos/ParticleField.jsx";
 import WobblyMesh from "./demos/WobblyMesh.jsx";
 import InstancedGrid from "./demos/InstancedGrid.jsx";
+import GlassTorus from "./demos/GlassTorus.jsx";
+import StarsText from "./demos/StarsText.jsx";
+import TrailOrbit from "./demos/TrailOrbit.jsx";
+import SparkleCore from "./demos/SparkleCore.jsx";
 
 const DEMOS = [
   {
@@ -29,6 +33,30 @@ const DEMOS = [
     name: "Instanced grid",
     blurb: "256-cube InstancedMesh that ripples toward your cursor. Per-instance color updated every frame.",
     Component: InstancedGrid,
+  },
+  {
+    id: "glass",
+    name: "Glass refraction",
+    blurb: "Spinning torus knot with MeshTransmissionMaterial. Backside refraction, chromatic aberration, and a multi-sample resolution pass.",
+    Component: GlassTorus,
+  },
+  {
+    id: "stars",
+    name: "Stars + 3D text",
+    blurb: "3,000-star Stars field with floating Troika-rendered Text. Slow auto-orbit.",
+    Component: StarsText,
+  },
+  {
+    id: "trails",
+    name: "Trailing orbits",
+    blurb: "Three emissive orbs on offset orbits, each leaving a tapered Trail. Attenuation curve t*t for a fast falloff.",
+    Component: TrailOrbit,
+  },
+  {
+    id: "sparkles",
+    name: "Sparkle core",
+    blurb: "Metallic icosahedron wrapped in two layers of drei Sparkles. Night HDRI for the rim light.",
+    Component: SparkleCore,
   },
 ];
 
