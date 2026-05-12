@@ -117,7 +117,7 @@ export function Hero() {
             ]}
           />
           <br />
-          <span className="muted">Real-time multiplayer arcade games at the edge on the side.</span>
+          <span className="muted">Real-time multiplayer arcade games on the side.</span>
         </h1>
 
         <div className="hero-meta fade-up" style={{ animationDelay: "0.28s" }}>
