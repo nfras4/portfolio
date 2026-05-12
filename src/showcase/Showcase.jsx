@@ -7,6 +7,12 @@ import InstancedGrid from "./demos/InstancedGrid.jsx";
 
 const DEMOS = [
   {
+    id: "grid",
+    name: "Instanced grid",
+    blurb: "256-cube InstancedMesh that ripples toward your cursor. Per-instance color updated every frame.",
+    Component: InstancedGrid,
+  },
+  {
     id: "shapes",
     name: "Floating shapes",
     blurb: "Three primitives with metallic shaders, contact shadows, and an apartment HDRI. Drag to orbit.",
@@ -23,12 +29,6 @@ const DEMOS = [
     name: "Distort sphere",
     blurb: "Vertex-displaced icosahedron with drei's MeshDistortMaterial. Auto-rotating.",
     Component: WobblyMesh,
-  },
-  {
-    id: "grid",
-    name: "Instanced grid",
-    blurb: "256-cube InstancedMesh that ripples toward your cursor. Per-instance color updated every frame.",
-    Component: InstancedGrid,
   },
 ];
 
