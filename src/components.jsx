@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { PORTFOLIO_DATA as d } from "./data.js";
 import AnimatedTextCycle from "./components/ui/animated-text-cycle.jsx";
 
@@ -73,6 +74,14 @@ export function Nav() {
               {it.label}
             </a>
           ))}
+          <Link
+            to="/showcase"
+            className="nav-link nav-link--showcase"
+            onClick={() => setMenuOpen(false)}
+          >
+            <span className="nav-link-num">06</span>
+            showcase
+          </Link>
         </div>
       </div>
     </nav>

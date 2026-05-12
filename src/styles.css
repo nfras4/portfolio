@@ -1048,3 +1048,139 @@ button {
 .fade-up {
   animation: fadeUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
+
+/* ============================================
+   Showcase / R3F gallery
+   ============================================ */
+.showcase {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.showcase-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.showcase-head {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+}
+
+.showcase-head-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.showcase-back {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg-muted);
+  transition: color 0.2s ease;
+}
+
+.showcase-back:hover { color: var(--accent); }
+
+.showcase-title {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.showcase-title-key { color: var(--fg-dim); }
+
+.showcase-tabs {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+
+.showcase-tabs-inner {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+
+.showcase-tab {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--fg-muted);
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.showcase-tab:hover {
+  background: var(--bg-card);
+  color: var(--fg);
+}
+
+.showcase-tab.is-active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.showcase-stage {
+  flex: 1;
+  min-height: 60vh;
+  position: relative;
+  background: var(--bg-card);
+}
+
+.showcase-stage canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.showcase-info {
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev);
+  padding: 20px 0;
+}
+
+.showcase-info-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 20px;
+  align-items: baseline;
+}
+
+.showcase-info-label {
+  font-size: 12px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.showcase-info-blurb {
+  margin: 0;
+  font-size: 14px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+}
+
+.showcase-info-tools {
+  font-size: 11px;
+  color: var(--fg-dim);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .showcase-info-inner {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
