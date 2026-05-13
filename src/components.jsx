@@ -386,11 +386,6 @@ export function ExperienceSection() {
           <div>
             <h3 className="edu-school">{d.education.school}</h3>
             <div className="edu-degree">{d.education.degree}</div>
-            <div className="edu-grad">Coursework relevant to grad roles below</div>
-            <div className="edu-cw-label mono">// relevant coursework</div>
-            <ul className="edu-cw">
-              {d.education.coursework.map((c) => <li key={c}>{c}</li>)}
-            </ul>
           </div>
         </div>
       </div>

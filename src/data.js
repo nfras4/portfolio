@@ -1,6 +1,6 @@
 export const PORTFOLIO_DATA = {
   identity: {
-    name: "Nicholas Wei-Han Fraser",
+    name: "Nicholas W. Fraser",
     pitch: "Building software for Brisbane clinicians. Real-time multiplayer arcade games on the side.",
     location: "Brisbane, AU",
     status: "Open to grad roles · 2027",
@@ -136,13 +136,7 @@ export const PORTFOLIO_DATA = {
   education: {
     school: "University of Queensland",
     degree: "Bachelor of Business Management, Finance & Business Analytics",
-    grad: "Expected 2027",
-    coursework: [
-      "BSAN4204: Advanced Analytics",
-      "FINM2412: Corporate Finance",
-      "FINM3405: Derivatives & Risk Management",
-      "LAWS1100: Business Law",
-    ],
+    grad: "2023 - Current · Expected 2027",
   },
 
   links: {
