@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Brand // Variant C — Lattice + Organic Counter-shape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --accent-soft: oklch(0.46 0.16 42 / 0.14);
+    --ink: oklch(0.34 0.12 48);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size:15px; -webkit-font-smoothing: antialiased; }
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  .variant-strip { border-bottom: 1px solid var(--border); padding: 14px 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; }
+  .variant-strip strong { color: var(--fg); font-weight: 500; }
+  .variant-strip .accent { color: var(--accent); }
+
+  .block { padding: 64px 0; border-bottom: 1px solid var(--border); position: relative; }
+  .block:last-child { border-bottom: none; }
+
+  /* Organic blob — used per section, one per section */
+  .blob {
+    position: relative; display: inline-block; vertical-align: middle;
+    background: var(--accent); width: 28px; height: 28px;
+    border-radius: 56% 44% 62% 38% / 48% 60% 40% 52%;
+  }
+  .blob.sm { width: 14px; height: 14px; border-radius: 62% 38% 54% 46% / 50% 64% 36% 50%; }
+  .blob.lg { width: 220px; height: 220px; border-radius: 58% 42% 64% 36% / 44% 60% 40% 56%; }
+  .blob.ink { background: var(--ink); }
+  .blob.outline { background: transparent; border: 1.5px solid var(--accent); }
+
+  /* Section marker: blob + section num */
+  .marker { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--fg-dim); text-transform: uppercase; }
+  .marker-num { color: var(--fg); }
+
+  .h-title { font-family: var(--font-serif); font-size: clamp(36px, 5vw, 56px); line-height: 1.1; letter-spacing: -0.02em; font-weight: 500; margin: 0 0 16px; text-wrap: balance; }
+  .h-title .accent { color: var(--accent); }
+  .h-title em { font-style: italic; color: var(--ink); }
+  .h-sub { font-size: 16px; color: var(--fg-muted); max-width: 60ch; line-height: 1.6; margin: 0; }
+
+  /* HERO: blob behind lattice, lattice in foreground */
+  .hero-stage {
+    margin-top: 64px; position: relative; min-height: 480px;
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; padding: 60px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-stage::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+    background-size: 22px 22px; opacity: 0.4; pointer-events: none;
+  }
+  .hero-blob {
+    position: absolute; left: -40px; top: 60px;
+    width: 320px; height: 320px;
+    background: var(--accent);
+    border-radius: 58% 42% 64% 36% / 44% 60% 40% 56%;
+    opacity: 0.92;
+    filter: blur(0.4px);
+  }
+  .hero-blob.b2 {
+    left: auto; right: 80px; top: auto; bottom: -60px;
+    width: 180px; height: 180px;
+    background: var(--ink);
+    border-radius: 62% 38% 54% 46% / 50% 64% 36% 50%;
+    opacity: 0.85;
+  }
+  #lattice { position: relative; z-index: 2; display: grid; gap: 6px; }
+  #lattice .cell { border-radius: 50%; }
+
+  .hero-caption { position: absolute; bottom: 16px; left: 20px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--fg); text-transform: uppercase; z-index: 3; }
+  .hero-spec { position: absolute; top: 16px; right: 20px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--fg); text-align: right; line-height: 1.6; z-index: 3; }
+
+  /* Shape vocabulary grid */
+  .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 56px; }
+  @media (max-width: 800px) { .vocab-grid { grid-template-columns: 1fr; } }
+
+  .card { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-elev); padding: 28px; position: relative; overflow: hidden; }
+  .card-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 18px; display: flex; justify-content: space-between; position: relative; z-index: 2; }
+  .card-label .id { color: var(--accent); }
+  .card-stage { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; min-height: 160px; padding: 28px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .card-foot { margin-top: 16px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); line-height: 1.6; position: relative; z-index: 2; }
+
+  /* Card-stage may have a small blob decoration */
+  .card-stage .blob-bg {
+    position: absolute; pointer-events: none; opacity: 0.55;
+  }
+
+  /* Brushstroke / arc accent */
+  .brush {
+    display: inline-block; width: 64px; height: 8px;
+    background: var(--accent);
+    border-radius: 8px 8px 0 8px / 8px 8px 0 8px;
+    transform: rotate(-3deg);
+  }
+  .brush.lg { width: 120px; height: 12px; }
+  .brush.ink { background: var(--ink); }
+
+  /* Section preview component */
+  .sec-preview { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .sec-preview .row { display: flex; align-items: center; gap: 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; }
+  .sec-preview .row .num { color: var(--fg); }
+
+  /* Card with curved accent stroke */
+  .quote-card {
+    padding: 28px; background: var(--bg); border-radius: 12px;
+    position: relative; max-width: 320px; border: 1px solid var(--border);
+  }
+  .quote-card::before {
+    content: ""; position: absolute; top: -8px; left: 24px;
+    width: 56px; height: 12px; background: var(--accent);
+    border-radius: 12px 12px 0 12px / 12px 12px 0 12px;
+    transform: rotate(-2deg);
+  }
+  .quote-card .q { font-family: var(--font-serif); font-style: italic; font-size: 16px; line-height: 1.5; color: var(--fg); margin: 0 0 12px; }
+  .quote-card .a { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase; }
+
+  .swatch-row { display: flex; gap: 12px; margin-top: 24px; align-items: center; }
+  .swatch { width: 56px; aspect-ratio: 1; border: 1px solid var(--border); position: relative; }
+  .swatch.organic { border: none; border-radius: 56% 44% 62% 38% / 48% 60% 40% 52%; }
+  .swatch-cap { position: absolute; bottom: -22px; left: 0; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--fg-dim); white-space: nowrap; }
+
+  .foot { padding: 32px 0 48px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+  <div class="variant-strip">
+    <div class="shell">
+      <span><strong>Nick Fraser</strong> // brand // shape language</span>
+      <span style="float:right"> variant <span class="accent">C</span> — lattice + organic counter-shape</span>
+    </div>
+  </div>
+
+  <main class="shell">
+
+    <!-- HERO -->
+    <section class="block">
+      <div class="marker">
+        <span class="blob sm"></span>
+        <span><span class="marker-num">00</span> / shape language</span>
+      </div>
+
+      <h1 class="h-title">Geometry plus <em>one warm hand-shape</em>.</h1>
+      <p class="h-sub">The lattice stays orthogonal and disciplined. One soft ink-blot per section provides the counter-rhythm: a single organic form, rust-toned, placed deliberately. The tension between strict grid and soft form is what makes it feel made by a human rather than generated.</p>
+
+      <div class="hero-stage">
+        <div class="hero-blob"></div>
+        <div class="hero-blob b2"></div>
+        <div id="lattice" aria-hidden="true"></div>
+        <div class="hero-spec">
+          14 × 14 lattice<br/>
+          1 rust blob<br/>
+          1 ink blob
+        </div>
+        <div class="hero-caption">hero / 1.0 / lattice + counter-shape</div>
+      </div>
+    </section>
+
+    <!-- SHAPE VOCABULARY -->
+    <section class="block">
+      <div class="marker">
+        <span class="blob sm"></span>
+        <span><span class="marker-num">01</span> / vocabulary</span>
+      </div>
+
+      <div class="vocab-grid">
+
+        <!-- Blob section markers -->
+        <div class="card">
+          <div class="card-label"><span>section marker</span><span class="id">→ S01</span></div>
+          <div class="card-stage">
+            <div class="sec-preview">
+              <div class="row"><span class="blob sm"></span> <span><span class="num">01</span> / about</span></div>
+              <div class="row"><span class="blob sm ink"></span> <span><span class="num">02</span> / projects</span></div>
+              <div class="row"><span class="blob sm outline"></span> <span><span class="num">03</span> / skills</span></div>
+            </div>
+          </div>
+          <div class="card-foot">One soft blob per section. Rotates between rust (default), ink (alt), outline (quiet sections). Never repeats the same blob shape twice; small CSS randomness in the border-radius.</div>
+        </div>
+
+        <!-- Brushstroke accent -->
+        <div class="card">
+          <div class="card-label"><span>brushstroke accent</span><span class="id">→ B01</span></div>
+          <div class="card-stage" style="flex-direction:column;gap:18px;">
+            <span class="brush"></span>
+            <span class="brush lg"></span>
+            <span class="brush ink lg"></span>
+          </div>
+          <div class="card-foot">Soft asymmetric pill, used as an accent stroke above cards, quotes, or headlines. Replaces the existing hairline in places where a softer signal is wanted.</div>
+        </div>
+
+        <!-- Quote card with curved accent -->
+        <div class="card">
+          <div class="card-label"><span>quote card</span><span class="id">→ Q01</span></div>
+          <div class="card-stage" style="padding:36px 28px 24px;">
+            <div class="quote-card">
+              <p class="q">"Caught a Svelte 5 production bug where Vite was tree-shaking <code style="font-family:var(--font-mono);font-size:13px;font-style:normal;">onMount</code>."</p>
+              <div class="a">— monkey barrel build notes</div>
+            </div>
+          </div>
+          <div class="card-foot">Card has a single curved brushstroke pinned to the top edge. Replaces the standard rectangular accent border with something less generic.</div>
+        </div>
+
+        <!-- Color including organic swatches -->
+        <div class="card">
+          <div class="card-label"><span>color · paper + ink + rust + 1 blob</span><span class="id">→ P01</span></div>
+          <div class="card-stage" style="padding:32px 24px;">
+            <div class="swatch-row" style="margin-top:0;">
+              <div class="swatch" style="background:oklch(0.96 0.015 75)"><span class="swatch-cap">paper</span></div>
+              <div class="swatch" style="background:oklch(0.89 0.028 70)"><span class="swatch-cap">kraft</span></div>
+              <div class="swatch" style="background:oklch(0.21 0.04 50)"><span class="swatch-cap">ink</span></div>
+              <div class="swatch organic" style="background:oklch(0.46 0.16 42)"><span class="swatch-cap">rust ★</span></div>
+              <div class="swatch organic" style="background:oklch(0.34 0.12 48)"><span class="swatch-cap">ink-warm</span></div>
+            </div>
+          </div>
+          <div class="card-foot">Two organic swatches added: rust (existing accent) and a slightly darker warm-ink for the alternate blob. Same OKLCH system, no new hues outside warm half.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="foot shell">
+      variant C · lattice + organic counter-shape · <span style="color:var(--accent)">geometric system with one warm hand-form per section</span>
+    </div>
+  </main>
+
+<script>
+  (function() {
+    const SIZE = 14;
+    const el = document.getElementById('lattice');
+    el.style.gridTemplateColumns = `repeat(${SIZE}, 22px)`;
+    el.style.gridTemplateRows = `repeat(${SIZE}, 22px)`;
+    for (let z = 0; z < SIZE; z++) {
+      for (let x = 0; x < SIZE; x++) {
+        const dx = x - (SIZE-1)/2;
+        const dz = z - (SIZE-1)/2;
+        const dist = Math.hypot(dx, dz);
+        const lift = Math.exp(-(dist*dist) / (2 * (SIZE/3.4)*(SIZE/3.4)));
+        const scale = 0.55 + lift * 0.45;
+        // In variant C, lattice stays MORE NEUTRAL so the blob is the color hero.
+        // Use ink tones with a subtle warm shift, no rust.
+        const L = 0.78 - lift * 0.45;
+        const chroma = 0.025 + lift * 0.04;
+        const hue = 70 - lift * 18;
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        const inset = (1 - scale) * 11;
+        cell.style.width = (22 - inset*2) + 'px';
+        cell.style.height = (22 - inset*2) + 'px';
+        cell.style.margin = inset + 'px';
+        cell.style.background = `oklch(${L} ${chroma} ${hue})`;
+      el.appendChild(cell);
+      }
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tek Monkeys // project card · 1440×900</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper:    #f0eee9;
+    --paper-2:  #e8e5dd;
+    --ink:      #15171c;
+    --ink-soft: rgba(20, 23, 28, 0.55);
+    --ink-dim:  rgba(20, 23, 28, 0.30);
+    --banana:   #f4c01b;
+    --banana-d: #c89a0e;
+    --font-sans: "Space Grotesk", -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #cfc9bd;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  .card {
+    width: 1440px;
+    height: 900px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(60, 50, 30, 0.22);
+    color: var(--ink);
+    --mark-stroke: var(--ink);
+    --mark-banana: var(--banana);
+    --mark-stem-cap: var(--banana-d);
+  }
+
+  /* top + bottom variant strips, like the identity book */
+  .strip {
+    position: absolute;
+    left: 64px;
+    right: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.20em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+  .strip.top { top: 48px; }
+  .strip.bot { bottom: 48px; }
+  .strip strong { color: var(--ink); font-weight: 500; }
+  .strip .accent { color: var(--banana-d); }
+
+  /* main: mark on left, type block on right */
+  .center {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    align-items: center;
+    padding: 0 96px;
+    gap: 72px;
+  }
+
+  .mark-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mark-cell svg { width: 360px; height: 432px; color: var(--mark-stroke); }
+
+  .type-block {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .wordmark {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 132px;
+    line-height: 0.85;
+    letter-spacing: -0.029em;
+    color: var(--ink);
+  }
+  .descriptor {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    max-width: 18ch;
+  }
+  .descriptor .accent { color: var(--banana-d); }
+
+  /* divider */
+  .rule {
+    width: 64px;
+    height: 1px;
+    background: var(--ink-dim);
+    margin-top: 8px;
+  }
+
+  /* service list (mono, tracked) */
+  .services {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 28px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.10em;
+    color: var(--ink);
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+  .services .num { color: var(--banana-d); }
+  .services .v { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="meta">tekmonkeys.png · 1440 × 900 · 16:10 · project-card thumb</div>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <symbol id="tm-mark" viewBox="0 0 100 120">
+      <path d="M 50 6 C 26 6, 14 24, 14 44 C 14 60, 24 70, 30 80 L 30 90 L 70 90 L 70 80 C 76 70, 86 60, 86 44 C 86 24, 74 6, 50 6 Z"
+        fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+      <rect x="32" y="92"  width="36" height="4.5" rx="1" fill="currentColor"/>
+      <rect x="34" y="100" width="32" height="4"   rx="1" fill="currentColor"/>
+      <rect x="38" y="108" width="24" height="4"   rx="1" fill="currentColor"/>
+      <g transform="translate(22 18) scale(0.56)">
+        <path d="M 22 24 C 12 32, 12 56, 28 74 C 44 90, 72 90, 84 84 C 90 82, 86 76, 78 76 C 60 76, 42 60, 36 40 C 30 26, 26 20, 22 24 Z"
+          fill="var(--mark-banana)"/>
+        <g transform="rotate(-22 28 22)">
+          <path d="M 23 10 L 31 10 L 33 24 L 21 24 Z" fill="var(--mark-banana)"/>
+          <ellipse cx="27" cy="10" rx="4" ry="1.4" fill="var(--mark-stem-cap)"/>
+        </g>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="card">
+
+  <div class="strip top">
+    <span><strong>tek monkeys</strong> · brisbane ai + it consultancy</span>
+    <span class="accent">est. 2024 · ABN registered</span>
+  </div>
+
+  <div class="center">
+    <div class="mark-cell">
+      <svg><use href="#tm-mark"/></svg>
+    </div>
+
+    <div class="type-block">
+      <div class="wordmark">tek monkeys</div>
+      <div class="descriptor">
+        AI-augmented IT consultancy. <span class="accent">Rapid business solutions</span> for real problems.
+      </div>
+      <div class="rule"></div>
+      <div class="services">
+        <span class="num">01</span><span class="v">rag · llm pipelines</span>
+        <span class="num">02</span><span class="v">devops · custom software</span>
+        <span class="num">03</span><span class="v">it support · networking</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="strip bot">
+    <span>founder · nicholas w. fraser</span>
+    <span><span class="accent">tekmonkeys.io</span> · brisbane, au</span>
+  </div>
+</div>
+
+</body>
+</html>

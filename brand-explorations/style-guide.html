@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Nick Fraser // Brand Style Guide v1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --accent-soft: oklch(0.46 0.16 42 / 0.14);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --r-sm: 4px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { min-height: 100vh; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  code { font-family: var(--font-mono); font-size: 0.9em; }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  /* ============================================
+     Top variant strip
+     ============================================ */
+  .variant-strip { border-bottom: 1px solid var(--border); padding: 14px 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; }
+  .variant-strip .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .variant-strip strong { color: var(--fg); font-weight: 500; }
+  .variant-strip .accent { color: var(--accent); }
+
+  /* ============================================
+     Section frame + lattice marker
+     ============================================ */
+  .block { padding: 72px 0; border-bottom: 1px solid var(--border); }
+  .block:last-of-type { border-bottom: none; }
+
+  .marker { display: flex; align-items: center; gap: 18px; margin-bottom: 40px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--fg-dim); text-transform: uppercase; }
+  .marker-lattice { display: grid; grid-template-columns: repeat(3, 4px); grid-template-rows: repeat(3, 4px); gap: 4px; flex-shrink: 0; }
+  .marker-lattice span { width: 4px; height: 4px; background: var(--fg-dim); }
+  .marker-lattice span.peak { background: var(--accent); }
+  .marker-num { color: var(--fg); }
+
+  /* ============================================
+     Type
+     ============================================ */
+  .h-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 20px; }
+  .h-title { font-family: var(--font-serif); font-size: clamp(36px, 5.2vw, 60px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 500; margin: 0 0 20px; text-wrap: balance; max-width: 16ch; }
+  .h-title .accent { color: var(--accent); }
+  .h-title .muted { color: var(--fg-muted); }
+  .h-sub { font-size: 17px; color: var(--fg-muted); max-width: 60ch; line-height: 1.6; margin: 0 0 8px; text-wrap: pretty; }
+
+  /* ============================================
+     00 / IDENTITY
+     ============================================ */
+  .identity-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 64px; align-items: start; margin-top: 48px; }
+  @media (max-width: 800px) { .identity-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  .ident-bio p { font-size: 19px; line-height: 1.5; color: var(--fg); margin: 0 0 18px; max-width: 56ch; text-wrap: pretty; }
+  .ident-bio p:last-child { margin-bottom: 0; color: var(--fg-muted); }
+  .ident-bio em { color: var(--accent); font-style: normal; }
+
+  .glance-list { display: flex; flex-direction: column; }
+  .glance-row { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; }
+  .glance-row:last-child { border-bottom: 1px solid var(--border); }
+  .glance-key { color: var(--fg-dim); letter-spacing: 0.04em; }
+  .glance-val { color: var(--fg); }
+  .glance-val.accent { color: var(--accent); }
+
+  /* ============================================
+     01 / THE LATTICE — hero asset
+     ============================================ */
+  .lattice-frame { margin-top: 48px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 48px; min-height: 540px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .lattice-frame::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 32px 32px; opacity: 0.18; pointer-events: none;
+  }
+  #lattice-stage { position: relative; cursor: crosshair; }
+  #lattice-stage canvas { display: block; }
+
+  .lattice-caption { position: absolute; bottom: 18px; left: 22px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase; }
+  .lattice-spec { position: absolute; top: 18px; right: 22px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--fg-dim); text-align: right; line-height: 1.7; }
+  .lattice-spec strong { color: var(--fg); font-weight: 500; }
+  .lattice-hint { position: absolute; bottom: 18px; right: 22px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; }
+
+  .lattice-notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 32px; }
+  @media (max-width: 800px) { .lattice-notes { grid-template-columns: 1fr; } }
+  .lattice-note { padding: 20px 22px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .lattice-note dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 8px; }
+  .lattice-note dd { margin: 0; font-size: 14px; color: var(--fg); line-height: 1.5; }
+  .lattice-note code { color: var(--accent); }
+
+  /* ============================================
+     02 / COLOR
+     ============================================ */
+  .color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 48px; }
+  @media (max-width: 800px) { .color-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 480px) { .color-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .swatch-card { display: flex; flex-direction: column; gap: 12px; }
+  .swatch-box { aspect-ratio: 1; border: 1px solid var(--border); border-radius: var(--r-md); position: relative; overflow: hidden; }
+  .swatch-box .star { position: absolute; top: 8px; right: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--bg); }
+  .swatch-meta { font-family: var(--font-mono); font-size: 11px; line-height: 1.5; }
+  .swatch-name { color: var(--fg); display: block; }
+  .swatch-val { color: var(--fg-dim); display: block; letter-spacing: 0.02em; }
+  .swatch-use { color: var(--fg-muted); display: block; font-size: 10px; margin-top: 4px; }
+
+  .color-rules { margin-top: 40px; padding: 24px 28px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .color-rules h4 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; margin: 0 0 14px; }
+  .color-rules ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .color-rules li { display: flex; gap: 12px; font-size: 14px; color: var(--fg-muted); line-height: 1.5; }
+  .color-rules li::before { content: "→"; color: var(--accent); font-family: var(--font-mono); flex-shrink: 0; }
+
+  /* ============================================
+     03 / TYPE
+     ============================================ */
+  .type-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 48px; }
+  @media (max-width: 800px) { .type-grid { grid-template-columns: 1fr; } }
+
+  .type-card { padding: 28px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .type-card-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 18px; display: flex; justify-content: space-between; }
+  .type-card-label .role { color: var(--accent); }
+  .type-card-sample { margin-bottom: 20px; }
+  .type-card-attrs { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; }
+  .type-card-attrs dt { color: var(--fg-dim); letter-spacing: 0.04em; }
+  .type-card-attrs dd { color: var(--fg); margin: 0; }
+
+  .sample-serif { font-family: var(--font-serif); font-size: 40px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.05; color: var(--fg); }
+  .sample-serif span { color: var(--accent); }
+  .sample-sans { font-family: var(--font-sans); font-size: 17px; color: var(--fg); line-height: 1.55; }
+  .sample-mono { font-family: var(--font-mono); font-size: 13px; color: var(--fg); letter-spacing: 0.04em; line-height: 1.6; }
+  .sample-mono .dim { color: var(--fg-dim); }
+
+  .type-scale { margin-top: 40px; padding: 28px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .type-scale h4 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; margin: 0 0 24px; }
+  .scale-row { display: grid; grid-template-columns: 80px 1fr auto; gap: 24px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--border); }
+  .scale-row:first-of-type { border-top: none; padding-top: 0; }
+  .scale-size { font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.04em; }
+  .scale-sample { color: var(--fg); }
+  .scale-use { font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.04em; text-align: right; }
+
+  /* ============================================
+     04 / COMPONENTS
+     ============================================ */
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+  @media (max-width: 800px) { .comp-grid { grid-template-columns: 1fr; } }
+
+  .comp-card { padding: 28px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .comp-card-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 18px; display: flex; justify-content: space-between; }
+  .comp-card-label .id { color: var(--accent); }
+  .comp-stage { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); min-height: 180px; padding: 28px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .comp-stage.stack { flex-direction: column; gap: 16px; align-items: flex-start; }
+  .comp-foot { margin-top: 16px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); line-height: 1.6; }
+  .comp-foot code { color: var(--accent); }
+
+  /* Section marker preview */
+  .demo-marker { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 13px; color: var(--fg); }
+  .demo-marker .dim { color: var(--fg-dim); }
+
+  /* Hairlines */
+  .demo-hairline { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .hl { height: 1px; background: var(--fg-dim); position: relative; }
+  .hl.short { width: 32px; }
+  .hl.med { width: 64px; background: var(--fg-dim); }
+  .hl.long { width: 128px; }
+  .hl.accent { background: var(--accent); }
+  .hl-cap { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase; }
+
+  /* Corner-cut tag */
+  .tag-cut {
+    display: inline-flex; flex-direction: column; gap: 4px;
+    padding: 14px 22px 18px 28px;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--font-mono); letter-spacing: 0.04em;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+  }
+  .tag-cut-kicker { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; }
+  .tag-cut-label { font-size: 13px; font-weight: 500; }
+  .tag-cut.ghost { background: transparent; color: var(--fg); border: 1px solid var(--border-strong);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 28px)); }
+
+  /* Pill chip */
+  .chip { font-family: var(--font-mono); font-size: 11px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 100px; color: var(--fg-muted); letter-spacing: 0.02em; }
+  .chip.active { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .chip.solid { color: var(--bg); border-color: var(--accent); background: var(--accent); }
+
+  /* Hero pitch composition */
+  .demo-pitch { font-family: var(--font-serif); font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 500; max-width: 26ch; text-wrap: balance; }
+  .demo-pitch .accent { color: var(--accent); }
+  .demo-pitch .muted { color: var(--fg-muted); }
+
+  /* ============================================
+     05 / MOTION
+     ============================================ */
+  .motion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+  @media (max-width: 800px) { .motion-grid { grid-template-columns: 1fr; } }
+
+  .motion-card { padding: 28px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .motion-card-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 18px; }
+
+  .ease-curve { width: 100%; height: 120px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); margin-bottom: 16px; }
+  .ease-attrs { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; }
+  .ease-attrs dt { color: var(--fg-dim); letter-spacing: 0.04em; }
+  .ease-attrs dd { color: var(--fg); margin: 0; }
+
+  .hover-demo { display: flex; flex-direction: column; gap: 0; }
+  .hover-link { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 0; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; color: var(--fg); transition: padding 0.2s var(--ease), color 0.15s ease; cursor: pointer; }
+  .hover-link:last-child { border-bottom: 1px solid var(--border); }
+  .hover-link:hover { color: var(--accent); padding-left: 8px; }
+  .hover-link .arrow { color: var(--fg-dim); transition: color 0.15s ease, transform 0.2s var(--ease); }
+  .hover-link:hover .arrow { color: var(--accent); transform: translate(2px, -2px); }
+  .hover-link .key { color: var(--fg-dim); }
+
+  .durations-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+  .duration-chip { font-family: var(--font-mono); font-size: 11px; padding: 4px 10px; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--fg); }
+  .duration-chip .use { color: var(--fg-dim); margin-left: 8px; }
+
+  /* ============================================
+     Voice (mini)
+     ============================================ */
+  .voice-list { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 800px) { .voice-list { grid-template-columns: 1fr; } }
+  .voice-card { padding: 22px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-md); }
+  .voice-card.do { border-left: 2px solid var(--accent); }
+  .voice-card.dont { border-left: 2px solid var(--border-strong); }
+  .voice-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 12px; }
+  .voice-h .accent { color: var(--accent); }
+  .voice-card p { margin: 0 0 10px; font-size: 14px; color: var(--fg); line-height: 1.5; }
+  .voice-card p:last-child { margin-bottom: 0; }
+  .voice-card .quote { font-family: var(--font-serif); font-style: italic; color: var(--fg-muted); font-size: 14px; }
+
+  /* ============================================
+     Footer
+     ============================================ */
+  .foot { padding: 32px 0 56px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+  .foot .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .foot a { color: var(--fg-dim); transition: color 0.15s ease; }
+  .foot a:hover { color: var(--accent); }
+  .foot .accent { color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="variant-strip">
+  <div class="shell row">
+    <span><strong>Nick Fraser</strong> // brand style guide</span>
+    <span>v1.0 · <span class="accent">paper · ink · rust</span></span>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============================================
+       00 / IDENTITY
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span></span><span></span>
+          <span></span><span class="peak"></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <span><span class="marker-num">00</span> / identity</span>
+      </div>
+
+      <div class="h-eyebrow">who this is for and why it exists</div>
+      <h1 class="h-title">A brand for one person, written so a future hire can match it.</h1>
+      <p class="h-sub">This guide documents the visual system already running on <code style="color:var(--accent)">nickwfraser.dev</code>. It isn't a redesign. It's a snapshot of decisions that earned their place across Tally, GoCard, Monkey Barrel, and the portfolio itself, written down so the next site, deck, or doc looks like the same person made it.</p>
+
+      <div class="identity-grid">
+        <div class="ident-bio">
+          <p>Nick Fraser. Brisbane. Finance + Business Analytics at UQ, graduating 2027. Building <em>Tally</em> (MBS billing copilot for paediatric orthopaedics), <em>GoCard Insights</em> (BSAN4204 capstone), <em>Monkey Barrel</em> (multiplayer arcade on Cloudflare Workers + DOs), and running <em>Tek Monkeys</em> as a registered IT business.</p>
+          <p>The brand's job is to make all of that read as one person, not five. Warm paper, restrained type, one rust accent, and a single repeated geometric motif: the lattice.</p>
+        </div>
+        <dl class="glance-list">
+          <div class="glance-row"><dt class="glance-key">role</dt><dd class="glance-val">UQ student + solo dev</dd></div>
+          <div class="glance-row"><dt class="glance-key">based</dt><dd class="glance-val">Brisbane, AU</dd></div>
+          <div class="glance-row"><dt class="glance-key">grad</dt><dd class="glance-val">2027</dd></div>
+          <div class="glance-row"><dt class="glance-key">target</dt><dd class="glance-val accent">healthtech · clinical ops · fintech</dd></div>
+          <div class="glance-row"><dt class="glance-key">stack</dt><dd class="glance-val">TS · SvelteKit · CF Workers</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       01 / THE LATTICE
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span class="peak"></span><span></span>
+          <span class="peak"></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span>
+        </div>
+        <span><span class="marker-num">01</span> / the lattice (hero asset)</span>
+      </div>
+
+      <div class="h-eyebrow">the brand mark, used at three scales</div>
+      <h2 class="h-title">A 16 × 16 grid that <span class="accent">ripples</span> on contact.</h2>
+      <p class="h-sub">Direct port of <code style="color:var(--accent)">src/showcase/demos/InstancedGrid.jsx</code>. The 3D version lives on <code>/showcase</code>. The 2D version below is the same math, drawn on canvas so it can live on any page. Move your cursor across it.</p>
+
+      <div class="lattice-frame">
+        <div class="lattice-spec">
+          <strong>16 × 16</strong><br/>
+          spacing 22px<br/>
+          ripple math:<br/>
+          <code style="color:var(--accent);font-size:10px;">sin(t·1.4 − d·1.6)</code>
+        </div>
+        <div id="lattice-stage" aria-hidden="true"></div>
+        <div class="lattice-caption">hero / 1.0 / the lattice</div>
+        <div class="lattice-hint">↳ move cursor</div>
+      </div>
+
+      <dl class="lattice-notes">
+        <div class="lattice-note">
+          <dt>where it appears</dt>
+          <dd>Hero on <code>/showcase</code> as 3D. Mini-form (3×3) on every section marker. Optional bg pattern at low opacity. Loading state.</dd>
+        </div>
+        <div class="lattice-note">
+          <dt>the math (don't change)</dt>
+          <dd><code>lift = sin(t · 1.4 − dist · 1.6) · 0.35 + max(0, 0.9 − dist) · 0.6</code>. Hue ramps <code>0.06 → 0.14</code> with lift. This is the signature.</dd>
+        </div>
+        <div class="lattice-note">
+          <dt>what to never do</dt>
+          <dd>Don't recolor the peak to anything but rust. Don't add a second wave source. Don't use the lattice as a button background. It's a mark and an ambient element, not chrome.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============================================
+       02 / COLOR
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span class="peak"></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span>
+          <span class="peak"></span><span></span><span class="peak"></span>
+        </div>
+        <span><span class="marker-num">02</span> / color</span>
+      </div>
+
+      <div class="h-eyebrow">six tones, one signature</div>
+      <h2 class="h-title">Warm paper, warm ink, <span class="accent">one rust</span>.</h2>
+      <p class="h-sub">OKLCH all the way down. Every value sits in the warm half of the wheel (hue 42 to 75). The rust accent is the only saturated color in the system. That scarcity is what makes it work.</p>
+
+      <div class="color-grid">
+        <div class="swatch-card">
+          <div class="swatch-box" style="background:oklch(0.96 0.015 75)"></div>
+          <div class="swatch-meta">
+            <span class="swatch-name">paper</span>
+            <span class="swatch-val">0.96 / 75</span>
+            <span class="swatch-use">page bg</span>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-box" style="background:oklch(0.93 0.022 70)"></div>
+          <div class="swatch-meta">
+            <span class="swatch-name">elev</span>
+            <span class="swatch-val">0.93 / 70</span>
+            <span class="swatch-use">tabs, nav-bg</span>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-box" style="background:oklch(0.89 0.028 70)"></div>
+          <div class="swatch-meta">
+            <span class="swatch-name">kraft</span>
+            <span class="swatch-val">0.89 / 70</span>
+            <span class="swatch-use">cards, stages</span>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-box" style="background:oklch(0.46 0.05 60)"></div>
+          <div class="swatch-meta">
+            <span class="swatch-name">dim</span>
+            <span class="swatch-val">0.46 / 60</span>
+            <span class="swatch-use">labels, keys</span>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-box" style="background:oklch(0.21 0.04 50)"></div>
+          <div class="swatch-meta">
+            <span class="swatch-name">ink</span>
+            <span class="swatch-val">0.21 / 50</span>
+            <span class="swatch-use">body, headlines</span>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-box" style="background:oklch(0.46 0.16 42)"><span class="star">★</span></div>
+          <div class="swatch-meta">
+            <span class="swatch-name" style="color:var(--accent)">rust</span>
+            <span class="swatch-val">0.46 / 42</span>
+            <span class="swatch-use">accent, single use</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-rules">
+        <h4>usage rules</h4>
+        <ul>
+          <li>Rust is the only saturated value. If you reach for green, blue, or yellow, stop. The system breaks.</li>
+          <li>Never put rust on rust. Rust always lives against paper, kraft, or ink. Soft-rust tint (<code style="color:var(--accent)">--accent-soft</code>, 14% alpha) is the one exception for fill states.</li>
+          <li>Body type is ink (<code style="color:var(--accent)">0.21</code>), not pure black. Labels and metadata drop to dim (<code style="color:var(--accent)">0.46</code>).</li>
+          <li>Use OKLCH literals, not hex. Hex hides what you're doing on the lightness axis.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       03 / TYPE
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice" style="grid-template-columns:repeat(4,3px);grid-template-rows:repeat(4,3px);gap:3px;">
+          <span></span><span></span><span class="peak"></span><span></span>
+          <span></span><span class="peak"></span><span class="peak"></span><span class="peak"></span>
+          <span class="peak"></span><span class="peak"></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span><span></span>
+        </div>
+        <span><span class="marker-num">03</span> / type</span>
+      </div>
+
+      <div class="h-eyebrow">three families, three jobs</div>
+      <h2 class="h-title">A serif for <span class="accent">names</span>. A sans for talking. A mono for everything else.</h2>
+      <p class="h-sub">No font does two jobs. Lora carries display weight. Inter handles body and UI. JetBrains Mono is in charge of every label, number, status line, and code reference. The split is what gives the system its rhythm.</p>
+
+      <div class="type-grid">
+        <div class="type-card">
+          <div class="type-card-label"><span>display</span><span class="role">→ names, pitches</span></div>
+          <div class="type-card-sample">
+            <span class="sample-serif">I build software for <span>Brisbane</span>.</span>
+          </div>
+          <dl class="type-card-attrs">
+            <dt>family</dt><dd>Lora</dd>
+            <dt>weight</dt><dd>500</dd>
+            <dt>tracking</dt><dd>−0.02em</dd>
+            <dt>balance</dt><dd>text-wrap: balance</dd>
+          </dl>
+        </div>
+
+        <div class="type-card">
+          <div class="type-card-label"><span>body</span><span class="role">→ paragraphs, UI</span></div>
+          <div class="type-card-sample">
+            <span class="sample-sans">Real-time multiplayer arcade games on the side. Real users find edge cases I never would have.</span>
+          </div>
+          <dl class="type-card-attrs">
+            <dt>family</dt><dd>Inter</dd>
+            <dt>weight</dt><dd>400 / 500</dd>
+            <dt>tracking</dt><dd>0</dd>
+            <dt>balance</dt><dd>text-wrap: pretty</dd>
+          </dl>
+        </div>
+
+        <div class="type-card">
+          <div class="type-card-label"><span>label</span><span class="role">→ status, data</span></div>
+          <div class="type-card-sample">
+            <span class="sample-mono">01 / projects<br/><span class="dim">status</span> live<br/><span class="dim">infra</span> $0/mo</span>
+          </div>
+          <dl class="type-card-attrs">
+            <dt>family</dt><dd>JetBrains Mono</dd>
+            <dt>weight</dt><dd>400</dd>
+            <dt>tracking</dt><dd>0.04–0.18em</dd>
+            <dt>case</dt><dd>UPPERCASE for labels</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="type-scale">
+        <h4>size scale</h4>
+        <div class="scale-row"><span class="scale-size">68 / 38</span><span class="scale-sample" style="font-family:var(--font-serif);font-size:40px;line-height:1.05;letter-spacing:-0.02em;font-weight:500;">Hero pitch</span><span class="scale-use">clamp(38, 5.5vw, 68)</span></div>
+        <div class="scale-row"><span class="scale-size">48</span><span class="scale-sample" style="font-family:var(--font-serif);font-size:36px;line-height:1.1;letter-spacing:-0.015em;font-weight:500;">Section pitch</span><span class="scale-use">contact, secondary heroes</span></div>
+        <div class="scale-row"><span class="scale-size">36 / 28</span><span class="scale-sample" style="font-family:var(--font-serif);font-size:28px;line-height:1.15;letter-spacing:-0.015em;font-weight:500;">Project name</span><span class="scale-use">cards, modal title</span></div>
+        <div class="scale-row"><span class="scale-size">22</span><span class="scale-sample" style="font-family:var(--font-sans);font-size:22px;line-height:1.45;">About body. Larger sans for the bio paragraph.</span><span class="scale-use">about-bio p</span></div>
+        <div class="scale-row"><span class="scale-size">17 / 15</span><span class="scale-sample" style="font-family:var(--font-sans);font-size:15px;line-height:1.55;">Default body copy. Inter at standard reading size.</span><span class="scale-use">paragraphs, tagline</span></div>
+        <div class="scale-row"><span class="scale-size">13 / 11</span><span class="scale-sample" style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.04em;">Mono · 12-13 standard · 11 caps with tracking</span><span class="scale-use">labels, status, code</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       04 / COMPONENTS
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span></span><span></span>
+          <span class="peak"></span><span class="peak"></span><span class="peak"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <span><span class="marker-num">04</span> / components</span>
+      </div>
+
+      <div class="h-eyebrow">five things, used everywhere</div>
+      <h2 class="h-title">The whole site is <span class="accent">five components</span> in different arrangements.</h2>
+      <p class="h-sub">Section marker, hairline divider, corner-cut tag, pill chip, hero pitch composition. Anything more elaborate is a layout of these, not a new thing.</p>
+
+      <div class="comp-grid">
+
+        <!-- 1. Section marker -->
+        <div class="comp-card">
+          <div class="comp-card-label"><span>section marker</span><span class="id">M-01</span></div>
+          <div class="comp-stage stack">
+            <div class="demo-marker">
+              <div class="marker-lattice">
+                <span></span><span></span><span></span>
+                <span></span><span class="peak"></span><span></span>
+                <span></span><span></span><span></span>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-dim);"><span style="color:var(--fg)">01</span> / about</span>
+            </div>
+            <div class="demo-marker">
+              <div class="marker-lattice">
+                <span></span><span class="peak"></span><span></span>
+                <span class="peak"></span><span></span><span class="peak"></span>
+                <span></span><span class="peak"></span><span></span>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-dim);"><span style="color:var(--fg)">02</span> / projects</span>
+            </div>
+            <div class="demo-marker">
+              <div class="marker-lattice" style="grid-template-columns:repeat(4,3px);grid-template-rows:repeat(4,3px);gap:3px;">
+                <span></span><span></span><span class="peak"></span><span></span>
+                <span></span><span class="peak"></span><span class="peak"></span><span class="peak"></span>
+                <span class="peak"></span><span class="peak"></span><span></span><span class="peak"></span>
+                <span></span><span class="peak"></span><span></span><span></span>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-dim);"><span style="color:var(--fg)">03</span> / skills</span>
+            </div>
+          </div>
+          <div class="comp-foot">3×3 default. 4×4 for hero sections. Accent dots show the ripple peak; randomize their position per section so no two markers are identical. Replaces the existing <code>32px×1px</code> hairline on <code>.section-num::before</code> (or coexists for verbose pages).</div>
+        </div>
+
+        <!-- 2. Hairline -->
+        <div class="comp-card">
+          <div class="comp-card-label"><span>hairline divider</span><span class="id">H-01</span></div>
+          <div class="comp-stage stack">
+            <div class="demo-hairline"><div class="hl short"></div><span class="hl-cap">32px · default (already in use)</span></div>
+            <div class="demo-hairline"><div class="hl med"></div><span class="hl-cap">64px · between sections</span></div>
+            <div class="demo-hairline"><div class="hl long"></div><span class="hl-cap">128px · emphasis</span></div>
+            <div class="demo-hairline"><div class="hl med accent"></div><span class="hl-cap" style="color:var(--accent)">accent · highlight only</span></div>
+          </div>
+          <div class="comp-foot">Three widths plus an accent variant. The 32px width already exists as the <code>::before</code> on every section number. Codify the rest. Use accent rust sparingly: status indicators, current-page underlines, never as a generic divider.</div>
+        </div>
+
+        <!-- 3. Corner-cut tag -->
+        <div class="comp-card">
+          <div class="comp-card-label"><span>corner-cut tag</span><span class="id">T-01</span></div>
+          <div class="comp-stage" style="gap:16px;flex-wrap:wrap;">
+            <div class="tag-cut">
+              <span class="tag-cut-kicker">↗ NEW</span>
+              <span class="tag-cut-label">3d showcase</span>
+            </div>
+            <div class="tag-cut ghost">
+              <span class="tag-cut-kicker">spec</span>
+              <span class="tag-cut-label">v1.0</span>
+            </div>
+          </div>
+          <div class="comp-foot">Reuses the existing <code>showcase-tag</code> clip-path. Solid rust for live links and CTAs. Ghost with border for spec callouts, version stamps, and inline labels. One geometry, two roles. Diagonal cut is always the bottom-left corner, never rotated.</div>
+        </div>
+
+        <!-- 4. Pill chip -->
+        <div class="comp-card">
+          <div class="comp-card-label"><span>pill chip</span><span class="id">C-01</span></div>
+          <div class="comp-stage" style="gap:8px;flex-wrap:wrap;">
+            <span class="chip">SvelteKit 5</span>
+            <span class="chip">Cloudflare D1</span>
+            <span class="chip">TypeScript</span>
+            <span class="chip active">live</span>
+            <span class="chip solid">shipped</span>
+            <span class="chip">+4</span>
+          </div>
+          <div class="comp-foot">Default for stack chips and tag-style metadata. Active variant (accent border + soft fill) for status: live, shipped, current. Solid variant (rust fill) reserved for one-off CTAs. Never more than one solid chip per view.</div>
+        </div>
+
+        <!-- 5. Hero pitch composition -->
+        <div class="comp-card" style="grid-column: span 2;">
+          <div class="comp-card-label"><span>hero pitch composition</span><span class="id">P-01</span></div>
+          <div class="comp-stage" style="flex-direction:column;align-items:flex-start;gap:24px;padding:40px;">
+            <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.16em;color:var(--fg-dim);text-transform:uppercase;">Nicholas W. Fraser · Brisbane</div>
+            <div class="demo-pitch">
+              I build software for<br/>
+              <span class="accent">Brisbane clinicians</span><br/>
+              <span class="muted">Real-time multiplayer arcade games on the side.</span>
+            </div>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;color:var(--fg-muted);">
+              <span><span style="color:var(--fg-dim)">studying</span> Finance + Business Analytics @ UQ</span>
+              <span><span style="color:var(--fg-dim)">building</span> Tally, Monkey Barrel</span>
+            </div>
+          </div>
+          <div class="comp-foot">Three-line serif pitch with the structure: <code>declarative verb · target noun (accent) · soft qualifier (muted)</code>. Eyebrow above in mono caps for name + location. Metadata row below in mono. Never break the three-line rhythm; tighten the pitch instead.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       05 / MOTION
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span>
+          <span class="peak"></span><span></span><span></span>
+        </div>
+        <span><span class="marker-num">05</span> / motion</span>
+      </div>
+
+      <div class="h-eyebrow">one curve, three durations</div>
+      <h2 class="h-title">One easing function, used <span class="accent">everywhere</span>.</h2>
+      <p class="h-sub">Motion is the cheapest place to look sloppy. Pick one curve and one tempo, use them on every transition. The portfolio already does this; codifying the values keeps it that way.</p>
+
+      <div class="motion-grid">
+        <div class="motion-card">
+          <div class="motion-card-label">easing curve</div>
+          <svg class="ease-curve" viewBox="0 0 200 100" preserveAspectRatio="none">
+            <line x1="0" y1="100" x2="200" y2="100" stroke="var(--border)" stroke-width="1" />
+            <line x1="0" y1="0" x2="0" y2="100" stroke="var(--border)" stroke-width="1" />
+            <path d="M 0 100 C 40 80, 40 0, 200 0" fill="none" stroke="var(--accent)" stroke-width="2" />
+            <line x1="0" y1="100" x2="40" y2="80" stroke="var(--fg-dim)" stroke-dasharray="2,2" stroke-width="1" />
+            <line x1="200" y1="0" x2="40" y2="0" stroke="var(--fg-dim)" stroke-dasharray="2,2" stroke-width="1" />
+            <circle cx="40" cy="80" r="3" fill="var(--accent)" />
+            <circle cx="40" cy="0" r="3" fill="var(--accent)" />
+          </svg>
+          <dl class="ease-attrs">
+            <dt>curve</dt><dd>cubic-bezier(0.2, 0.8, 0.2, 1)</dd>
+            <dt>shape</dt><dd>fast out, soft land</dd>
+            <dt>use for</dt><dd>every transition that isn't a fade</dd>
+          </dl>
+          <div class="durations-row">
+            <span class="duration-chip">0.15s <span class="use">color</span></span>
+            <span class="duration-chip">0.20s <span class="use">hover</span></span>
+            <span class="duration-chip">0.25s <span class="use">page bg</span></span>
+            <span class="duration-chip">0.40s <span class="use">fade-up</span></span>
+          </div>
+        </div>
+
+        <div class="motion-card">
+          <div class="motion-card-label">hover pattern · hover the rows</div>
+          <div class="hover-demo">
+            <a class="hover-link"><span class="key">→ project</span><span>arcade.nickwfraser.dev <span class="arrow">↗</span></span></a>
+            <a class="hover-link"><span class="key">→ code</span><span>github <span class="arrow">↗</span></span></a>
+            <a class="hover-link"><span class="key">→ contact</span><span>email <span class="arrow">↗</span></span></a>
+          </div>
+          <p style="font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);margin:16px 0 0;line-height:1.6;">Three things move on hover: row color shifts to rust, row gets 8px of left-padding (slide in), arrow translates <code style="color:var(--accent)">(+2px, −2px)</code>. Same pattern on every link in the system.</p>
+        </div>
+
+        <div class="motion-card" style="grid-column: span 2;">
+          <div class="motion-card-label">entry stagger · fade-up sequence</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);letter-spacing:0.06em;">
+            <span class="duration-chip">0.05s status</span> →
+            <span class="duration-chip">0.10s name</span> →
+            <span class="duration-chip">0.18s pitch</span> →
+            <span class="duration-chip">0.28s meta</span> →
+            <span class="duration-chip">0.36s links</span>
+          </div>
+          <p style="font-family:var(--font-mono);font-size:11px;color:var(--fg-muted);margin:18px 0 0;line-height:1.6;">Hero page-load uses <code style="color:var(--accent)">fadeUp</code> (translateY 8px + opacity) on five elements with cascading <code>animationDelay</code>. Don't add more steps. Five is the budget. Status dot uses <code style="color:var(--accent)">nav-pulse</code> (2.4s loop, 0 to 6px box-shadow ring), the only persistent motion on the page.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       06 / VOICE (mini)
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span class="peak"></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span class="peak"></span>
+        </div>
+        <span><span class="marker-num">06</span> / voice</span>
+      </div>
+
+      <div class="h-eyebrow">how nick writes, so others can match</div>
+      <h2 class="h-title">Direct sentences. <span class="accent">Specific nouns</span>. No edge.</h2>
+
+      <div class="voice-list">
+        <div class="voice-card do">
+          <div class="voice-h"><span class="accent">do</span> · specific over generic</div>
+          <p class="quote">"Paste a surgical report, get the Medicare item codes ready to claim."</p>
+          <p>Named the product action, named the user goal, no adjectives. Reads like a doctor would describe it.</p>
+        </div>
+        <div class="voice-card dont">
+          <div class="voice-h">don't · cliche stack-bragging</div>
+          <p class="quote" style="text-decoration:line-through;">"Built on the edge with cutting-edge cloud-native technology."</p>
+          <p>"Edge" tells the reader nothing about the product. Name the actual differentiator instead (Workers + Durable Objects, $0/mo infra, single-tenant).</p>
+        </div>
+        <div class="voice-card do">
+          <div class="voice-h"><span class="accent">do</span> · admit the unglamorous part</div>
+          <p class="quote">"Client-facing billing, scheduling, and the unglamorous parts of running a registered business."</p>
+          <p>Honesty signals competence. Don't hide the boring work; it's part of what differentiates a real practitioner from someone reciting a tech stack.</p>
+        </div>
+        <div class="voice-card dont">
+          <div class="voice-h">don't · em dashes</div>
+          <p class="quote" style="text-decoration:line-through;">"A tool — for clinicians — that ships fast."</p>
+          <p>The brand uses commas, periods, and colons. Em dashes get over-used by writers trying to sound thoughtful. Strip them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="shell row">
+      <span>brand v1.0 · <span class="accent">paper · ink · rust</span></span>
+      <span>
+        <a href="https://nickwfraser.dev">nickwfraser.dev</a> ·
+        <a href="https://github.com/nfras4">github</a> ·
+        <a href="mailto:nickwfraser@gmail.com">nickwfraser@gmail.com</a>
+      </span>
+    </div>
+  </footer>
+</main>
+
+<script>
+  // ============================================
+  // Live 2D lattice — direct port of src/showcase/demos/InstancedGrid.jsx
+  // Same math: lift = sin(t*1.4 - dist*1.6)*0.35 + max(0, 0.9-dist)*0.6
+  // Hue: 0.06 + lift*0.08 (HSL), lightness: 0.5 + lift*0.15
+  // ============================================
+  (function() {
+    const SIZE = 16;
+    const CELL = 22;          // px per cell
+    const SPACING = 0.45;     // matches R3F SPACING
+    const stage = document.getElementById('lattice-stage');
+    if (!stage) return;
+
+    const W = SIZE * CELL;
+    const H = SIZE * CELL;
+
+    const canvas = document.createElement('canvas');
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    stage.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    ctx.scale(DPR, DPR);
+
+    // Mouse in normalized [-1, 1] range, like R3F state.mouse
+    let mx = 0, my = 0, targetMx = 0, targetMy = 0;
+    stage.addEventListener('mousemove', (e) => {
+      const r = stage.getBoundingClientRect();
+      targetMx = ((e.clientX - r.left) / r.width) * 2 - 1;
+      targetMy = -(((e.clientY - r.top) / r.height) * 2 - 1);
+    });
+    stage.addEventListener('mouseleave', () => { targetMx = 0; targetMy = 0; });
+
+    const start = performance.now();
+
+    function frame(now) {
+      const t = (now - start) / 1000;
+      // Ease mouse toward target
+      mx += (targetMx - mx) * 0.08;
+      my += (targetMy - my) * 0.08;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // World coords match R3F: lattice spans -SIZE/2*SPACING to SIZE/2*SPACING
+      const mWorldX = mx * (SIZE * SPACING) * 0.5;
+      const mWorldY = my * (SIZE * SPACING) * 0.5;
+
+      for (let x = 0; x < SIZE; x++) {
+        for (let z = 0; z < SIZE; z++) {
+          const px = (x - SIZE / 2) * SPACING;
+          const pz = (z - SIZE / 2) * SPACING;
+          const dist = Math.hypot(px - mWorldX, pz - mWorldY);
+          const lift = Math.sin(t * 1.4 - dist * 1.6) * 0.35 + Math.max(0, 0.9 - dist) * 0.6;
+
+          // Map to screen: cell center
+          const sx = x * CELL + CELL / 2;
+          const sy = z * CELL + CELL / 2;
+
+          // Scale 0.32 base + lift influence (matches R3F dummy.scale.setScalar(0.32) but visualized as 2D area)
+          const liftClamped = Math.max(-0.4, Math.min(1.6, lift));
+          const cellScale = 0.45 + (liftClamped + 0.4) * 0.32; // 0.45 → ~1.1
+          const size = CELL * Math.max(0.2, Math.min(1.0, cellScale)) * 0.8;
+
+          // HSL math from R3F: hue = 0.06 + lift*0.08, sat 0.7, light = 0.5 + lift*0.15
+          const hue = (0.06 + liftClamped * 0.08) * 360;
+          const sat = 70;
+          const light = (0.5 + liftClamped * 0.15) * 100;
+          // Map to warm half: keep hue in 20-50 range
+          const hueClamped = Math.max(20, Math.min(55, hue));
+
+          ctx.fillStyle = `hsl(${hueClamped} ${sat}% ${Math.max(20, Math.min(75, light))}%)`;
+
+          // Soft shadow at peak (similar to InstancedGrid's castShadow)
+          if (liftClamped > 0.3) {
+            ctx.shadowColor = `hsla(35 70% 40% / ${Math.min(0.3, liftClamped * 0.2)})`;
+            ctx.shadowBlur = liftClamped * 6;
+            ctx.shadowOffsetY = liftClamped * 2;
+          } else {
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+          }
+
+          ctx.fillRect(sx - size / 2, sy - size / 2, size, size);
+        }
+      }
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+</script>
+
+</body>
+</html>

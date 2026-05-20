@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Nick Fraser // portfolio · linkedin featured thumb · 1200×627</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --accent-soft: oklch(0.46 0.16 42 / 0.14);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: oklch(0.86 0.025 70);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 24px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+  }
+
+  .card {
+    width: 1200px;
+    height: 627px;
+    background: var(--bg);
+    color: var(--fg);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(80, 50, 20, 0.18);
+  }
+
+  /* top variant strip */
+  .strip-top {
+    position: absolute;
+    top: 36px;
+    left: 64px;
+    right: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.20em;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+  }
+  .strip-top strong { color: var(--fg); font-weight: 500; }
+  .strip-top .accent { color: var(--accent); }
+
+  /* bottom row: chips + url */
+  .strip-bot {
+    position: absolute;
+    bottom: 40px;
+    left: 64px;
+    right: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+  }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--fg-muted);
+    letter-spacing: 0.02em;
+    background: var(--bg);
+  }
+  .chip.accent { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .url { color: var(--fg); }
+  .url .accent { color: var(--accent); }
+
+  /* center hero pitch */
+  .center {
+    position: absolute;
+    inset: 0;
+    padding: 0 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.20em;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+  }
+  .eyebrow .lattice {
+    display: grid;
+    grid-template-columns: repeat(3, 5px);
+    grid-template-rows: repeat(3, 5px);
+    gap: 5px;
+  }
+  .eyebrow .lattice span { width: 5px; height: 5px; background: var(--fg-dim); }
+  .eyebrow .lattice span.peak { background: var(--accent); }
+  .eyebrow .name { color: var(--fg); }
+
+  .pitch {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 80px;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  .pitch .accent { color: var(--accent); }
+  .pitch .kicker {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--fg-muted);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  /* right-side lattice ornament */
+  .lattice-bg {
+    position: absolute;
+    top: 50%;
+    right: 64px;
+    transform: translateY(-50%);
+    width: 140px;
+    height: 140px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 4px;
+    opacity: 0.55;
+  }
+  .lattice-bg span {
+    background: var(--border);
+    border-radius: 1px;
+  }
+  .lattice-bg span.peak { background: var(--accent); }
+  .lattice-bg span.peak-dim { background: var(--fg-dim); }
+</style>
+</head>
+<body>
+
+<div class="meta">portfolio-linkedin-thumb.png · 1200 × 627 · 1.91:1 · OG / featured-section ratio</div>
+
+<div class="card">
+
+  <div class="strip-top">
+    <span><strong>nick fraser</strong> · portfolio · nickwfraser.dev</span>
+    <span class="accent">paper · ink · rust</span>
+  </div>
+
+  <div class="center">
+    <div class="eyebrow">
+      <div class="lattice">
+        <span></span><span></span><span></span>
+        <span></span><span class="peak"></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+      <span><span class="name">nicholas w. fraser</span> · brisbane · UQ 2027</span>
+    </div>
+
+    <h1 class="pitch">
+      I build AI software for<br/>
+      <span class="accent">real problems</span>.
+      <span class="kicker">Real-time multiplayer arcade games on the side.</span>
+    </h1>
+  </div>
+
+  <!-- decorative 8x8 lattice with a few peaks, like the brand mark -->
+  <div class="lattice-bg" id="latticeBg"></div>
+
+  <div class="strip-bot">
+    <div class="chips">
+      <span class="chip accent">tally</span>
+      <span class="chip">monkey barrel</span>
+      <span class="chip">gocard insights</span>
+      <span class="chip">tek monkeys</span>
+    </div>
+    <div class="url">→ <span class="accent">nickwfraser.dev</span></div>
+  </div>
+</div>
+
+<script>
+  // populate the 8x8 lattice with a few peaks
+  const lat = document.getElementById('latticeBg');
+  const peaks = new Set([18, 19, 26, 27, 35, 36, 42, 43, 44, 51, 52]);
+  const peakDims = new Set([10, 11, 20, 28, 37, 45, 53, 54]);
+  for (let i = 0; i < 64; i++) {
+    const s = document.createElement('span');
+    if (peaks.has(i)) s.classList.add('peak');
+    else if (peakDims.has(i)) s.classList.add('peak-dim');
+    lat.appendChild(s);
+  }
+</script>
+
+</body>
+</html>

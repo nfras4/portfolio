@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Nick Fraser // Shape Library v1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --accent-soft: oklch(0.46 0.16 42 / 0.14);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  code { font-family: var(--font-mono); font-size: 0.9em; }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  .variant-strip { border-bottom: 1px solid var(--border); padding: 14px 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; }
+  .variant-strip .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .variant-strip strong { color: var(--fg); font-weight: 500; }
+  .variant-strip .accent { color: var(--accent); }
+
+  .block { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  .block:last-of-type { border-bottom: none; }
+
+  .marker { display: flex; align-items: center; gap: 18px; margin-bottom: 32px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--fg-dim); text-transform: uppercase; }
+  .marker-lattice { display: grid; grid-template-columns: repeat(3, 4px); grid-template-rows: repeat(3, 4px); gap: 4px; flex-shrink: 0; }
+  .marker-lattice span { width: 4px; height: 4px; background: var(--fg-dim); }
+  .marker-lattice span.peak { background: var(--accent); }
+  .marker-num { color: var(--fg); }
+
+  .h-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 16px; }
+  .h-title { font-family: var(--font-serif); font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.02em; font-weight: 500; margin: 0 0 16px; text-wrap: balance; max-width: 24ch; }
+  .h-title .accent { color: var(--accent); }
+  .h-sub { font-size: 16px; color: var(--fg-muted); max-width: 60ch; line-height: 1.6; margin: 0; text-wrap: pretty; }
+
+  /* Hero / intro */
+  .hero-block { padding: 80px 0 56px; border-bottom: 1px solid var(--border); }
+  .hero-stats { display: flex; gap: 40px; margin-top: 40px; flex-wrap: wrap; }
+  .hero-stat { display: flex; flex-direction: column; gap: 4px; font-family: var(--font-mono); font-size: 12px; }
+  .hero-stat-num { font-family: var(--font-serif); font-size: 36px; line-height: 1; color: var(--fg); font-weight: 500; letter-spacing: -0.02em; }
+  .hero-stat-num .accent { color: var(--accent); }
+  .hero-stat-key { color: var(--fg-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* Shape grid */
+  .shape-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+  }
+  @media (max-width: 900px) { .shape-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .shape-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .shape-tile {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    transition: background 0.2s var(--ease);
+  }
+  .shape-tile:hover { background: var(--bg-elev); }
+  .shape-preview {
+    flex: 1;
+    min-height: 180px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .shape-meta {
+    padding: 14px 18px 16px;
+    border-top: 1px dashed var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .shape-name { color: var(--fg); letter-spacing: 0.04em; display: flex; justify-content: space-between; }
+  .shape-code { color: var(--accent); font-size: 10px; letter-spacing: 0.1em; }
+  .shape-use { color: var(--fg-dim); font-size: 10px; line-height: 1.5; letter-spacing: 0.04em; margin-top: 4px; }
+
+  /* ============================================
+     SHAPE PRIMITIVES
+     ============================================ */
+
+  /* KIT 1 · PRINTER'S MARKS */
+
+  /* M-01 · Crop corner */
+  .s-crop {
+    width: 88px; height: 64px; position: relative;
+  }
+  .s-crop::before, .s-crop::after, .s-crop > i, .s-crop > b {
+    content: ""; position: absolute; width: 14px; height: 14px;
+  }
+  .s-crop::before { top: 0; left: 0; border-top: 1.5px solid var(--fg); border-left: 1.5px solid var(--fg); }
+  .s-crop::after { top: 0; right: 0; border-top: 1.5px solid var(--fg); border-right: 1.5px solid var(--fg); }
+  .s-crop > i { bottom: 0; left: 0; border-bottom: 1.5px solid var(--fg); border-left: 1.5px solid var(--fg); }
+  .s-crop > b { bottom: 0; right: 0; border-bottom: 1.5px solid var(--fg); border-right: 1.5px solid var(--fg); }
+
+  /* M-02 · Register mark */
+  .s-register {
+    width: 56px; height: 56px; border-radius: 50%; border: 1.5px solid var(--accent);
+    position: relative;
+  }
+  .s-register::before, .s-register::after {
+    content: ""; position: absolute; background: var(--accent);
+  }
+  .s-register::before { width: 1.5px; height: 80px; left: 50%; top: -12px; transform: translateX(-50%); }
+  .s-register::after { width: 80px; height: 1.5px; top: 50%; left: -12px; transform: translateY(-50%); }
+
+  /* M-03 · Scale ruler */
+  .s-ruler {
+    width: 140px; height: 24px; position: relative;
+  }
+  .s-ruler::before {
+    content: ""; position: absolute; top: 12px; left: 0; right: 0; height: 1px; background: var(--fg);
+  }
+  .s-ruler .tick {
+    position: absolute; top: 6px; width: 1px; height: 14px; background: var(--fg);
+  }
+  .s-ruler .tick.major { height: 18px; top: 4px; }
+
+  /* M-04 · Section bracket */
+  .s-bracket {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+    color: var(--fg); text-transform: uppercase;
+  }
+  .s-bracket .bar { display: inline-block; width: 28px; height: 1px; background: var(--fg-dim); position: relative; }
+  .s-bracket .bar::before, .s-bracket .bar::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--fg-dim); }
+  .s-bracket .bar::before { left: 0; }
+  .s-bracket .bar::after { right: 0; }
+
+  /* M-05 · Frame ticks */
+  .s-ftick { width: 100px; height: 64px; border: 1px dashed var(--border); position: relative; }
+  .s-ftick::before, .s-ftick::after, .s-ftick > i, .s-ftick > b {
+    content: ""; position: absolute; background: var(--accent);
+  }
+  .s-ftick::before { top: 50%; left: -4px; width: 8px; height: 1.5px; transform: translateY(-50%); }
+  .s-ftick::after { top: 50%; right: -4px; width: 8px; height: 1.5px; transform: translateY(-50%); }
+  .s-ftick > i { left: 50%; top: -4px; width: 1.5px; height: 8px; transform: translateX(-50%); }
+  .s-ftick > b { left: 50%; bottom: -4px; width: 1.5px; height: 8px; transform: translateX(-50%); }
+
+  /* M-06 · Trim marks with dim */
+  .s-trim { width: 96px; height: 72px; position: relative; padding: 14px; }
+  .s-trim::before, .s-trim::after, .s-trim > i, .s-trim > b {
+    content: ""; position: absolute; width: 10px; height: 10px;
+  }
+  .s-trim::before { top: 0; left: 0; border-top: 1px solid var(--fg-dim); border-left: 1px solid var(--fg-dim); }
+  .s-trim::after { top: 0; right: 0; border-top: 1px solid var(--fg-dim); border-right: 1px solid var(--fg-dim); }
+  .s-trim > i { bottom: 0; left: 0; border-bottom: 1px solid var(--fg-dim); border-left: 1px solid var(--fg-dim); }
+  .s-trim > b { bottom: 0; right: 0; border-bottom: 1px solid var(--fg-dim); border-right: 1px solid var(--fg-dim); }
+  .s-trim .dim {
+    position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+    background: var(--bg); padding: 0 6px;
+    font-family: var(--font-mono); font-size: 9px; color: var(--accent); letter-spacing: 0.1em;
+  }
+
+  /* KIT 2 · LATTICE FIELD VARIANTS */
+
+  /* L-01 · Dense lattice */
+  .s-dense {
+    display: grid; grid-template-columns: repeat(7, 6px); grid-template-rows: repeat(7, 6px); gap: 8px;
+  }
+  .s-dense span { background: var(--fg-dim); width: 6px; height: 6px; }
+  .s-dense span.peak { background: var(--accent); }
+
+  /* L-02 · Perforation strip */
+  .s-perf {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .s-perf span { width: 5px; height: 5px; background: var(--fg-dim); border-radius: 50%; }
+  .s-perf span.peak { background: var(--accent); }
+
+  /* L-03 · Diamond rotation */
+  .s-diamond {
+    display: grid; grid-template-columns: repeat(5, 6px); grid-template-rows: repeat(5, 6px); gap: 10px;
+    transform: rotate(45deg);
+  }
+  .s-diamond span { background: var(--fg-dim); width: 6px; height: 6px; }
+  .s-diamond span.peak { background: var(--accent); }
+
+  /* L-04 · Corner anchor */
+  .s-anchor { width: 120px; height: 80px; border: 1px dashed var(--border); position: relative; }
+  .s-anchor .corner {
+    position: absolute;
+    display: grid; grid-template-columns: repeat(3, 3px); grid-template-rows: repeat(3, 3px); gap: 3px;
+  }
+  .s-anchor .corner span { width: 3px; height: 3px; background: var(--fg-dim); }
+  .s-anchor .corner span.peak { background: var(--accent); }
+  .s-anchor .corner.tl { top: 6px; left: 6px; }
+  .s-anchor .corner.tr { top: 6px; right: 6px; }
+  .s-anchor .corner.bl { bottom: 6px; left: 6px; }
+  .s-anchor .corner.br { bottom: 6px; right: 6px; }
+
+  /* L-05 · Gradient density (will use canvas) */
+  .s-grad { width: 140px; height: 80px; position: relative; }
+  .s-grad canvas { display: block; width: 100%; height: 100%; }
+
+  /* L-06 · Scattered */
+  .s-scatter { width: 140px; height: 80px; position: relative; }
+  .s-scatter span {
+    position: absolute; background: var(--fg-dim); width: 3px; height: 3px;
+  }
+  .s-scatter span.peak { background: var(--accent); }
+
+  /* KIT 3 · NOTATION & ANNOTATION */
+
+  /* N-01 · Footnote markers */
+  .s-foot { display: flex; gap: 18px; align-items: baseline; font-family: var(--font-serif); font-size: 28px; color: var(--fg); line-height: 1; }
+  .s-foot .marker { color: var(--accent); font-size: 18px; vertical-align: super; margin-left: 1px; }
+  .s-foot .item { display: inline-flex; align-items: baseline; gap: 1px; }
+
+  /* N-02 · Margin note rule */
+  .s-margin { display: flex; gap: 16px; align-items: stretch; }
+  .s-margin .bar { width: 2px; background: var(--accent); flex-shrink: 0; }
+  .s-margin .note {
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); line-height: 1.6;
+    letter-spacing: 0.02em; max-width: 130px;
+  }
+
+  /* N-03 · Square brackets */
+  .s-sqbr { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--fg); letter-spacing: 0.06em; }
+  .s-sqbr .br { color: var(--accent); font-weight: 500; padding: 0 6px; font-size: 16px; line-height: 1; }
+  .s-sqbr .word { letter-spacing: 0.1em; text-transform: uppercase; font-size: 11px; }
+
+  /* N-04 · Arrow notation */
+  .s-arrows { display: flex; flex-direction: column; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-dim); letter-spacing: 0.04em; }
+  .s-arrows .row { display: flex; align-items: center; gap: 8px; }
+  .s-arrows .row .arrow { color: var(--accent); font-size: 14px; }
+  .s-arrows .row .tail { display: inline-block; width: 24px; height: 1px; background: var(--fg-dim); }
+
+  /* N-05 · Index mark */
+  .s-idx { display: inline-flex; align-items: baseline; gap: 8px; font-family: var(--font-mono); font-size: 13px; color: var(--fg); }
+  .s-idx .num { color: var(--accent); }
+  .s-idx .line { display: inline-block; width: 32px; height: 1px; background: var(--fg-dim); }
+  .s-idx .label { color: var(--fg-dim); letter-spacing: 0.12em; text-transform: uppercase; font-size: 11px; }
+
+  /* N-06 · Ellipsis */
+  .s-ellip { display: flex; gap: 6px; align-items: center; }
+  .s-ellip span { width: 3px; height: 3px; background: var(--fg-dim); border-radius: 50%; }
+  .s-ellip span.peak { background: var(--accent); width: 4px; height: 4px; }
+
+  /* KIT 4 · STAMPS & TAGS */
+
+  /* T-01 · Corner-cut tag (solid) */
+  .s-tag {
+    display: inline-flex; flex-direction: column; gap: 2px;
+    padding: 10px 18px 14px 22px;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--font-mono); letter-spacing: 0.04em;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+  }
+  .s-tag .kicker { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; }
+  .s-tag .label { font-size: 12px; font-weight: 500; }
+  .s-tag.ghost { background: transparent; color: var(--fg); border: 1px solid var(--border-strong); }
+
+  /* T-02 · Rotated stamp */
+  .s-stamp {
+    display: inline-flex; flex-direction: column;
+    padding: 8px 14px; background: var(--accent); color: var(--bg);
+    font-family: var(--font-mono); letter-spacing: 0.14em; font-size: 10px;
+    text-transform: uppercase; text-align: center;
+    transform: rotate(-6deg);
+    box-shadow: 0 0 0 1.5px var(--bg) inset, 0 0 0 2.5px var(--accent) inset;
+  }
+  .s-stamp .top { letter-spacing: 0.2em; }
+  .s-stamp .bot { font-size: 8px; opacity: 0.85; margin-top: 2px; letter-spacing: 0.1em; }
+
+  /* T-03 · Side flag */
+  .s-flag { display: flex; align-items: center; }
+  .s-flag .strip {
+    background: var(--accent); color: var(--bg);
+    padding: 14px 8px; font-family: var(--font-mono); font-size: 9px;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .s-flag .body {
+    padding: 16px 18px; border: 1px solid var(--border); border-left: none; background: var(--bg);
+    font-family: var(--font-serif); font-size: 16px; color: var(--fg); font-weight: 500; line-height: 1.2;
+  }
+
+  /* T-04 · Polaroid frame */
+  .s-polaroid {
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 8px 8px 28px; box-shadow: 0 2px 6px -2px oklch(0.21 0.04 50 / 0.15);
+    transform: rotate(-2deg); position: relative;
+  }
+  .s-polaroid .img {
+    width: 80px; height: 70px; background: var(--bg-card);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim);
+  }
+  .s-polaroid .cap {
+    position: absolute; bottom: 6px; left: 0; right: 0; text-align: center;
+    font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase;
+  }
+
+  /* T-05 · Tab marker */
+  .s-tab {
+    border: 1px solid var(--border); background: var(--bg);
+    padding: 18px 22px 14px; position: relative;
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg); letter-spacing: 0.06em;
+    min-width: 110px;
+  }
+  .s-tab::before {
+    content: ""; position: absolute; top: -8px; left: 16px;
+    width: 36px; height: 8px; background: var(--accent);
+    clip-path: polygon(0 100%, 0 0, 100% 0, 88% 100%);
+  }
+  .s-tab .label { color: var(--fg-dim); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .s-tab .val { color: var(--fg); margin-top: 6px; font-size: 14px; font-family: var(--font-serif); font-weight: 500; letter-spacing: -0.01em; }
+
+  /* T-06 · Version stamp */
+  .s-vstamp {
+    display: inline-flex; flex-direction: column; align-items: flex-start;
+    padding: 8px 12px; border: 1px dashed var(--border-strong);
+    font-family: var(--font-mono); font-size: 9px; color: var(--fg-dim);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--bg);
+  }
+  .s-vstamp .v { color: var(--accent); font-size: 13px; letter-spacing: 0.06em; font-weight: 500; }
+  .s-vstamp .d { margin-top: 2px; }
+
+  /* KIT 5 · AMBIENT TEXTURE */
+
+  .ambient-tile { width: 100%; height: 100%; position: relative; }
+
+  /* A-01 · Paper grain */
+  .s-grain {
+    width: 100%; height: 100%;
+    background-color: var(--bg-card);
+    background-image:
+      radial-gradient(circle at 20% 30%, oklch(0.21 0.04 50 / 0.04) 0.5px, transparent 1px),
+      radial-gradient(circle at 70% 60%, oklch(0.21 0.04 50 / 0.06) 0.5px, transparent 1px),
+      radial-gradient(circle at 40% 80%, oklch(0.21 0.04 50 / 0.03) 0.5px, transparent 1px);
+    background-size: 4px 4px, 7px 7px, 11px 11px;
+  }
+  .s-grain .marker {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-family: var(--font-mono); font-size: 10px; color: var(--fg-dim);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    background: var(--bg-card); padding: 4px 10px;
+  }
+
+  /* A-02 · Lattice bg */
+  .s-latbg {
+    width: 100%; height: 100%; background: var(--bg-elev);
+    background-image: radial-gradient(circle, var(--fg-dim) 1px, transparent 1.5px);
+    background-size: 16px 16px;
+    background-position: center;
+    opacity: 1;
+    position: relative;
+  }
+  .s-latbg::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, var(--bg-elev) 90%);
+  }
+
+  /* A-03 · Topo contour */
+  .s-topo { width: 100%; height: 100%; background: var(--bg-elev); position: relative; overflow: hidden; }
+  .s-topo svg { width: 100%; height: 100%; }
+
+  /* A-04 · Diagonal hatch */
+  .s-hatch {
+    width: 100%; height: 100%;
+    background-color: var(--bg-elev);
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--fg-dim) 0,
+      var(--fg-dim) 0.5px,
+      transparent 0.5px,
+      transparent 12px
+    );
+    opacity: 0.7;
+  }
+
+  /* A-05 · Edge vignette */
+  .s-vignette {
+    width: 100%; height: 100%; background: var(--bg-card);
+    box-shadow:
+      inset 24px 24px 24px -16px oklch(0.21 0.04 50 / 0.08),
+      inset -24px -24px 24px -16px oklch(0.21 0.04 50 / 0.08);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .s-vignette span { font-family: var(--font-mono); font-size: 10px; color: var(--fg-dim); letter-spacing: 0.14em; text-transform: uppercase; }
+
+  /* A-06 · Grid paper */
+  .s-grid-paper {
+    width: 100%; height: 100%; background: var(--bg-card);
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 1;
+    position: relative;
+  }
+  .s-grid-paper::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 60% 40%, oklch(0.46 0.16 42 / 0.18), transparent 50%);
+  }
+
+  /* USAGE GALLERY */
+  .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  @media (max-width: 800px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+  .gallery-card {
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .gallery-stage { padding: 36px 32px; min-height: 220px; background: var(--bg); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .gallery-stage.lab { background: var(--bg-card); }
+  .gallery-foot { padding: 16px 22px 18px; border-top: 1px dashed var(--border); font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); line-height: 1.6; }
+  .gallery-foot strong { color: var(--fg); font-weight: 500; }
+  .gallery-foot code { color: var(--accent); }
+
+  /* Gallery example: section header with bracket + index mark */
+  .ex-header { display: flex; align-items: baseline; gap: 24px; }
+  .ex-header .left { display: flex; align-items: baseline; gap: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; }
+  .ex-header .left .num { color: var(--accent); }
+  .ex-header .left .line { width: 32px; height: 1px; background: var(--fg-dim); display: inline-block; }
+  .ex-header h3 { font-family: var(--font-serif); font-size: 32px; font-weight: 500; letter-spacing: -0.02em; margin: 0; }
+  .ex-header h3 .accent { color: var(--accent); }
+
+  /* Gallery example: stamp + footer corner */
+  .ex-corner { width: 100%; position: relative; min-height: 160px; }
+  .ex-corner .crop { position: absolute; }
+  .ex-corner .crop::before, .ex-corner .crop::after, .ex-corner .crop > i, .ex-corner .crop > b {
+    content: ""; position: absolute; width: 10px; height: 10px;
+  }
+  .ex-corner .crop.tl::before { top: 0; left: 0; border-top: 1px solid var(--fg-dim); border-left: 1px solid var(--fg-dim); }
+  .ex-corner .crop.br::before { bottom: 0; right: 0; border-bottom: 1px solid var(--fg-dim); border-right: 1px solid var(--fg-dim); }
+  .ex-corner .crop.tl { top: 0; left: 0; width: 10px; height: 10px; }
+  .ex-corner .crop.br { bottom: 0; right: 0; width: 10px; height: 10px; }
+
+  /* Footer */
+  .foot { padding: 32px 0 56px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+  .foot .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .foot a { color: var(--fg-dim); transition: color 0.15s ease; }
+  .foot a:hover { color: var(--accent); }
+  .foot .accent { color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="variant-strip">
+  <div class="shell row">
+    <span><strong>Nick Fraser</strong> // shape library</span>
+    <span>v1.0 · <span class="accent">five kits · thirty shapes</span></span>
+  </div>
+</div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero-block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span></span><span></span>
+          <span></span><span class="peak"></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <span><span class="marker-num">00</span> / shape library</span>
+      </div>
+
+      <div class="h-eyebrow">flair, without slop</div>
+      <h1 class="h-title">Thirty motifs you can drop in <span class="accent">anywhere a page feels too quiet</span>.</h1>
+      <p class="h-sub">Every shape is derived from the existing lattice / hairline / corner-cut language. Use them sparingly: one motif per region, never more than two on a single page. If a shape isn't earning its space, delete it. The point is restraint, not decoration for its own sake.</p>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num"><span class="accent">5</span> kits</span>
+          <span class="hero-stat-key">organised by job</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">30 shapes</span>
+          <span class="hero-stat-key">each named + coded</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">0 new colors</span>
+          <span class="hero-stat-key">paper · ink · rust only</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       KIT 1 · PRINTER'S MARKS
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span class="peak"></span><span></span>
+          <span class="peak"></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span>
+        </div>
+        <span><span class="marker-num">01</span> / printer's marks</span>
+      </div>
+
+      <div class="h-eyebrow">letterpress + production language</div>
+      <h2 class="h-title">Marks that say <span class="accent">"this was made"</span>.</h2>
+      <p class="h-sub">Crop corners, register marks, scale rulers. Borrowed from print production. They make a page feel like a physical artifact, not a div tree. Use them at page edges, section boundaries, and document corners.</p>
+
+      <div class="shape-grid" style="margin-top: 40px;">
+
+        <div class="shape-tile">
+          <div class="shape-preview"><div class="s-crop"><i></i><b></b></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">crop corner <span class="shape-code">M-01</span></span>
+            <span class="shape-use">page edges, photo frames, hero bounding</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview"><div class="s-register"></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">register mark <span class="shape-code">M-02</span></span>
+            <span class="shape-use">section anchors, footer corners, alignment</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-ruler">
+              <div class="tick" style="left:0;"></div>
+              <div class="tick major" style="left:14px;"></div>
+              <div class="tick" style="left:28px;"></div>
+              <div class="tick" style="left:42px;"></div>
+              <div class="tick major" style="left:56px;"></div>
+              <div class="tick" style="left:70px;"></div>
+              <div class="tick" style="left:84px;"></div>
+              <div class="tick major" style="left:98px;"></div>
+              <div class="tick" style="left:112px;"></div>
+              <div class="tick" style="left:126px;"></div>
+              <div class="tick major" style="left:140px;"></div>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">scale ruler <span class="shape-code">M-03</span></span>
+            <span class="shape-use">progress bars, scroll indicators, range axes</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-bracket">
+              <span class="bar"></span><span>section</span><span class="bar"></span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">section bracket <span class="shape-code">M-04</span></span>
+            <span class="shape-use">labels inside hairlines, group titles</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-ftick"><i></i><b></b></div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">frame ticks <span class="shape-code">M-05</span></span>
+            <span class="shape-use">card edges, "this is a region" markers</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-trim"><i></i><b></b><span class="dim">96 × 72</span></div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">trim marks <span class="shape-code">M-06</span></span>
+            <span class="shape-use">spec callouts, dimension annotations</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       KIT 2 · LATTICE FIELD VARIANTS
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span class="peak"></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span>
+          <span class="peak"></span><span></span><span class="peak"></span>
+        </div>
+        <span><span class="marker-num">02</span> / lattice field variants</span>
+      </div>
+
+      <div class="h-eyebrow">the hero motif, six configurations</div>
+      <h2 class="h-title">Different ways to use <span class="accent">the same dot grid</span>.</h2>
+      <p class="h-sub">The 16×16 ripple is the brand mark. These are its quiet siblings: smaller, denser, rotated, or scattered. Use them as backgrounds, dividers, or corner anchors. Always keep at least one accent dot in each variant.</p>
+
+      <div class="shape-grid" style="margin-top: 40px;">
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-dense">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span>
+              <span></span><span></span><span class="peak"></span><span class="peak"></span><span class="peak"></span><span></span><span></span>
+              <span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">dense lattice <span class="shape-code">L-01</span></span>
+            <span class="shape-use">card backgrounds, hero bg pattern</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-perf">
+              <span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">perforation strip <span class="shape-code">L-02</span></span>
+            <span class="shape-use">section dividers, footer top edge</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview" style="overflow:visible">
+            <div class="s-diamond">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span class="peak"></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">diamond rotation <span class="shape-code">L-03</span></span>
+            <span class="shape-use">alt section bg, contrast with main lattice</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-anchor">
+              <div class="corner tl"><span class="peak"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="corner tr"><span></span><span></span><span class="peak"></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="corner bl"><span></span><span></span><span></span><span></span><span></span><span></span><span class="peak"></span><span></span><span></span></div>
+              <div class="corner br"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="peak"></span></div>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">corner anchors <span class="shape-code">L-04</span></span>
+            <span class="shape-use">framing a content region, hero containers</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview"><div class="s-grad"><canvas data-shape="gradient" width="280" height="160"></canvas></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">gradient density <span class="shape-code">L-05</span></span>
+            <span class="shape-use">spotlight zones, "look here" hint</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview"><div class="s-scatter" id="scatter"></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">scattered <span class="shape-code">L-06</span></span>
+            <span class="shape-use">organic textures, looser hero backgrounds</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       KIT 3 · NOTATION & ANNOTATION
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span class="peak"></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span class="peak"></span>
+        </div>
+        <span><span class="marker-num">03</span> / notation</span>
+      </div>
+
+      <div class="h-eyebrow">marginalia and annotation marks</div>
+      <h2 class="h-title">Tiny notation that says <span class="accent">"someone read this carefully"</span>.</h2>
+      <p class="h-sub">Footnote daggers, margin rules, index marks. Borrowed from edited books and engineering notebooks. Use them in long-form copy, project case studies, and anywhere a piece of text wants a sidebar without breaking flow.</p>
+
+      <div class="shape-grid" style="margin-top: 40px;">
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-foot">
+              <span class="item">claim<span class="marker">*</span></span>
+              <span class="item">caveat<span class="marker">†</span></span>
+              <span class="item">aside<span class="marker">‡</span></span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">footnote markers <span class="shape-code">N-01</span></span>
+            <span class="shape-use">caveats in resume bullets, project metrics</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-margin">
+              <div class="bar"></div>
+              <div class="note">Diagnosed by reading the compiled JS and switching to $effect-based wiring.</div>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">margin note rule <span class="shape-code">N-02</span></span>
+            <span class="shape-use">sidebar callouts in case studies, build notes</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-sqbr">
+              <span class="br">[</span><span class="word">note</span><span class="br">]</span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">square brackets <span class="shape-code">N-03</span></span>
+            <span class="shape-use">inline labels, status tags inside prose</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-arrows">
+              <div class="row"><span class="arrow">↗</span><span class="tail"></span><span>visit</span></div>
+              <div class="row"><span class="arrow">→</span><span class="tail"></span><span>next</span></div>
+              <div class="row"><span class="arrow">↳</span><span class="tail"></span><span>aside</span></div>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">arrow notation <span class="shape-code">N-04</span></span>
+            <span class="shape-use">link labels, navigation, "see also"</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-idx">
+              <span class="num">01</span><span class="line"></span><span class="label">about</span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">index mark <span class="shape-code">N-05</span></span>
+            <span class="shape-use">already in your section-num. Codify formally.</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-ellip">
+              <span></span><span></span><span class="peak"></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">ellipsis divider <span class="shape-code">N-06</span></span>
+            <span class="shape-use">soft section breaks inside long-form copy</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       KIT 4 · STAMPS & TAGS
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span></span><span></span>
+          <span class="peak"></span><span class="peak"></span><span class="peak"></span>
+          <span></span><span></span><span></span>
+        </div>
+        <span><span class="marker-num">04</span> / stamps + tags</span>
+      </div>
+
+      <div class="h-eyebrow">applied labels, with character</div>
+      <h2 class="h-title">Things that look <span class="accent">stuck onto the page</span>.</h2>
+      <p class="h-sub">Corner-cut tags, rotated stamps, side flags. Each one breaks the grid in a deliberate, controlled way. Use at most one of these per region; they're meant to pull the eye, which only works if they're rare.</p>
+
+      <div class="shape-grid" style="margin-top: 40px;">
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-tag">
+              <span class="kicker">↗ NEW</span>
+              <span class="label">3d showcase</span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">corner-cut tag <span class="shape-code">T-01</span></span>
+            <span class="shape-use">live links, new-feature CTAs (already in use)</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-stamp">
+              <span class="top">shipped</span>
+              <span class="bot">14.05.26</span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">rotated stamp <span class="shape-code">T-02</span></span>
+            <span class="shape-use">project status badges, "delivered" mark</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-flag">
+              <span class="strip">live</span>
+              <span class="body">Tally</span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">side flag <span class="shape-code">T-03</span></span>
+            <span class="shape-use">card labels, vertical category tags</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-polaroid">
+              <div class="img">img</div>
+              <div class="cap">tally · v1.0</div>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">polaroid frame <span class="shape-code">T-04</span></span>
+            <span class="shape-use">project thumbnails, blog post heroes</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-tab">
+              <span class="label">infra cost</span>
+              <span class="val">$0/mo</span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">tab marker <span class="shape-code">T-05</span></span>
+            <span class="shape-use">key metrics, file-folder section labels</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview">
+            <div class="s-vstamp">
+              <span class="v">v1.0</span>
+              <span class="d">14.05.2026</span>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">version stamp <span class="shape-code">T-06</span></span>
+            <span class="shape-use">footer signatures, document versioning</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       KIT 5 · AMBIENT TEXTURE
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span class="peak"></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span class="peak"></span>
+        </div>
+        <span><span class="marker-num">05</span> / ambient texture</span>
+      </div>
+
+      <div class="h-eyebrow">backgrounds that earn their space</div>
+      <h2 class="h-title">Texture, never <span class="accent">decoration</span>.</h2>
+      <p class="h-sub">Page or card backgrounds. Each one is meant to be felt more than seen. Keep opacity low (3 to 15%). If a user notices the texture more than the content, dial it back.</p>
+
+      <div class="shape-grid" style="margin-top: 40px;">
+
+        <div class="shape-tile">
+          <div class="shape-preview" style="padding:0;"><div class="s-grain"><span class="marker">paper grain</span></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">paper grain <span class="shape-code">A-01</span></span>
+            <span class="shape-use">page bg subtle noise, "made of paper" feel</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview" style="padding:0;"><div class="s-latbg"></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">lattice bg <span class="shape-code">A-02</span></span>
+            <span class="shape-use">hero backgrounds, vignetted card stages</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview" style="padding:0;">
+            <div class="s-topo">
+              <svg viewBox="0 0 200 120" preserveAspectRatio="none">
+                <path d="M 0 80 Q 50 60 100 80 T 200 80" fill="none" stroke="var(--fg-dim)" stroke-width="0.6" opacity="0.4" />
+                <path d="M 0 70 Q 50 50 100 70 T 200 70" fill="none" stroke="var(--fg-dim)" stroke-width="0.6" opacity="0.35" />
+                <path d="M 0 60 Q 50 40 100 60 T 200 60" fill="none" stroke="var(--fg-dim)" stroke-width="0.6" opacity="0.3" />
+                <path d="M 0 50 Q 50 30 100 50 T 200 50" fill="none" stroke="var(--accent)" stroke-width="0.8" opacity="0.5" />
+                <path d="M 0 40 Q 50 20 100 40 T 200 40" fill="none" stroke="var(--fg-dim)" stroke-width="0.6" opacity="0.25" />
+                <path d="M 0 30 Q 50 10 100 30 T 200 30" fill="none" stroke="var(--fg-dim)" stroke-width="0.6" opacity="0.2" />
+              </svg>
+            </div>
+          </div>
+          <div class="shape-meta">
+            <span class="shape-name">topo contour <span class="shape-code">A-03</span></span>
+            <span class="shape-use">section transitions, contemplative bg</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview" style="padding:0;"><div class="s-hatch"></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">diagonal hatch <span class="shape-code">A-04</span></span>
+            <span class="shape-use">"in progress" zones, locked / wip states</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview" style="padding:0;"><div class="s-vignette"><span>vignette</span></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">edge vignette <span class="shape-code">A-05</span></span>
+            <span class="shape-use">modal backgrounds, focus framing</span>
+          </div>
+        </div>
+
+        <div class="shape-tile">
+          <div class="shape-preview" style="padding:0;"><div class="s-grid-paper"></div></div>
+          <div class="shape-meta">
+            <span class="shape-name">grid paper <span class="shape-code">A-06</span></span>
+            <span class="shape-use">already in proj-placeholder. Promote system-wide.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       USAGE GALLERY · how to combine
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span class="peak"></span><span class="peak"></span><span class="peak"></span>
+          <span class="peak"></span><span></span><span class="peak"></span>
+          <span class="peak"></span><span class="peak"></span><span class="peak"></span>
+        </div>
+        <span><span class="marker-num">06</span> / combine, sparingly</span>
+      </div>
+
+      <div class="h-eyebrow">three example arrangements</div>
+      <h2 class="h-title">One motif per region. <span class="accent">Never more than two</span>.</h2>
+      <p class="h-sub">The shapes are tools, not decorations. Below are three example arrangements showing how to combine kit elements without crowding. Notice that each example uses one ambient texture, one structural mark, and at most one accent stamp.</p>
+
+      <div class="gallery-grid">
+
+        <!-- Example A: section header -->
+        <div class="gallery-card">
+          <div class="gallery-stage">
+            <div class="ex-header">
+              <div class="left">
+                <span class="num">02</span>
+                <span class="line"></span>
+              </div>
+              <h3>Brisbane <span class="accent">clinicians</span><br/>need real tools.</h3>
+            </div>
+          </div>
+          <div class="gallery-foot">
+            <strong>section header</strong> · uses <code>N-05</code> (index mark) + serif pitch. No texture, no stamp. The mark earns its space because the headline carries the rest.
+          </div>
+        </div>
+
+        <!-- Example B: project card with stamp -->
+        <div class="gallery-card">
+          <div class="gallery-stage lab">
+            <div style="background:var(--bg); border: 1px solid var(--border); padding: 24px; min-width: 220px; position: relative;">
+              <div style="font-family:var(--font-mono);font-size:10px;color:var(--fg-dim);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;">project · 2026</div>
+              <h4 style="font-family:var(--font-serif);font-size:24px;font-weight:500;margin:0 0 4px;letter-spacing:-0.015em;">Tally</h4>
+              <p style="margin:0;font-size:13px;color:var(--fg-muted);line-height:1.5;">MBS billing copilot for paediatric ortho.</p>
+              <div class="s-stamp" style="position:absolute; top:-12px; right:-12px; transform: rotate(8deg); font-size: 9px; padding: 6px 10px;">
+                <span class="top">shipped</span>
+                <span class="bot">v1.0</span>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-foot">
+            <strong>project card</strong> · uses <code>T-02</code> (rotated stamp) pinned to a clean card. Stamp is the only flourish; everything else stays disciplined.
+          </div>
+        </div>
+
+        <!-- Example C: footer with crop corners -->
+        <div class="gallery-card">
+          <div class="gallery-stage">
+            <div style="width: 100%; max-width: 360px; position: relative; padding: 24px;">
+              <div class="s-crop" style="position:absolute; inset: 0; width: auto; height: auto;"><i></i><b></b></div>
+              <div style="font-family:var(--font-mono);font-size:11px;color:var(--fg-dim);letter-spacing:0.14em;text-transform:uppercase;text-align:center;">
+                <div style="margin-bottom: 14px;">↳ end of file</div>
+                <div class="s-ellip" style="justify-content:center;">
+                  <span></span><span></span><span class="peak"></span><span></span><span></span>
+                </div>
+                <div style="margin-top: 14px; color: var(--accent);">v1.0 · 14.05.2026</div>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-foot">
+            <strong>footer mark</strong> · uses <code>M-01</code> (crop corners) framing <code>N-06</code> (ellipsis divider). Two marks combine to say "end of document" without writing it.
+          </div>
+        </div>
+
+        <!-- Example D: callout with margin rule -->
+        <div class="gallery-card">
+          <div class="gallery-stage">
+            <div class="s-margin" style="max-width: 360px;">
+              <div class="bar"></div>
+              <div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--fg-dim);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;">build note <span style="color:var(--accent)">*</span></div>
+                <p style="font-family:var(--font-serif);font-style:italic;font-size:16px;color:var(--fg);margin:0;line-height:1.5;">"Caught a Svelte 5 production-build bug where Vite was tree-shaking onMount callbacks."</p>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-foot">
+            <strong>margin callout</strong> · uses <code>N-02</code> (margin rule) + <code>N-01</code> (footnote dagger). Italic serif pulls the eye; mono label grounds it.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       USAGE RULES
+       ============================================ -->
+  <section class="block">
+    <div class="shell">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span class="peak"></span><span></span><span></span>
+          <span></span><span class="peak"></span><span></span>
+          <span></span><span></span><span class="peak"></span>
+        </div>
+        <span><span class="marker-num">07</span> / rules</span>
+      </div>
+
+      <div class="h-eyebrow">when in doubt, fewer</div>
+      <h2 class="h-title">A shape that doesn't earn its space is <span class="accent">noise</span>.</h2>
+
+      <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div style="padding: 24px 26px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 8px; border-left: 2px solid var(--accent);">
+          <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;">do</div>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--accent);font-family:var(--font-mono);">→</span><span>Use one ambient texture per region (page, hero, or card). Layering textures muddies the page.</span></li>
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--accent);font-family:var(--font-mono);">→</span><span>Pick one accent shape per page (a tag, a stamp, or a side flag). Never two.</span></li>
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--accent);font-family:var(--font-mono);">→</span><span>Lattice variants always keep at least one peak dot in rust. The peak is the brand signature.</span></li>
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--accent);font-family:var(--font-mono);">→</span><span>If a shape needs to be explained, delete it.</span></li>
+          </ul>
+        </div>
+
+        <div style="padding: 24px 26px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 8px; border-left: 2px solid var(--border-strong);">
+          <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;color:var(--fg-dim);text-transform:uppercase;margin-bottom:14px;">don't</div>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--fg-dim);font-family:var(--font-mono);">✕</span><span>Don't stack shapes from three kits in one region. That's craft theatre, not design.</span></li>
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--fg-dim);font-family:var(--font-mono);">✕</span><span>Don't recolor lattice peaks to anything other than rust.</span></li>
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--fg-dim);font-family:var(--font-mono);">✕</span><span>Don't animate ambient textures. They're meant to feel like paper, not screensavers.</span></li>
+            <li style="display:flex;gap:12px;font-size:14px;color:var(--fg);line-height:1.5;"><span style="color:var(--fg-dim);font-family:var(--font-mono);">✕</span><span>Don't put a corner-cut tag on every card. Once it's everywhere, it's nowhere.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="shell row">
+      <span>shape library v1.0 · <span class="accent">5 kits · 30 shapes</span></span>
+      <span>
+        <a href="style-guide.html">style guide</a> ·
+        <a href="https://nickwfraser.dev">nickwfraser.dev</a> ·
+        <a href="mailto:nickwfraser@gmail.com">nickwfraser@gmail.com</a>
+      </span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // L-05 gradient density: dots get larger toward center
+  (function() {
+    document.querySelectorAll('canvas[data-shape="gradient"]').forEach(canvas => {
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const COLS = 14, ROWS = 8;
+      const cw = W / COLS, rh = H / ROWS;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const dx = c - (COLS-1)/2;
+          const dy = r - (ROWS-1)/2;
+          const dist = Math.hypot(dx, dy);
+          const max = Math.hypot(COLS/2, ROWS/2);
+          const lift = 1 - dist/max;
+          const radius = 1 + lift * 4;
+          const cx = c * cw + cw/2;
+          const cy = r * rh + rh/2;
+          if (lift > 0.6) ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+          else ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--fg-dim').trim();
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius, 0, Math.PI*2);
+          ctx.fill();
+        }
+      }
+    });
+  })();
+
+  // L-06 scattered: deterministic random placement
+  (function() {
+    const el = document.getElementById('scatter');
+    if (!el) return;
+    // Deterministic seed for repeatability
+    let seed = 42;
+    const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const W = el.offsetWidth || 140;
+    const H = el.offsetHeight || 80;
+    const COUNT = 32;
+    for (let i = 0; i < COUNT; i++) {
+      const s = document.createElement('span');
+      s.style.left = (rand() * (W - 6)) + 'px';
+      s.style.top = (rand() * (H - 6)) + 'px';
+      if (rand() < 0.12) s.classList.add('peak');
+      const size = 2 + rand() * 2;
+      s.style.width = s.style.height = size + 'px';
+      el.appendChild(s);
+    }
+  })();
+</script>
+
+</body>
+</html>

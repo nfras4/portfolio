@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Texture Options // 4 variants</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: oklch(0.86 0.025 65); color: var(--fg); font-family: var(--font-sans); font-size: 15px; -webkit-font-smoothing: antialiased; }
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  .top {
+    padding: 32px 0; border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+    color: var(--fg-dim); text-transform: uppercase; background: var(--bg);
+  }
+  .top .row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .top strong { color: var(--fg); font-weight: 500; }
+  .top .accent { color: var(--accent); }
+  .top .h { font-family: var(--font-serif); font-size: 28px; font-weight: 500; letter-spacing: -0.015em; color: var(--fg); margin-top: 16px; text-transform: none; letter-spacing: -0.015em; }
+
+  /* Grid of texture tiles */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 40px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .tile {
+    position: relative;
+    min-height: 520px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  .tile-body {
+    flex: 1; padding: 48px 40px 56px;
+    position: relative;
+    background-color: var(--bg);
+  }
+
+  .tile-label {
+    position: absolute; top: 16px; right: 16px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em;
+    color: var(--bg); background: var(--accent);
+    padding: 4px 10px; text-transform: uppercase;
+    z-index: 5;
+  }
+
+  /* Section heading inside each tile (same as live portfolio) */
+  .sn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; display: inline-flex; align-items: baseline; gap: 14px; margin: 0 0 32px; }
+  .sn-num { color: var(--accent); font-weight: 500; letter-spacing: 0.08em; }
+  .sn-line { width: 32px; height: 1px; background: var(--fg-dim); display: inline-block; transform: translateY(-3px); }
+  .sn-label { color: var(--fg-dim); }
+
+  .pitch { font-family: var(--font-serif); font-size: 32px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 500; margin: 0 0 24px; max-width: 18ch; text-wrap: balance; position: relative; z-index: 2; }
+  .pitch .accent { color: var(--accent); }
+  .sub { font-size: 14px; color: var(--fg-muted); max-width: 50ch; line-height: 1.6; margin: 0; position: relative; z-index: 2; }
+
+  /* Perforation strip (real portfolio pattern) */
+  .perf {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 6px;
+    background:
+      radial-gradient(circle at 50% 50%, var(--accent) 0, var(--accent) 1.6px, transparent 2px) center / 200px 6px no-repeat,
+      radial-gradient(circle, var(--fg-dim) 0, var(--fg-dim) 1.1px, transparent 1.5px) center / 12px 6px repeat-x;
+    opacity: 0.9;
+  }
+
+  /* Tile foot */
+  .tile-foot {
+    padding: 14px 20px 16px;
+    background: var(--bg-elev);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+  .tile-foot strong { color: var(--fg); font-weight: 500; }
+  .tile-foot code { color: var(--accent); font-size: 11px; }
+
+  /* ============================================
+     TEXTURE A · LATTICE BG (low-opacity dot grid)
+     ============================================ */
+  .tex-a .tile-body {
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, oklch(0.46 0.05 60 / 0.32) 0.9px, transparent 1.4px);
+    background-size: 28px 28px;
+    background-position: center center;
+  }
+
+  /* ============================================
+     TEXTURE B · GRID PAPER (engineering notebook)
+     ============================================ */
+  .tex-b .tile-body {
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(oklch(0.78 0.04 70 / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.78 0.04 70 / 0.5) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+
+  /* ============================================
+     TEXTURE C · DIAGONAL HATCH (very faint, 45°)
+     ============================================ */
+  .tex-c .tile-body {
+    background-color: var(--bg);
+    background-image: repeating-linear-gradient(
+      45deg,
+      oklch(0.46 0.05 60 / 0.18) 0,
+      oklch(0.46 0.05 60 / 0.18) 0.6px,
+      transparent 0.6px,
+      transparent 8px
+    );
+  }
+
+  /* ============================================
+     TEXTURE D · COLUMN RULES (hairlines at fixed
+     gutters, like ruled paper margins)
+     ============================================ */
+  .tex-d .tile-body {
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(90deg,
+        transparent 0,
+        transparent calc(50% - 220px),
+        oklch(0.78 0.04 70 / 0.55) calc(50% - 220px),
+        oklch(0.78 0.04 70 / 0.55) calc(50% - 220px + 1px),
+        transparent calc(50% - 220px + 1px),
+        transparent calc(50% + 220px),
+        oklch(0.78 0.04 70 / 0.55) calc(50% + 220px),
+        oklch(0.78 0.04 70 / 0.55) calc(50% + 220px + 1px),
+        transparent calc(50% + 220px + 1px)
+      );
+  }
+
+  /* ============================================
+     CONTROL · NO TEXTURE (current state)
+     ============================================ */
+  .tex-ctrl .tile-body { background-color: var(--bg); }
+
+  .foot { padding: 24px 40px 40px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+  .foot .accent { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="shell row">
+    <span><strong>Texture options</strong> // four candidates, no sub-pixel noise</span>
+    <span><span class="accent">paper grain rejected</span> · these are the alternatives</span>
+  </div>
+  <div class="shell">
+    <div class="h">Pick a texture, or stay with control.</div>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- A · Lattice bg -->
+  <div class="tile tex-a">
+    <div class="tile-label">A · lattice bg</div>
+    <div class="tile-body">
+      <div class="sn">
+        <span class="sn-num">01</span><span class="sn-line"></span><span class="sn-label">about</span>
+      </div>
+      <h2 class="pitch">A 28px <span class="accent">dot grid</span> at low opacity.</h2>
+      <p class="sub">Direct extension of the brand mark. Reads as "this product is in a measured grid." Most coherent with the lattice DNA you already use everywhere. Dot color is dim ink at 32% alpha.</p>
+      <div class="perf"></div>
+    </div>
+    <div class="tile-foot">
+      <strong>A · lattice bg</strong> <span style="color:var(--fg-dim);">·</span> <code>28px radial-gradient grid, dim ink @ 32% alpha</code>. Pro: matches your brand mark. Con: visible enough to count as a pattern, not invisible texture.
+    </div>
+  </div>
+
+  <!-- B · Grid paper -->
+  <div class="tile tex-b">
+    <div class="tile-label">B · grid paper</div>
+    <div class="tile-body">
+      <div class="sn">
+        <span class="sn-num">02</span><span class="sn-line"></span><span class="sn-label">about</span>
+      </div>
+      <h2 class="pitch"><span class="accent">Engineering</span> notebook ruling.</h2>
+      <p class="sub">Crosshatch of 1px hairlines forming 48px squares. Already in use on your project image placeholders. Promoting it page-wide makes the whole site feel like a draft sheet under the content.</p>
+      <div class="perf"></div>
+    </div>
+    <div class="tile-foot">
+      <strong>B · grid paper</strong> <span style="color:var(--fg-dim);">·</span> <code>48px linear-gradient crosshatch, border @ 50% alpha</code>. Pro: ties to existing placeholder style. Con: strongest of the four; might fight the type.
+    </div>
+  </div>
+
+  <!-- C · Diagonal hatch -->
+  <div class="tile tex-c">
+    <div class="tile-label">C · diagonal hatch</div>
+    <div class="tile-body">
+      <div class="sn">
+        <span class="sn-num">03</span><span class="sn-line"></span><span class="sn-label">about</span>
+      </div>
+      <h2 class="pitch">45° hatching, <span class="accent">very faint</span>.</h2>
+      <p class="sub">Repeating linear-gradient at 45°, 8px pitch, sub-pixel line width, low opacity. Reads more as "atmosphere" than as a pattern. Stable on scroll, no moiré because the lines are regular and aligned to pixels.</p>
+      <div class="perf"></div>
+    </div>
+    <div class="tile-foot">
+      <strong>C · diagonal hatch</strong> <span style="color:var(--fg-dim);">·</span> <code>repeating-linear-gradient 45°, 8px pitch, 18% alpha</code>. Pro: invisible-feeling. Con: still texture-y; might also feel funny if grain did.
+    </div>
+  </div>
+
+  <!-- D · Column rules -->
+  <div class="tile tex-d">
+    <div class="tile-label">D · column rules</div>
+    <div class="tile-body">
+      <div class="sn">
+        <span class="sn-num">04</span><span class="sn-line"></span><span class="sn-label">about</span>
+      </div>
+      <h2 class="pitch">Two <span class="accent">vertical hairlines</span>, marking the content gutter.</h2>
+      <p class="sub">Not a texture. Two 1px verticals at the left and right edges of the 1180px shell, running the full page height. Reads as ruled paper margins. Structural, not decorative. Zero pattern energy.</p>
+      <div class="perf"></div>
+    </div>
+    <div class="tile-foot">
+      <strong>D · column rules</strong> <span style="color:var(--fg-dim);">·</span> <code>two 1px lines at shell edges, fixed bg</code>. Pro: most disciplined, feels like the rest of your system. Con: not really texture; if you want surface interest, this won't add it.
+    </div>
+  </div>
+
+  <!-- Control: no texture -->
+  <div class="tile tex-ctrl" style="grid-column: span 2;">
+    <div class="tile-label" style="background:var(--fg-dim);">ctrl · no texture</div>
+    <div class="tile-body" style="min-height: 220px; padding: 36px 40px 48px;">
+      <div class="sn">
+        <span class="sn-num">00</span><span class="sn-line"></span><span class="sn-label">control</span>
+      </div>
+      <h2 class="pitch" style="font-size: 28px;">Current state: <span class="accent">clean paper</span>, no texture.</h2>
+      <p class="sub">For reference. This is what the live portfolio looks like now after the paper-grain revert. If none of A-D feel right, this is fine. Restraint is a valid choice.</p>
+      <div class="perf"></div>
+    </div>
+    <div class="tile-foot">
+      <strong>ctrl</strong> <span style="color:var(--fg-dim);">·</span> <code>background: var(--bg)</code>. Nothing layered. Lowest noise, also the current default.
+    </div>
+  </div>
+
+</div>
+
+<div class="foot shell">
+  pick one of <span class="accent">A · B · C · D · ctrl</span> and I promote it. Or describe what's missing and I'll iterate.
+</div>
+
+</body>
+</html>

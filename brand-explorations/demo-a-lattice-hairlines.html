@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Brand // Variant A — Lattice + Hairlines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --accent-soft: oklch(0.46 0.16 42 / 0.14);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; -webkit-font-smoothing: antialiased; }
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  /* Top variant strip */
+  .variant-strip { border-bottom: 1px solid var(--border); padding: 14px 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; }
+  .variant-strip strong { color: var(--fg); font-weight: 500; }
+  .variant-strip .accent { color: var(--accent); }
+
+  /* Section frame */
+  .block { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  .block:last-child { border-bottom: none; }
+
+  /* Section marker — mini lattice + section num */
+  .marker { display: flex; align-items: center; gap: 18px; margin-bottom: 32px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--fg-dim); text-transform: uppercase; }
+  .marker-lattice { display: grid; grid-template-columns: repeat(3, 4px); grid-template-rows: repeat(3, 4px); gap: 4px; }
+  .marker-lattice span { width: 4px; height: 4px; background: var(--fg-dim); border-radius: 0; }
+  .marker-lattice span.peak { background: var(--accent); }
+  .marker-label { display: flex; gap: 12px; align-items: baseline; }
+  .marker-num { color: var(--fg); }
+
+  /* Hero block headline */
+  .h-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 24px; }
+  .h-title { font-family: var(--font-serif); font-size: clamp(36px, 5vw, 56px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 500; margin: 0 0 16px; text-wrap: balance; }
+  .h-title .accent { color: var(--accent); }
+  .h-sub { font-size: 16px; color: var(--fg-muted); max-width: 60ch; line-height: 1.55; margin: 0; }
+
+  /* The hero lattice */
+  .lattice-frame { margin-top: 56px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 48px; display: flex; align-items: center; justify-content: center; min-height: 460px; position: relative; overflow: hidden; }
+  .lattice-frame::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 28px 28px; opacity: 0.22; pointer-events: none;
+  }
+  #lattice { display: grid; gap: 8px; position: relative; }
+  #lattice .cell { width: 24px; height: 24px; border-radius: 2px; display: block; }
+
+  .lattice-caption { position: absolute; bottom: 16px; left: 20px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase; }
+  .lattice-spec { position: absolute; top: 16px; right: 20px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--fg-dim); text-align: right; line-height: 1.6; }
+
+  /* Shape vocabulary grid */
+  .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 56px; }
+  @media (max-width: 800px) { .vocab-grid { grid-template-columns: 1fr; } }
+
+  .card { border: 1px solid var(--border); border-radius: 12px; background: var(--bg-elev); padding: 28px; }
+  .card-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 18px; display: flex; justify-content: space-between; }
+  .card-label .id { color: var(--accent); }
+  .card-stage { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; min-height: 160px; padding: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .card-foot { margin-top: 16px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); line-height: 1.6; }
+
+  /* Corner-cut tag (the showcase-tag pattern, scaled for content) */
+  .tag-cut {
+    display: inline-flex; flex-direction: column; gap: 4px;
+    padding: 14px 22px 18px 28px;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--font-mono); letter-spacing: 0.04em;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+  }
+  .tag-cut-kicker { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; }
+  .tag-cut-label { font-size: 13px; font-weight: 500; }
+
+  .tag-cut.ghost { background: transparent; color: var(--fg); border: 1px solid var(--border-strong);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 28px)); }
+
+  /* Hairline w/ measurement */
+  .hairline-row { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .hairline { width: 64px; height: 1px; background: var(--fg-dim); position: relative; }
+  .hairline::before, .hairline::after {
+    content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--fg-dim);
+  }
+  .hairline::before { left: 0; }
+  .hairline::after { right: 0; }
+  .hairline-cap { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--fg-dim); text-transform: uppercase; }
+
+  /* Mini lattice (for icon-scale demo) */
+  .micro-lattice { display: grid; gap: 3px; }
+  .micro-lattice .dot { background: var(--fg-dim); border-radius: 50%; }
+
+  /* Color/type row */
+  .swatch-row { display: flex; gap: 12px; margin-top: 24px; }
+  .swatch { width: 56px; aspect-ratio: 1; border-radius: 4px; border: 1px solid var(--border); position: relative; }
+  .swatch-cap { position: absolute; bottom: -22px; left: 0; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--fg-dim); white-space: nowrap; }
+
+  /* Component preview */
+  .preview-row { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+  .preview-row .chip { font-family: var(--font-mono); font-size: 11px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 100px; color: var(--fg-muted); }
+  .preview-row .chip-active { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+  .preview-section-marker { display: flex; align-items: center; gap: 18px; font-family: var(--font-mono); font-size: 13px; color: var(--fg); }
+  .preview-section-marker .accent { color: var(--accent); }
+  .preview-section-marker .dim { color: var(--fg-dim); }
+
+  /* Footer */
+  .foot { padding: 32px 0 48px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+  <div class="variant-strip">
+    <div class="shell">
+      <span><strong>Nick Fraser</strong> // brand // shape language</span>
+      <span style="float:right"> variant <span class="accent">A</span> — lattice + hairlines</span>
+    </div>
+  </div>
+
+  <main class="shell">
+
+    <!-- HERO -->
+    <section class="block">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span></span><span></span>
+          <span></span><span class="peak"></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="marker-label"><span class="marker-num">00</span><span>shape language</span></div>
+      </div>
+
+      <div class="h-eyebrow">variant A · the existing system, written down</div>
+      <h1 class="h-title">The lattice is the brand mark.<br/><span class="accent">Hairlines</span> structure everything else.</h1>
+      <p class="h-sub">Your <code style="font-family:var(--font-mono);font-size:13px;color:var(--accent)">InstancedGrid</code> demo isn't a one-off scene. It's a motif. Used at three scales (icon, marker, hero) plus the existing 32px hairline before section numbers, you get a coherent visual signature without adding anything new.</p>
+
+      <div class="lattice-frame">
+        <div class="lattice-spec">
+          14 × 14 grid<br/>
+          spacing 28px<br/>
+          hue 42 → 75<br/>
+          static frame · t=0
+        </div>
+        <div id="lattice" aria-hidden="true"></div>
+        <div class="lattice-caption">hero / 1.0 / the lattice</div>
+      </div>
+    </section>
+
+    <!-- SHAPE VOCABULARY -->
+    <section class="block">
+      <div class="marker">
+        <div class="marker-lattice">
+          <span></span><span class="peak"></span><span></span>
+          <span class="peak"></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span>
+        </div>
+        <div class="marker-label"><span class="marker-num">01</span><span>vocabulary</span></div>
+      </div>
+
+      <div class="vocab-grid">
+
+        <!-- Lattice at marker scale -->
+        <div class="card">
+          <div class="card-label"><span>section marker</span><span class="id">→ S01</span></div>
+          <div class="card-stage" style="flex-direction:column;align-items:flex-start;gap:20px;justify-content:flex-start;padding:32px 28px;">
+            <div class="preview-section-marker">
+              <div class="marker-lattice">
+                <span></span><span></span><span></span>
+                <span></span><span class="peak"></span><span></span>
+                <span></span><span></span><span></span>
+              </div>
+              <span class="dim">01</span> <span>/ about</span>
+            </div>
+            <div class="preview-section-marker">
+              <div class="marker-lattice">
+                <span></span><span class="peak"></span><span></span>
+                <span class="peak"></span><span></span><span class="peak"></span>
+                <span></span><span class="peak"></span><span></span>
+              </div>
+              <span class="dim">02</span> <span>/ projects</span>
+            </div>
+            <div class="preview-section-marker">
+              <div class="marker-lattice" style="grid-template-columns:repeat(4,3px);grid-template-rows:repeat(4,3px);gap:3px;">
+                <span></span><span></span><span class="peak"></span><span></span>
+                <span></span><span class="peak"></span><span class="peak"></span><span class="peak"></span>
+                <span class="peak"></span><span class="peak"></span><span></span><span class="peak"></span>
+                <span></span><span class="peak"></span><span></span><span></span>
+              </div>
+              <span class="dim">03</span> <span>/ skills</span>
+            </div>
+          </div>
+          <div class="card-foot">3×3 default · 4×4 for hero sections · accent dots mark the ripple peak. Replaces the current 32px hairline before section nums (or coexists).</div>
+        </div>
+
+        <!-- Corner-cut tag -->
+        <div class="card">
+          <div class="card-label"><span>callout tag (corner-cut)</span><span class="id">→ T01</span></div>
+          <div class="card-stage" style="gap:20px;flex-wrap:wrap;">
+            <div class="tag-cut">
+              <span class="tag-cut-kicker">↗ NEW</span>
+              <span class="tag-cut-label">3d showcase</span>
+            </div>
+            <div class="tag-cut ghost">
+              <span class="tag-cut-kicker">spec</span>
+              <span class="tag-cut-label">v1.0 · 14.05.26</span>
+            </div>
+          </div>
+          <div class="card-foot">Re-uses your existing showcase-tag clip-path. Solid for live links, ghost for spec callouts and version stamps. One shape, two roles.</div>
+        </div>
+
+        <!-- Hairline + measurement -->
+        <div class="card">
+          <div class="card-label"><span>hairline (primary divider)</span><span class="id">→ H01</span></div>
+          <div class="card-stage" style="flex-direction:column;align-items:flex-start;gap:22px;justify-content:center;">
+            <div class="hairline-row">
+              <div class="hairline"></div>
+              <div class="hairline-cap">32px · default</div>
+            </div>
+            <div class="hairline-row">
+              <div class="hairline" style="width:128px"></div>
+              <div class="hairline-cap">128px · emphasis</div>
+            </div>
+            <div class="hairline-row">
+              <div class="hairline" style="width:64px;background:var(--accent);"></div>
+              <div class="hairline-cap" style="color:var(--accent);">accent · highlight</div>
+            </div>
+          </div>
+          <div class="card-foot">Already exists as <code style="font-family:var(--font-mono);font-size:11px">section-num::before</code>. Codify three widths (32 / 64 / 128) plus an accent variant.</div>
+        </div>
+
+        <!-- Pill chips -->
+        <div class="card">
+          <div class="card-label"><span>pill chip</span><span class="id">→ C01</span></div>
+          <div class="card-stage">
+            <div class="preview-row">
+              <span class="chip">SvelteKit 5</span>
+              <span class="chip">Cloudflare D1</span>
+              <span class="chip chip-active">live</span>
+              <span class="chip">+4</span>
+            </div>
+          </div>
+          <div class="card-foot">Already in stack chips. Adds an "active / live" variant in accent for status, deprecation, version flags.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TYPE / COLOR REFERENCE -->
+    <section class="block">
+      <div class="marker">
+        <div class="marker-lattice" style="grid-template-columns:repeat(4,3px);grid-template-rows:repeat(4,3px);gap:3px;">
+          <span></span><span></span><span class="peak"></span><span></span>
+          <span></span><span class="peak"></span><span class="peak"></span><span class="peak"></span>
+          <span class="peak"></span><span class="peak"></span><span></span><span class="peak"></span>
+          <span></span><span class="peak"></span><span></span><span></span>
+        </div>
+        <div class="marker-label"><span class="marker-num">02</span><span>tokens</span></div>
+      </div>
+
+      <div class="vocab-grid">
+        <div class="card">
+          <div class="card-label"><span>color</span><span class="id">paper + ink + rust</span></div>
+          <div class="card-stage" style="padding:32px 24px;">
+            <div class="swatch-row" style="margin-top:0;">
+              <div class="swatch" style="background:oklch(0.96 0.015 75)"><span class="swatch-cap">0.96 / 75</span></div>
+              <div class="swatch" style="background:oklch(0.93 0.022 70)"><span class="swatch-cap">0.93 / 70</span></div>
+              <div class="swatch" style="background:oklch(0.89 0.028 70)"><span class="swatch-cap">0.89 / 70</span></div>
+              <div class="swatch" style="background:oklch(0.46 0.05 60)"><span class="swatch-cap">0.46 / 60</span></div>
+              <div class="swatch" style="background:oklch(0.21 0.04 50)"><span class="swatch-cap">0.21 / 50</span></div>
+              <div class="swatch" style="background:oklch(0.46 0.16 42)"><span class="swatch-cap">0.46 / 42 ★</span></div>
+            </div>
+          </div>
+          <div class="card-foot">6 tones, one signature. Rust accent earns its weight by being the only saturated value in the system.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label"><span>type</span><span class="id">3 families</span></div>
+          <div class="card-stage" style="flex-direction:column;align-items:flex-start;gap:14px;padding:28px;">
+            <span style="font-family:var(--font-serif);font-size:32px;font-weight:500;letter-spacing:-0.02em;">Lora · display</span>
+            <span style="font-family:var(--font-sans);font-size:18px;">Inter · body & UI</span>
+            <span style="font-family:var(--font-mono);font-size:13px;letter-spacing:0.04em;color:var(--fg-muted);">JetBrains Mono · labels &amp; status</span>
+          </div>
+          <div class="card-foot">Lora for names &amp; pitches, Inter for body, JetBrains Mono for every label, number, and status line. Already implemented; just codify weights.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot shell">
+      variant A · lattice + hairlines · <span style="color:var(--accent)">a quiet, coherent extension of what you already have</span>
+    </div>
+  </main>
+
+<script>
+  // Build the static 14x14 lattice — frozen frame of the InstancedGrid at center peak.
+  // Same math as src/showcase/demos/InstancedGrid.jsx but as Gaussian peak, no time axis.
+  (function() {
+    const SIZE = 14;
+    const el = document.getElementById('lattice');
+    el.style.gridTemplateColumns = `repeat(${SIZE}, 24px)`;
+    el.style.gridTemplateRows = `repeat(${SIZE}, 24px)`;
+    for (let z = 0; z < SIZE; z++) {
+      for (let x = 0; x < SIZE; x++) {
+        const dx = x - (SIZE-1)/2;
+        const dz = z - (SIZE-1)/2;
+        const dist = Math.hypot(dx, dz);
+        // Gaussian peak at center, falloff ~SIZE/3
+        const lift = Math.exp(-(dist*dist) / (2 * (SIZE/3.4)*(SIZE/3.4)));
+        // size 0.45 → 1.0 of cell
+        const scale = 0.45 + lift * 0.55;
+        // hue interpolation from paper hue (70) at edges to rust (42) at peak
+        const hue = 70 - lift * 28;
+        // chroma ramps up at peak
+        const chroma = 0.02 + lift * 0.14;
+        // lightness drops from cream (0.85) at edge → mid (0.58) at peak
+        const L = 0.85 - lift * 0.27;
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        const inset = (1 - scale) * 12;
+        cell.style.width = (24 - inset*2) + 'px';
+        cell.style.height = (24 - inset*2) + 'px';
+        cell.style.margin = inset + 'px';
+        cell.style.background = `oklch(${L} ${chroma} ${hue})`;
+        cell.style.boxShadow = lift > 0.4 ? `0 ${lift*4}px ${lift*8}px oklch(0.46 0.16 42 / ${lift*0.2})` : 'none';
+        el.appendChild(cell);
+      }
+    }
+  })();
+</script>
+</body>
+</html>

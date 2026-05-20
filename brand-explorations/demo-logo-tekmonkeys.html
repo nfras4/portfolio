@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tek Monkeys // Banana Marks v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --accent-soft: oklch(0.46 0.16 42 / 0.14);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  .variant-strip {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.14em;
+    color: var(--fg-dim); text-transform: uppercase;
+    display: flex; justify-content: space-between; gap: 24px;
+  }
+  .variant-strip strong { color: var(--fg); font-weight: 500; }
+  .variant-strip .accent { color: var(--accent); }
+
+  .block { padding: 72px 0; border-bottom: 1px solid var(--border); }
+  .block:last-child { border-bottom: none; }
+
+  .marker { display: flex; align-items: center; gap: 18px; margin-bottom: 36px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--fg-dim); text-transform: uppercase; }
+  .marker-lattice { display: grid; grid-template-columns: repeat(3, 4px); grid-template-rows: repeat(3, 4px); gap: 4px; }
+  .marker-lattice span { width: 4px; height: 4px; background: var(--fg-dim); }
+  .marker-lattice span.peak { background: var(--accent); }
+  .marker-label { display: flex; gap: 12px; align-items: baseline; }
+  .marker-num { color: var(--fg); }
+
+  .hero-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 24px; }
+  .hero-title { font-family: var(--font-serif); font-size: clamp(32px, 4.4vw, 48px); line-height: 1.1; letter-spacing: -0.02em; font-weight: 500; margin: 0 0 16px; max-width: 22ch; }
+  .hero-title .accent { color: var(--accent); }
+  .hero-sub { font-size: 16px; color: var(--fg-muted); max-width: 64ch; line-height: 1.6; margin: 0; }
+
+  .concept-head { display: flex; justify-content: space-between; align-items: baseline; gap: 32px; margin-bottom: 18px; }
+  .concept-name { font-family: var(--font-serif); font-weight: 500; font-size: 28px; margin: 0; letter-spacing: -0.01em; }
+  .concept-id { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; }
+  .concept-note { font-size: 14.5px; color: var(--fg-muted); line-height: 1.6; max-width: 60ch; margin: 0 0 28px; }
+
+  .row-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--fg-dim); text-transform: uppercase; margin: 0 0 14px; display: flex; gap: 14px; align-items: baseline; }
+  .row-label .tick { color: var(--fg); }
+
+  .hero-render { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 56px; display: flex; align-items: center; justify-content: center; min-height: 380px; position: relative; overflow: hidden; }
+  .hero-render::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 28px 28px; opacity: 0.22; pointer-events: none;
+  }
+  .hero-render svg { position: relative; z-index: 1; }
+  .render-spec { position: absolute; top: 16px; right: 20px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--fg-dim); text-align: right; line-height: 1.6; }
+  .render-caption { position: absolute; bottom: 16px; left: 20px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase; }
+
+  .scale-ladder { margin-top: 32px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); padding: 28px; display: flex; align-items: flex-end; gap: 32px; flex-wrap: wrap; }
+  .scale-cell { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .scale-cell .px { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase; }
+  .scale-cell .mark-box { display: flex; align-items: center; justify-content: center; }
+
+  .lockup-row { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 800px) { .lockup-row { grid-template-columns: 1fr; } }
+  .lockup-card { border: 1px solid var(--border); border-radius: 8px; background: var(--bg-elev); padding: 28px; }
+  .lockup-card .lockup-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 16px; display: flex; justify-content: space-between; }
+  .lockup-card .lockup-label .id { color: var(--accent); }
+  .lockup-stage { min-height: 120px; display: flex; align-items: center; justify-content: center; gap: 18px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; }
+  .lockup-wordmark.mono { font-family: var(--font-mono); font-weight: 500; font-size: 17px; letter-spacing: 0.18em; color: var(--fg); text-transform: uppercase; line-height: 1; }
+  .lockup-wordmark.lora { font-family: var(--font-serif); font-weight: 500; font-size: 24px; letter-spacing: -0.005em; color: var(--fg); line-height: 1; font-style: italic; }
+  .lockup-wordmark .sub { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.18em; color: var(--fg-dim); font-style: normal; font-weight: 400; text-transform: uppercase; }
+
+  .invert-row { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .invert-row { grid-template-columns: 1fr; } }
+  .invert-card { border: 1px solid var(--border); border-radius: 8px; padding: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 160px; }
+  .invert-card.paper { background: var(--bg); }
+  .invert-card.kraft { background: var(--bg-card); }
+  .invert-card.ink   { background: var(--fg); }
+  .invert-card .invert-foot { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-dim); }
+  .invert-card.ink .invert-foot { color: var(--bg-elev); }
+
+  .favicon-grid { display: grid; grid-template-columns: 110px 1fr 1fr; gap: 16px; align-items: center; border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-top: 16px; background: var(--bg-elev); }
+  @media (max-width: 800px) { .favicon-grid { grid-template-columns: 1fr; } }
+  .favicon-grid .bg-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--fg-dim); text-transform: uppercase; }
+  .favicon-cell { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 14px; border-radius: 6px; }
+  .favicon-cell.paper { background: var(--bg); border: 1px solid var(--border); }
+  .favicon-cell.kraft { background: var(--bg-card); border: 1px solid var(--border); }
+  .favicon-cell.ink   { background: var(--fg); }
+  .favicon-cell .stack { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .favicon-cell .stack .px { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--fg-dim); }
+  .favicon-cell.ink .stack .px { color: var(--bg-elev); }
+
+  /* Per-concept colour switches via CSS vars on the wrapper - lets <use> recolour */
+  .ink-paper { color: var(--fg); }
+  .ink-paper-inv { color: var(--bg); }
+
+  /* footer */
+  footer { padding: 40px 0 56px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--fg-dim); text-transform: uppercase; }
+  footer .footer-row { display: flex; justify-content: space-between; gap: 16px; }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     SYMBOL DEFS - reused via <use href="#..."/>
+     ============================================ -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <!-- ============================================
+         BAN-01 - Banana on a lattice (dots-connected)
+         ============================================
+         8px lattice fills the 64x64 viewBox.
+         Banana = stem quad + body crescent (two bezier arcs).
+         Two rust nodes mark the stem tip and the body tip. -->
+    <symbol id="ban-lattice" viewBox="0 0 64 64">
+      <!-- Background lattice nodes at 8px spacing -->
+      <g fill="currentColor" opacity="0.20">
+        <circle cx="8"  cy="8"  r="0.7"/><circle cx="16" cy="8"  r="0.7"/><circle cx="24" cy="8"  r="0.7"/><circle cx="32" cy="8"  r="0.7"/><circle cx="40" cy="8"  r="0.7"/><circle cx="48" cy="8"  r="0.7"/><circle cx="56" cy="8"  r="0.7"/>
+        <circle cx="8"  cy="16" r="0.7"/><circle cx="16" cy="16" r="0.7"/><circle cx="24" cy="16" r="0.7"/><circle cx="32" cy="16" r="0.7"/><circle cx="40" cy="16" r="0.7"/><circle cx="48" cy="16" r="0.7"/><circle cx="56" cy="16" r="0.7"/>
+        <circle cx="8"  cy="24" r="0.7"/><circle cx="16" cy="24" r="0.7"/><circle cx="24" cy="24" r="0.7"/><circle cx="32" cy="24" r="0.7"/><circle cx="40" cy="24" r="0.7"/><circle cx="48" cy="24" r="0.7"/><circle cx="56" cy="24" r="0.7"/>
+        <circle cx="8"  cy="32" r="0.7"/><circle cx="16" cy="32" r="0.7"/><circle cx="24" cy="32" r="0.7"/><circle cx="32" cy="32" r="0.7"/><circle cx="40" cy="32" r="0.7"/><circle cx="48" cy="32" r="0.7"/><circle cx="56" cy="32" r="0.7"/>
+        <circle cx="8"  cy="40" r="0.7"/><circle cx="16" cy="40" r="0.7"/><circle cx="24" cy="40" r="0.7"/><circle cx="32" cy="40" r="0.7"/><circle cx="40" cy="40" r="0.7"/><circle cx="48" cy="40" r="0.7"/><circle cx="56" cy="40" r="0.7"/>
+        <circle cx="8"  cy="48" r="0.7"/><circle cx="16" cy="48" r="0.7"/><circle cx="24" cy="48" r="0.7"/><circle cx="32" cy="48" r="0.7"/><circle cx="40" cy="48" r="0.7"/><circle cx="48" cy="48" r="0.7"/><circle cx="56" cy="48" r="0.7"/>
+        <circle cx="8"  cy="56" r="0.7"/><circle cx="16" cy="56" r="0.7"/><circle cx="24" cy="56" r="0.7"/><circle cx="32" cy="56" r="0.7"/><circle cx="40" cy="56" r="0.7"/><circle cx="48" cy="56" r="0.7"/><circle cx="56" cy="56" r="0.7"/>
+      </g>
+
+      <!-- Banana body: single closed path, no self-intersection.
+           Stem at top-left (peak ~(12,10)), body lying horizontally
+           with belly curving down to apex ~(32,46), right tip ~(54,28). -->
+      <path d="
+        M 10 14
+        Q 13 7, 18 11
+        L 20 22
+        Q 36 18, 50 24
+        L 54 28
+        Q 50 42, 36 46
+        Q 18 46, 12 32
+        Z
+      " fill="currentColor" />
+
+      <!-- Anchor nodes (rust) at stem tip and body tip -->
+      <circle cx="13" cy="8"  r="1.6" fill="var(--accent)"/>
+      <circle cx="54" cy="28" r="1.6" fill="var(--accent)"/>
+    </symbol>
+
+    <!-- ============================================
+         BAN-01s - small-scale variant
+         ============================================
+         Same banana, lattice background dropped (the dots
+         merge with the silhouette below ~48 px and read as
+         noise). Two rust anchors retained. Distinct
+         geometry, not a fallback shim. -->
+    <symbol id="ban-lattice-s" viewBox="0 0 64 64">
+      <path d="
+        M 10 14
+        Q 13 7, 18 11
+        L 20 22
+        Q 36 18, 50 24
+        L 54 28
+        Q 50 42, 36 46
+        Q 18 46, 12 32
+        Z
+      " fill="currentColor"/>
+      <circle cx="13" cy="8"  r="3" fill="var(--accent)"/>
+      <circle cx="54" cy="28" r="3" fill="var(--accent)"/>
+    </symbol>
+
+    <!-- ============================================
+         BAN-02 - Banana blueprint (CAD form)
+         ============================================
+         96x64 viewBox so callouts fit outside the silhouette.
+         Hairline outline + dashed arc centres + JetBrains Mono
+         dimensions + crop ticks. Single rust callout on stem. -->
+    <symbol id="ban-blueprint" viewBox="0 0 96 64">
+      <!-- Crop ticks at the bounding box corners -->
+      <g stroke="currentColor" stroke-width="0.4" fill="none" opacity="0.7">
+        <path d="M 6 12 L 6 15 M 6 12 L 9 12"/>
+        <path d="M 90 12 L 90 15 M 90 12 L 87 12"/>
+        <path d="M 6 52 L 6 49 M 6 52 L 9 52"/>
+        <path d="M 90 52 L 90 49 M 90 52 L 87 52"/>
+      </g>
+
+      <!-- Construction lines: belly arc centre, dashed -->
+      <g stroke="currentColor" stroke-width="0.22" stroke-dasharray="1.2 0.8" fill="none" opacity="0.5">
+        <line x1="38" y1="18" x2="58" y2="18"/>
+        <line x1="48" y1="14" x2="48" y2="22"/>
+        <line x1="48" y1="18" x2="48" y2="44"/>
+        <line x1="48" y1="18" x2="76" y2="32"/>
+      </g>
+
+      <!-- Banana outline. Single closed path, stem + body in one go. -->
+      <path d="
+        M 14 14
+        Q 18 8, 24 14
+        L 26 22
+        Q 50 18, 76 26
+        L 80 32
+        Q 70 44, 50 46
+        Q 26 44, 16 28
+        Z
+      " fill="none" stroke="currentColor" stroke-width="0.6" stroke-linejoin="round"/>
+
+      <!-- Stem indicator (rust fill) -->
+      <path d="M 14 14 Q 18 8, 24 14 L 23 18 Q 18 13, 15 18 Z"
+            fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="0.6" stroke-linejoin="round"/>
+
+      <!-- Dimension bracket - length, top -->
+      <g stroke="currentColor" stroke-width="0.3" fill="none" opacity="0.75">
+        <path d="M 14 8 L 80 8"/>
+        <path d="M 14 6.5 L 14 9.5"/>
+        <path d="M 80 6.5 L 80 9.5"/>
+      </g>
+      <text x="47" y="6.4" text-anchor="middle" font-family="JetBrains Mono" font-size="2.6" font-weight="500" fill="currentColor" opacity="0.85">L · 66 U</text>
+
+      <!-- Dimension bracket - height, right -->
+      <g stroke="currentColor" stroke-width="0.3" fill="none" opacity="0.75">
+        <path d="M 93 8 L 93 46"/>
+        <path d="M 91.5 8 L 94.5 8"/>
+        <path d="M 91.5 46 L 94.5 46"/>
+      </g>
+      <text x="93.5" y="28" text-anchor="middle" font-family="JetBrains Mono" font-size="2.6" font-weight="500" fill="currentColor" opacity="0.85" transform="rotate(90 93.5 28)">H · 38 U</text>
+
+      <!-- Callout A: stem (rust) -->
+      <g stroke="var(--accent)" stroke-width="0.3" fill="none">
+        <line x1="18" y1="12" x2="6" y2="4"/>
+      </g>
+      <text x="3" y="3.4" font-family="JetBrains Mono" font-size="2.4" font-weight="500" fill="var(--accent)">A · STEM</text>
+
+      <!-- Callout B: apex -->
+      <g stroke="currentColor" stroke-width="0.3" fill="none" opacity="0.7">
+        <line x1="50" y1="45" x2="58" y2="58"/>
+      </g>
+      <text x="59" y="59" font-family="JetBrains Mono" font-size="2.4" fill="currentColor" opacity="0.85">B · APEX</text>
+
+      <!-- Callout R: arc centre -->
+      <g stroke="currentColor" stroke-width="0.3" fill="none" opacity="0.7">
+        <line x1="48" y1="18" x2="36" y2="4"/>
+      </g>
+      <text x="14" y="3.4" font-family="JetBrains Mono" font-size="2.4" fill="currentColor" opacity="0.85">R · ARC CENTRE</text>
+
+      <!-- Drawing number labels -->
+      <text x="6" y="60" font-family="JetBrains Mono" font-size="2.8" font-weight="500" fill="currentColor" letter-spacing="0.18em">TM · 01</text>
+      <text x="90" y="60" text-anchor="end" font-family="JetBrains Mono" font-size="2.4" fill="currentColor" opacity="0.7" letter-spacing="0.18em">REV A · 2026</text>
+    </symbol>
+
+    <!-- ============================================
+         BAN-02s - small-scale variant of blueprint
+         ============================================
+         Outline-only with rust stem cap. Callouts removed
+         because the type would collapse below ~96 px. -->
+    <symbol id="ban-blueprint-s" viewBox="0 0 64 64">
+      <path d="
+        M 10 18
+        Q 14 10, 20 18
+        L 22 26
+        Q 38 22, 54 28
+        L 56 34
+        Q 48 44, 32 46
+        Q 14 44, 8 30
+        Z
+      " fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M 10 18 Q 14 10, 20 18 L 19 22 Q 14 14, 11 22 Z"
+            fill="var(--accent)" stroke="var(--accent)" stroke-width="2.0" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+
+<!-- ============================================
+     VARIANT STRIP
+     ============================================ -->
+<div class="shell">
+  <div class="variant-strip">
+    <span><strong>Tek Monkeys</strong> · Banana marks · v2</span>
+    <span class="accent">2026-05-20 · paper / banana on lattice + blueprint</span>
+  </div>
+</div>
+
+<!-- ============================================
+     HERO HEADER
+     ============================================ -->
+<section class="block">
+  <div class="shell">
+    <div class="hero-eyebrow">brand-explorations / demo-logo-tekmonkeys / v2</div>
+    <h1 class="hero-title">Banana, but with <span class="accent">measuring tape</span> and graph paper.</h1>
+    <p class="hero-sub">Same paper / hairlines / rust system, two new directions. BAN-01 plots a banana on an 8 px lattice as a connected polygon, with the stem and tip as rust anchors. BAN-02 draws the banana as a CAD blueprint: hairline outline, dashed arc centres, dimensioned callouts, JetBrains Mono labels. The joke does the work; the execution stays restrained.</p>
+  </div>
+</section>
+
+<!-- ============================================
+     BAN-01 - BANANA ON LATTICE
+     ============================================ -->
+<section class="block">
+  <div class="shell">
+    <div class="marker">
+      <div class="marker-lattice"><span></span><span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span><span></span></div>
+      <div class="marker-label"><span class="marker-num">01</span><span>Concept · Banana on Lattice</span></div>
+    </div>
+
+    <div class="concept-head">
+      <h2 class="concept-name">Banana, plotted — dot-grid silhouette</h2>
+      <div class="concept-id">BAN-01</div>
+    </div>
+    <p class="concept-note">A banana whose silhouette is drawn through 8 px lattice intersections. The body is a filled polygon, the lattice shows faintly behind it like graph paper, and two rust nodes pin the stem and the tip — the only chromatic events in the mark. Reads as "we work in spreadsheets, but the spreadsheet is a banana."</p>
+
+    <p class="row-label"><span class="tick">A</span><span>HERO RENDER · 320 PX</span></p>
+    <div class="hero-render">
+      <div class="render-spec">grid · 7 × 7<br>cell · 8 px<br>nodes · 14 on path<br>accent · 2</div>
+      <div class="render-caption">BAN-01 / banana-lattice</div>
+      <svg class="ink-paper" width="320" height="320" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg>
+    </div>
+
+    <p class="row-label" style="margin-top:32px"><span class="tick">B</span><span>SCALE LADDER · 16 → 256 PX</span></p>
+    <div class="scale-ladder">
+      <div class="scale-cell"><svg class="ink-paper" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg><span class="px">16 · simplified</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg><span class="px">32 · simplified</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="64" height="64" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg><span class="px">64</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="128" height="128" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg><span class="px">128</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="256" height="256" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg><span class="px">256</span></div>
+    </div>
+
+    <p class="row-label" style="margin-top:32px"><span class="tick">C</span><span>LOCKUPS · TYPE TREATMENTS</span></p>
+    <div class="lockup-row">
+      <div class="lockup-card">
+        <div class="lockup-label"><span>Wordmark · JetBrains Mono 500</span><span class="id">lockup-mono</span></div>
+        <div class="lockup-stage">
+          <svg class="ink-paper" width="56" height="56" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg>
+          <div class="lockup-wordmark mono">TEK MONKEYS<span class="sub">ABN · Brisbane</span></div>
+        </div>
+      </div>
+      <div class="lockup-card">
+        <div class="lockup-label"><span>Wordmark · Lora 500 italic</span><span class="id">lockup-lora</span></div>
+        <div class="lockup-stage">
+          <svg class="ink-paper" width="56" height="56" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg>
+          <div class="lockup-wordmark lora">Tek Monkeys<span class="sub">ABN · Brisbane</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="row-label" style="margin-top:32px"><span class="tick">D</span><span>INVERSIONS · PAPER / KRAFT / INK</span></p>
+    <div class="invert-row">
+      <div class="invert-card paper"><svg class="ink-paper" width="80" height="80" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg><div class="invert-foot">Paper · primary</div></div>
+      <div class="invert-card kraft"><svg class="ink-paper" width="80" height="80" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg><div class="invert-foot">Kraft · secondary</div></div>
+      <div class="invert-card ink"><svg class="ink-paper-inv" width="80" height="80" viewBox="0 0 64 64"><use href="#ban-lattice"/></svg><div class="invert-foot">Ink · dark mode</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     BAN-02 - BANANA BLUEPRINT
+     ============================================ -->
+<section class="block">
+  <div class="shell">
+    <div class="marker">
+      <div class="marker-lattice"><span></span><span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span><span></span></div>
+      <div class="marker-label"><span class="marker-num">02</span><span>Concept · Banana Blueprint</span></div>
+    </div>
+
+    <div class="concept-head">
+      <h2 class="concept-name">Banana, dimensioned — CAD spec sheet</h2>
+      <div class="concept-id">BAN-02</div>
+    </div>
+    <p class="concept-note">The banana as a technical drawing. Hairline outline only, dashed construction lines through the arc centres, measurement brackets along the bounding box, callouts to the stem, apex, and arc origin. JetBrains Mono labels in dim ink with one rust callout (the stem) for the accent. Doubles as the most on-brand version of "Tek Monkeys" — engineering precision applied to a banana.</p>
+
+    <p class="row-label"><span class="tick">A</span><span>HERO RENDER · 320 PX</span></p>
+    <div class="hero-render">
+      <div class="render-spec">format · CAD<br>stroke · 0.7 px<br>callouts · 3<br>accent · stem (A)</div>
+      <div class="render-caption">BAN-02 / banana-blueprint</div>
+      <svg class="ink-paper" width="480" height="320" viewBox="0 0 96 64"><use href="#ban-blueprint"/></svg>
+    </div>
+
+    <p class="row-label" style="margin-top:32px"><span class="tick">B</span><span>SCALE LADDER · 16 → 256 PX (simplified at small scales)</span></p>
+    <div class="scale-ladder">
+      <div class="scale-cell"><svg class="ink-paper" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg><span class="px">16 · simplified</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg><span class="px">32 · simplified</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="64" height="64" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg><span class="px">64 · simplified</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="192" height="128" viewBox="0 0 96 64"><use href="#ban-blueprint"/></svg><span class="px">128 · full</span></div>
+      <div class="scale-cell"><svg class="ink-paper" width="384" height="256" viewBox="0 0 96 64"><use href="#ban-blueprint"/></svg><span class="px">256 · full</span></div>
+    </div>
+
+    <p class="row-label" style="margin-top:32px"><span class="tick">C</span><span>LOCKUPS · TYPE TREATMENTS</span></p>
+    <div class="lockup-row">
+      <div class="lockup-card">
+        <div class="lockup-label"><span>Wordmark · JetBrains Mono 500</span><span class="id">lockup-mono</span></div>
+        <div class="lockup-stage">
+          <svg class="ink-paper" width="56" height="56" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <div class="lockup-wordmark mono">TEK MONKEYS<span class="sub">ABN · Brisbane</span></div>
+        </div>
+      </div>
+      <div class="lockup-card">
+        <div class="lockup-label"><span>Wordmark · Lora 500 italic</span><span class="id">lockup-lora</span></div>
+        <div class="lockup-stage">
+          <svg class="ink-paper" width="56" height="56" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <div class="lockup-wordmark lora">Tek Monkeys<span class="sub">ABN · Brisbane</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="row-label" style="margin-top:32px"><span class="tick">D</span><span>INVERSIONS · PAPER / KRAFT / INK</span></p>
+    <div class="invert-row">
+      <div class="invert-card paper"><svg class="ink-paper" width="80" height="80" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg><div class="invert-foot">Paper · primary</div></div>
+      <div class="invert-card kraft"><svg class="ink-paper" width="80" height="80" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg><div class="invert-foot">Kraft · secondary</div></div>
+      <div class="invert-card ink"><svg class="ink-paper-inv" width="80" height="80" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg><div class="invert-foot">Ink · dark mode</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FAVICON SIDE-BY-SIDE
+     ============================================ -->
+<section class="block">
+  <div class="shell">
+    <div class="marker">
+      <div class="marker-lattice"><span></span><span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span><span></span></div>
+      <div class="marker-label"><span class="marker-num">03</span><span>Favicon scale · simplified marks on three backgrounds</span></div>
+    </div>
+
+    <p class="concept-note">At 16/24/32 px the construction-line callouts vanish. Both marks fall back to their simplified silhouette. The blueprint banana keeps its hairline outline (which becomes a chunky outline at small sizes); the lattice banana keeps its filled polygon with two rust accents at stem and tip.</p>
+
+    <div class="favicon-grid">
+      <div class="bg-label">Paper</div>
+      <div class="favicon-cell paper">
+        <div class="stack"><span class="px">BAN-01</span>
+          <svg class="ink-paper" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+          <svg class="ink-paper" width="24" height="24" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+          <svg class="ink-paper" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+        </div>
+      </div>
+      <div class="favicon-cell paper">
+        <div class="stack"><span class="px">BAN-02</span>
+          <svg class="ink-paper" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <svg class="ink-paper" width="24" height="24" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <svg class="ink-paper" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="favicon-grid">
+      <div class="bg-label">Kraft</div>
+      <div class="favicon-cell kraft">
+        <div class="stack"><span class="px">BAN-01</span>
+          <svg class="ink-paper" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+          <svg class="ink-paper" width="24" height="24" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+          <svg class="ink-paper" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+        </div>
+      </div>
+      <div class="favicon-cell kraft">
+        <div class="stack"><span class="px">BAN-02</span>
+          <svg class="ink-paper" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <svg class="ink-paper" width="24" height="24" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <svg class="ink-paper" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="favicon-grid">
+      <div class="bg-label">Ink</div>
+      <div class="favicon-cell ink">
+        <div class="stack"><span class="px">BAN-01</span>
+          <svg class="ink-paper-inv" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+          <svg class="ink-paper-inv" width="24" height="24" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+          <svg class="ink-paper-inv" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-lattice-s"/></svg>
+        </div>
+      </div>
+      <div class="favicon-cell ink">
+        <div class="stack"><span class="px">BAN-02</span>
+          <svg class="ink-paper-inv" width="16" height="16" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <svg class="ink-paper-inv" width="24" height="24" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+          <svg class="ink-paper-inv" width="32" height="32" viewBox="0 0 64 64"><use href="#ban-blueprint-s"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     NOTES
+     ============================================ -->
+<section class="block">
+  <div class="shell">
+    <div class="marker">
+      <div class="marker-lattice"><span></span><span></span><span></span><span></span><span class="peak"></span><span></span><span></span><span></span><span></span></div>
+      <div class="marker-label"><span class="marker-num">04</span><span>Notes · what to look for</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;font-family:var(--font-mono);font-size:12px;line-height:1.7;color:var(--fg-muted)">
+      <div>
+        <h4 style="font-family:var(--font-sans);font-size:13px;letter-spacing:0.06em;color:var(--fg);text-transform:uppercase;margin:0 0 10px">BAN-01 · banana on lattice</h4>
+        <ul style="list-style:none;padding:0;margin:0">
+          <li>· The banana shape is a 14-vertex polygon, every vertex on an 8 px lattice intersection.</li>
+          <li>· Background lattice dots stay faint so they read as graph paper, not noise.</li>
+          <li>· Rust accents at the stem tip and the right body tip — the two extreme points.</li>
+          <li>· Trade-off: at small sizes the lattice dots merge with the silhouette, so the favicon variant drops them entirely.</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-sans);font-size:13px;letter-spacing:0.06em;color:var(--fg);text-transform:uppercase;margin:0 0 10px">BAN-02 · banana blueprint</h4>
+        <ul style="list-style:none;padding:0;margin:0">
+          <li>· Hero render uses a wider 96 × 64 viewBox so the dimension brackets fit outside the silhouette.</li>
+          <li>· Single rust callout on the stem (A); everything else is dim ink. Stays restrained.</li>
+          <li>· Drawing numbers and revision tag ("TM · 01", "REV A · 2026") sell the engineering joke without shouting.</li>
+          <li>· Below ~96 px the callouts compress to noise — favicon variant collapses to outline-only.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<div class="shell">
+  <footer>
+    <div class="footer-row">
+      <span>Tek Monkeys · banana marks · v2</span>
+      <span>v1 monogram/peak/network · superseded · pick BAN-01 or BAN-02 to continue</span>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

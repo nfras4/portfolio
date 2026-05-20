@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Brand // Variant B — Lattice + Technical Drawing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --bg-card: oklch(0.89 0.028 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+    --accent-soft: oklch(0.46 0.16 42 / 0.14);
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-serif: "Lora", Georgia, serif;
+    --font-mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size:15px; -webkit-font-smoothing: antialiased; }
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  .variant-strip { border-bottom: 1px solid var(--border); padding: 14px 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--fg-dim); text-transform: uppercase; }
+  .variant-strip strong { color: var(--fg); font-weight: 500; }
+  .variant-strip .accent { color: var(--accent); }
+
+  .block { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  .block:last-child { border-bottom: none; }
+
+  /* Engineering marker: section num framed by construction marks */
+  .eng-marker {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em;
+    color: var(--fg-dim); text-transform: uppercase; margin-bottom: 36px;
+    padding: 6px 14px; border: 1px dashed var(--border-strong); position: relative;
+  }
+  .eng-marker::before, .eng-marker::after {
+    content: ""; position: absolute; width: 5px; height: 5px; border: 1px solid var(--fg-dim);
+    background: var(--bg);
+  }
+  .eng-marker::before { top: -3px; left: -3px; }
+  .eng-marker::after { bottom: -3px; right: -3px; }
+  .eng-marker .num { color: var(--accent); }
+
+  .h-title { font-family: var(--font-serif); font-size: clamp(36px, 5vw, 56px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 500; margin: 0 0 16px; text-wrap: balance; }
+  .h-title .accent { color: var(--accent); }
+  .h-sub { font-size: 16px; color: var(--fg-muted); max-width: 60ch; line-height: 1.55; margin: 0; }
+
+  /* HERO: lattice with full measurement annotations */
+  .draft-frame { margin-top: 80px; position: relative; padding: 60px 80px; }
+  .draft-frame .canvas {
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 4px;
+    padding: 40px; min-height: 380px; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .draft-frame .canvas::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 24px 24px; opacity: 0.3; pointer-events: none;
+  }
+  #lattice { display: grid; gap: 6px; position: relative; }
+  #lattice .cell { width: 22px; height: 22px; border-radius: 1px; }
+
+  /* Measurement annotations: ticks + labels */
+  .dim-top, .dim-bot, .dim-left, .dim-right { position: absolute; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--fg-dim); text-transform: uppercase; }
+  .dim-top { top: 28px; left: 80px; right: 80px; display: flex; align-items: center; justify-content: space-between; }
+  .dim-top::before { content: ""; position: absolute; left: 0; right: 0; top: 14px; border-top: 1px solid var(--fg-dim); }
+  .dim-top .end { position: relative; background: var(--bg); padding: 0 6px; z-index: 1; }
+  .dim-top .end::after { content: ""; position: absolute; top: -5px; width: 1px; height: 14px; background: var(--fg-dim); }
+  .dim-top .end.l::after { left: 0; }
+  .dim-top .end.r::after { right: 0; }
+  .dim-top .label { position: absolute; left: 50%; top: 8px; transform: translateX(-50%); background: var(--bg); padding: 0 10px; z-index: 1; }
+
+  .dim-left { top: 100px; bottom: 100px; left: 28px; width: 30px; }
+  .dim-left::before { content: ""; position: absolute; top: 0; bottom: 0; left: 14px; border-left: 1px solid var(--fg-dim); }
+  .dim-left .end { position: absolute; left: 0; right: 0; background: var(--bg); padding: 6px 0; text-align: center; z-index: 1; }
+  .dim-left .end::after { content: ""; position: absolute; left: -5px; width: 14px; height: 1px; background: var(--fg-dim); }
+  .dim-left .end.t { top: 0; }
+  .dim-left .end.b { bottom: 0; }
+  .dim-left .label { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%) rotate(-90deg); transform-origin: center; background: var(--bg); padding: 6px 0; text-align: center; z-index: 1; white-space: nowrap; }
+
+  .callout {
+    position: absolute; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
+    color: var(--accent); padding: 4px 8px; border: 1px solid var(--accent); background: var(--bg);
+    text-transform: uppercase; border-radius: 2px;
+  }
+  .callout::before {
+    content: ""; position: absolute; width: 24px; height: 1px; background: var(--accent);
+  }
+  .callout.c1 { top: 100px; left: 200px; }
+  .callout.c1::before { right: -24px; top: 50%; }
+  .callout.c2 { bottom: 90px; right: 220px; }
+  .callout.c2::before { left: -24px; top: 50%; }
+
+  /* Spec sheet section: dimensioned component */
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 800px) { .spec-grid { grid-template-columns: 1fr; } }
+
+  .spec-card { border: 1px solid var(--border); border-radius: 4px; background: var(--bg-elev); padding: 24px; position: relative; }
+  .spec-card-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--fg-dim); text-transform: uppercase; margin-bottom: 18px; display: flex; justify-content: space-between; }
+  .spec-card-label .id { color: var(--accent); }
+
+  .dim-comp { position: relative; padding: 48px 64px 60px 64px; background: var(--bg); border: 1px dashed var(--border-strong); border-radius: 2px; min-height: 200px; }
+  .dim-comp .preview { display: flex; flex-direction: column; gap: 12px; }
+  .dim-comp h3 { font-family: var(--font-serif); font-size: 28px; font-weight: 500; letter-spacing: -0.015em; margin: 0; }
+  .dim-comp .accent { color: var(--accent); }
+  .dim-comp p { margin: 0; font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+
+  /* Width measurement bar (top) */
+  .meas-w { position: absolute; top: 16px; left: 64px; right: 64px; height: 14px; display: flex; align-items: center; }
+  .meas-w::before { content: ""; flex: 1; height: 1px; background: var(--fg-dim); }
+  .meas-w .v { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--fg-dim); background: var(--bg); padding: 0 6px; text-transform: uppercase; }
+  .meas-w::before, .meas-w::after { content: ""; flex: 1; height: 1px; background: var(--fg-dim); }
+  /* Tick marks at start/end of meas-w */
+  .meas-tick-l, .meas-tick-r { position: absolute; top: 10px; width: 1px; height: 14px; background: var(--fg-dim); }
+  .meas-tick-l { left: 64px; }
+  .meas-tick-r { right: 64px; }
+
+  /* Height measurement bar (left) */
+  .meas-h { position: absolute; left: 18px; top: 48px; bottom: 48px; width: 14px; display: flex; flex-direction: column; align-items: center; }
+  .meas-h::before, .meas-h::after { content: ""; flex: 1; width: 1px; background: var(--fg-dim); }
+  .meas-h .v { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--fg-dim); background: var(--bg); padding: 4px 0; text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .meas-tick-t, .meas-tick-b { position: absolute; left: 10px; height: 1px; width: 14px; background: var(--fg-dim); }
+  .meas-tick-t { top: 48px; }
+  .meas-tick-b { bottom: 48px; }
+
+  /* Construction line behind hero */
+  .construction { position: absolute; left: 0; right: 0; top: 50%; height: 1px; border-top: 1px dashed var(--accent); opacity: 0.4; pointer-events: none; }
+
+  /* Spec attribute list */
+  .attrs { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin-top: 18px; }
+  .attrs dt { color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+  .attrs dd { color: var(--fg); margin: 0; }
+
+  /* Mini lattice marker (carries lattice into this variant too, but framed by tick brackets) */
+  .lattice-mini-bracket {
+    display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px;
+    border-left: 1px solid var(--fg-dim); border-right: 1px solid var(--fg-dim);
+  }
+  .lattice-mini { display: grid; grid-template-columns: repeat(3, 4px); grid-template-rows: repeat(3, 4px); gap: 3px; }
+  .lattice-mini span { width: 4px; height: 4px; background: var(--fg-dim); }
+  .lattice-mini span.peak { background: var(--accent); }
+
+  .foot { padding: 32px 0 48px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+  <div class="variant-strip">
+    <div class="shell">
+      <span><strong>Nick Fraser</strong> // brand // shape language</span>
+      <span style="float:right"> variant <span class="accent">B</span> — lattice + technical drawing</span>
+    </div>
+  </div>
+
+  <main class="shell">
+
+    <!-- HERO -->
+    <section class="block">
+      <div class="eng-marker">
+        <span class="num">§ 00</span> <span>· shape language</span> <span style="opacity:0.5">|</span> <span>rev. 1.0</span>
+      </div>
+
+      <h1 class="h-title">Hand-drafted spec sheet, <span class="accent">measured</span> at every edge.</h1>
+      <p class="h-sub">Every component is annotated. Construction lines, tick marks, dimensioned callouts on the hero asset. Feels like an architecture blueprint or a CAD drawing. The lattice is still the hero; it's the surrounding vocabulary that becomes engineering rather than editorial.</p>
+
+      <div class="draft-frame">
+        <div class="dim-top">
+          <span class="end l">0</span>
+          <span class="label">14 × 22px · spacing 6px · total 350px</span>
+          <span class="end r">350</span>
+        </div>
+
+        <div class="dim-left">
+          <span class="end t">0</span>
+          <span class="label">350px</span>
+          <span class="end b">350</span>
+        </div>
+
+        <div class="canvas">
+          <div id="lattice" aria-hidden="true"></div>
+          <div class="callout c1">peak.lift = 1.0</div>
+          <div class="callout c2">hue 42 / chroma 0.16</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPONENT SPEC SHEET -->
+    <section class="block">
+      <div class="eng-marker">
+        <span class="num">§ 01</span> <span>· component / hero-title</span> <span style="opacity:0.5">|</span> <span>type spec</span>
+      </div>
+
+      <div class="spec-grid">
+
+        <!-- Hero title spec -->
+        <div class="spec-card">
+          <div class="spec-card-label"><span>hero-pitch · annotated</span><span class="id">T-001</span></div>
+
+          <div class="dim-comp">
+            <div class="meas-w"><span class="v">920px max</span></div>
+            <div class="meas-tick-l"></div><div class="meas-tick-r"></div>
+            <div class="meas-h"><span class="v">~1.08 line</span></div>
+            <div class="meas-tick-t"></div><div class="meas-tick-b"></div>
+
+            <div class="preview">
+              <h3>I build software for <span class="accent">Brisbane clinicians</span>.</h3>
+              <p>Real-time multiplayer arcade games on the side.</p>
+            </div>
+            <div class="construction"></div>
+          </div>
+
+          <dl class="attrs">
+            <dt>family</dt><dd>Lora · serif · 500</dd>
+            <dt>size</dt><dd>clamp(38, 5.5vw, 68px)</dd>
+            <dt>tracking</dt><dd>-0.02em</dd>
+            <dt>color</dt><dd>var(--fg) · accent on key noun</dd>
+            <dt>balance</dt><dd>text-wrap: balance</dd>
+          </dl>
+        </div>
+
+        <!-- Section marker spec -->
+        <div class="spec-card">
+          <div class="spec-card-label"><span>section-marker · annotated</span><span class="id">M-001</span></div>
+
+          <div class="dim-comp">
+            <div class="meas-w"><span class="v">flex / baseline</span></div>
+            <div class="meas-tick-l"></div><div class="meas-tick-r"></div>
+
+            <div class="preview" style="flex-direction:row;align-items:center;gap:18px;">
+              <div class="lattice-mini-bracket">
+                <div class="lattice-mini">
+                  <span></span><span></span><span></span>
+                  <span></span><span class="peak"></span><span></span>
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.16em;color:var(--fg-dim);text-transform:uppercase;"><span style="color:var(--fg)">02</span> / projects</span>
+            </div>
+          </div>
+
+          <dl class="attrs">
+            <dt>mark</dt><dd>3×3 lattice · 4px cells · 3px gap</dd>
+            <dt>bracket</dt><dd>1px L+R border · 3×8px padding</dd>
+            <dt>label</dt><dd>Mono · 11px · 0.16em · UPPER</dd>
+            <dt>num</dt><dd>fg color · 2-digit zero-padded</dd>
+          </dl>
+        </div>
+
+        <!-- Chip spec -->
+        <div class="spec-card">
+          <div class="spec-card-label"><span>stack-chip · annotated</span><span class="id">C-001</span></div>
+
+          <div class="dim-comp" style="padding: 56px 64px;">
+            <div class="meas-w"><span class="v">auto · padding 4 × 10</span></div>
+            <div class="meas-tick-l"></div><div class="meas-tick-r"></div>
+
+            <div class="preview" style="flex-direction:row;flex-wrap:wrap;gap:6px;align-items:center;">
+              <span style="font-family:var(--font-mono);font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:100px;color:var(--fg-muted);">SvelteKit 5</span>
+              <span style="font-family:var(--font-mono);font-size:11px;padding:4px 10px;border:1px solid var(--accent);border-radius:100px;color:var(--accent);background:var(--accent-soft);">live</span>
+            </div>
+          </div>
+
+          <dl class="attrs">
+            <dt>radius</dt><dd>100px · full pill</dd>
+            <dt>border</dt><dd>1px · var(--border)</dd>
+            <dt>state</dt><dd>default / active (accent)</dd>
+          </dl>
+        </div>
+
+        <!-- Color spec -->
+        <div class="spec-card">
+          <div class="spec-card-label"><span>color · paper + ink + rust</span><span class="id">P-001</span></div>
+
+          <div class="dim-comp" style="padding: 40px 32px;">
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;">
+              <div><div style="width:100%;aspect-ratio:1;border:1px solid var(--border);background:oklch(0.96 0.015 75);border-radius:2px;"></div><div style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim);margin-top:6px;letter-spacing:0.06em;">.96/75</div></div>
+              <div><div style="width:100%;aspect-ratio:1;border:1px solid var(--border);background:oklch(0.93 0.022 70);border-radius:2px;"></div><div style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim);margin-top:6px;letter-spacing:0.06em;">.93/70</div></div>
+              <div><div style="width:100%;aspect-ratio:1;border:1px solid var(--border);background:oklch(0.89 0.028 70);border-radius:2px;"></div><div style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim);margin-top:6px;letter-spacing:0.06em;">.89/70</div></div>
+              <div><div style="width:100%;aspect-ratio:1;border:1px solid var(--border);background:oklch(0.46 0.05 60);border-radius:2px;"></div><div style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim);margin-top:6px;letter-spacing:0.06em;">.46/60</div></div>
+              <div><div style="width:100%;aspect-ratio:1;border:1px solid var(--border);background:oklch(0.21 0.04 50);border-radius:2px;"></div><div style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim);margin-top:6px;letter-spacing:0.06em;">.21/50</div></div>
+              <div><div style="width:100%;aspect-ratio:1;border:1px solid var(--border);background:oklch(0.46 0.16 42);border-radius:2px;position:relative;"><span style="position:absolute;top:2px;right:2px;font-size:9px;color:var(--bg);font-family:var(--font-mono);">★</span></div><div style="font-family:var(--font-mono);font-size:9px;color:var(--accent);margin-top:6px;letter-spacing:0.06em;">.46/42</div></div>
+            </div>
+          </div>
+
+          <dl class="attrs">
+            <dt>system</dt><dd>OKLCH · perceptually uniform</dd>
+            <dt>signature</dt><dd>single rust accent (42°)</dd>
+            <dt>contrast</dt><dd>fg / bg = 14.2:1 AAA</dd>
+          </dl>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="foot shell">
+      variant B · lattice + technical drawing · <span style="color:var(--accent)">every component framed by measurement</span>
+    </div>
+  </main>
+
+<script>
+  (function() {
+    const SIZE = 14;
+    const el = document.getElementById('lattice');
+    el.style.gridTemplateColumns = `repeat(${SIZE}, 22px)`;
+    el.style.gridTemplateRows = `repeat(${SIZE}, 22px)`;
+    for (let z = 0; z < SIZE; z++) {
+      for (let x = 0; x < SIZE; x++) {
+        const dx = x - (SIZE-1)/2;
+        const dz = z - (SIZE-1)/2;
+        const dist = Math.hypot(dx, dz);
+        const lift = Math.exp(-(dist*dist) / (2 * (SIZE/3.4)*(SIZE/3.4)));
+        const scale = 0.45 + lift * 0.55;
+        const hue = 70 - lift * 28;
+        const chroma = 0.02 + lift * 0.14;
+        const L = 0.85 - lift * 0.27;
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        const inset = (1 - scale) * 11;
+        cell.style.width = (22 - inset*2) + 'px';
+        cell.style.height = (22 - inset*2) + 'px';
+        cell.style.margin = inset + 'px';
+        cell.style.background = `oklch(${L} ${chroma} ${hue})`;
+        cell.style.boxShadow = lift > 0.4 ? `0 ${lift*4}px ${lift*8}px oklch(0.46 0.16 42 / ${lift*0.2})` : 'none';
+        el.appendChild(cell);
+      }
+    }
+  })();
+</script>
+</body>
+</html>
