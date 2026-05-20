@@ -8,7 +8,7 @@
   },
 
   about: [
-    "Studying Finance and Business Analytics at UQ, graduating 2027. I run the IT support for a Brisbane medical clinic through my registered business, Tek Monkeys, and ship Tally, an MBS billing tool, to a paediatric ortho surgeon at St Andrew's.",
+    "Studying Finance and Business Analytics at UQ, graduating 2027. I run the IT support for a Brisbane medical clinic through my registered business, Tek Monkeys, and ship Itemate, an MBS billing tool, to a paediatric orthopaedic surgeon at St Andrew's.",
     "On the side I build multiplayer arcade games on Cloudflare Workers + Durable Objects. Real users find edge cases I never would have.",
     "Looking for grad roles in healthtech analytics, clinical ops, or fintech. Bonus if SQL, R, and TypeScript all show up in the same repo.",
   ],
@@ -31,13 +31,13 @@
   projects: [
     {
       id: "tekmonkeys",
-      year: "2024 to present",
+      year: "2023 to present",
       name: "Tek Monkeys",
       url: "Registered ABN, self-employed",
       image: "/projects/tekmonkeys.png",
       imagePlaceholder: { mark: "TM", caption: "ABN · Brisbane" },
       tagline: "AI-augmented IT consultancy. Rapid business solutions for real problems.",
-      description: "Brisbane-registered ABN consultancy. Pairs AI engineering (RAG pipelines, LLM apps, devops) with traditional IT (hardware, networks, custom software). Current engagements span a Brisbane paediatric orthopaedic practice (Tally / Itemate billing copilot) plus ad-hoc small-business and residential work. Built to scale across clients, not locked to one vertical.",
+      description: "Brisbane-registered ABN consultancy. Pairs AI engineering (RAG pipelines, LLM apps, devops) with traditional IT (hardware, networks, custom software). Current engagements span a Brisbane paediatric orthopaedic practice (Itemate billing copilot) plus ad-hoc small-business and residential work. Built to scale across clients, not locked to one vertical.",
       build_notes: [
         "RAG + LLM pipelines: retrieval-augmented systems that pair Anthropic Claude with deterministic matchers over domain-specific indexes (e.g. 6,039-item MBS for medical billing).",
         "DevOps + deployment: Cloudflare Workers/Pages, D1, Durable Objects, GitHub Actions CI; production hardening with CF Access, atomic D1 upserts, daily token budgets.",
@@ -48,17 +48,17 @@
       metrics: [
         { k: "Status", v: "Active · accepting clients" },
         { k: "Verticals", v: "Healthtech · small biz" },
-        { k: "Started", v: "2024" },
+        { k: "Started", v: "2023" },
       ],
       featured: true,
     },
     {
-      id: "tally",
+      id: "itemate",
       year: "2026",
-      name: "Tally",
-      url: "tally.nickwfraser.dev",
-      image: "/projects/tally.png",
-      imagePlaceholder: { mark: "Ta", caption: "MBS · Brisbane ortho" },
+      name: "Itemate",
+      url: "itemate.nickwfraser.dev",
+      image: "/projects/itemate.png",
+      imagePlaceholder: { mark: "It", caption: "MBS · Brisbane ortho" },
       tagline: "MBS billing copilot for a Brisbane paediatric orthopaedic surgeon. Paste a surgical report, get the Medicare item codes ready to claim.",
       description: "Single-doctor billing tool shipped for Dr Geoff Donald (paediatric orthopaedics, St Andrew's Brisbane). The surgeon pastes a plain-text post-op report; the server strips PHI, Anthropic Haiku extracts candidate procedures into a structured schema, then a deterministic rule engine matches MBS item codes from the 4798-item ortho slice. Designed to live behind real auth from day one because PHI is involved.",
       build_notes: [
@@ -125,10 +125,10 @@
     {
       role: "Founder & AI Engineer",
       company: "Tek Monkeys",
-      period: "2024 to present",
+      period: "2023 to present",
       bullets: [
         "ABN-registered AI + IT consultancy. RAG pipelines, devops, custom software, and traditional IT support.",
-        "Lead engagement: Brisbane paediatric orthopaedic practice (Tally / Itemate MBS billing copilot, ongoing IT retainer).",
+        "Lead engagement: Brisbane paediatric orthopaedic practice (Itemate MBS billing copilot, ongoing IT retainer).",
         "Built to scale across verticals: healthtech, small business, and residential, not locked to one client.",
       ],
     },

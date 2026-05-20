@@ -3,6 +3,16 @@ import { Link } from "react-router-dom";
 import { PORTFOLIO_DATA as d } from "./data.js";
 import AnimatedTextCycle from "./components/ui/animated-text-cycle.jsx";
 
+function SectionHeading({ num, label, id }) {
+  return (
+    <h2 className="section-num" id={id}>
+      <span className="section-num-num">{num}</span>
+      <span className="section-num-line" aria-hidden="true" />
+      <span className="section-num-label">{label}</span>
+    </h2>
+  );
+}
+
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -127,7 +137,7 @@ export function Hero() {
           </div>
           <div className="hero-meta-item">
             <span className="hero-meta-key">building</span>
-            <span className="hero-meta-val">Tek Monkeys, Tally, Monkey Barrel</span>
+            <span className="hero-meta-val">Tek Monkeys, Itemate, Monkey Barrel</span>
           </div>
           <div className="hero-meta-item">
             <span className="hero-meta-key">looking for</span>
@@ -168,7 +178,7 @@ export function AboutSection() {
   return (
     <section className="section" id="about" aria-labelledby="hd-about">
       <div className="shell">
-        <h2 className="section-num" id="hd-about">01 / about</h2>
+        <SectionHeading num="01" label="about" id="hd-about" />
         <div className="about-grid">
           <div className="about-bio">
             {d.about.map((p, i) => <p key={i}>{p}</p>)}
@@ -329,7 +339,7 @@ export function ProjectsSection() {
   return (
     <section className="section" id="projects" aria-labelledby="hd-projects">
       <div className="shell">
-        <h2 className="section-num" id="hd-projects">02 / projects</h2>
+        <SectionHeading num="02" label="projects" id="hd-projects" />
         <div className="proj-list">
           {d.projects.map((p, i) => <ProjectRow key={p.id} p={p} onOpen={setOpen} index={i} />)}
         </div>
@@ -343,7 +353,7 @@ export function SkillsSection() {
   return (
     <section className="section" id="skills" aria-labelledby="hd-skills">
       <div className="shell">
-        <h2 className="section-num" id="hd-skills">03 / skills</h2>
+        <SectionHeading num="03" label="skills" id="hd-skills" />
         <div className="skills-grid">
           {Object.entries(d.skills).map(([group, items]) => (
             <div key={group} className="skill-group">
@@ -366,7 +376,7 @@ export function ExperienceSection() {
   return (
     <section className="section" id="education" aria-labelledby="hd-education">
       <div className="shell">
-        <h2 className="section-num" id="hd-education">04 / experience &amp; education</h2>
+        <SectionHeading num="04" label="experience & education" id="hd-education" />
 
         {d.experience.map((e, i) => (
           <div key={i} className="exp-row">
@@ -397,7 +407,7 @@ export function ContactSection() {
   return (
     <section className="section" id="contact" aria-labelledby="hd-contact">
       <div className="shell contact-block">
-        <h2 className="section-num" id="hd-contact">05 / contact</h2>
+        <SectionHeading num="05" label="contact" id="hd-contact" />
         <h2 className="contact-pitch">
           Hiring 2027 grads in healthtech analytics, clinical ops, or fintech?{" "}
           <span className="muted">Email below.</span>
