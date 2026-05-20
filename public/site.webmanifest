@@ -2,8 +2,9 @@
 	"name": "Nicholas Fraser",
 	"short_name": "NFraser",
 	"icons": [
-		{ "src": "/favicon-32.png", "sizes": "32x32", "type": "image/png" },
-		{ "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+		{ "src": "/logo-tekmonkeys-white-300.png", "sizes": "300x300", "type": "image/png" },
+		{ "src": "/logo-tekmonkeys-white-400.png", "sizes": "400x400", "type": "image/png" },
+		{ "src": "/logo-tekmonkeys-white-1080.png", "sizes": "1080x1080", "type": "image/png" }
 	],
 	"theme_color": "#16130e",
 	"background_color": "#16130e",
