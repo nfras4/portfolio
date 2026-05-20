@@ -1,7 +1,7 @@
-export const PORTFOLIO_DATA = {
+﻿export const PORTFOLIO_DATA = {
   identity: {
     name: "Nicholas W. Fraser",
-    pitch: "Building software for Brisbane clinicians. Real-time multiplayer arcade games on the side.",
+    pitch: "Building AI software for real problems. Real-time multiplayer arcade games on the side.",
     location: "Brisbane, AU",
     status: "Open to grad roles · 2027",
     email: "nickwfraser@gmail.com",
@@ -31,23 +31,24 @@ export const PORTFOLIO_DATA = {
   projects: [
     {
       id: "tekmonkeys",
-      year: "2023 to present",
+      year: "2024 to present",
       name: "Tek Monkeys",
       url: "Registered ABN, self-employed",
-      image: null,
+      image: "/projects/tekmonkeys.png",
       imagePlaceholder: { mark: "TM", caption: "ABN · Brisbane" },
-      tagline: "IT support business. ABN-registered, on retainer with a Brisbane medical clinic.",
-      description: "Founded a registered IT support business handling hardware, software, and network troubleshooting. Ongoing retainer with a local medical clinic (family-friend referral); ad-hoc work on top.",
+      tagline: "AI-augmented IT consultancy. Rapid business solutions for real problems.",
+      description: "Brisbane-registered ABN consultancy. Pairs AI engineering (RAG pipelines, LLM apps, devops) with traditional IT (hardware, networks, custom software). Current engagements span a Brisbane paediatric orthopaedic practice (Tally / Itemate billing copilot) plus ad-hoc small-business and residential work. Built to scale across clients, not locked to one vertical.",
       build_notes: [
-        "Onsite hardware repairs and network diagnostics for a clinic that cannot afford downtime.",
-        "Software setup and migration for small-business clients.",
-        "Client-facing billing, scheduling, and the unglamorous parts of running a registered business.",
+        "RAG + LLM pipelines: retrieval-augmented systems that pair Anthropic Claude with deterministic matchers over domain-specific indexes (e.g. 6,039-item MBS for medical billing).",
+        "DevOps + deployment: Cloudflare Workers/Pages, D1, Durable Objects, GitHub Actions CI; production hardening with CF Access, atomic D1 upserts, daily token budgets.",
+        "Custom software: SvelteKit 5, React, TypeScript end-to-end; built for solo-operator small businesses that can't afford downtime or a dev team.",
+        "Traditional IT: hardware repair, network diagnostics, Windows fleet management, ABN-registered billing and scheduling.",
       ],
-      stack: ["Hardware", "Networking", "Windows / macOS", "Small-biz IT"],
+      stack: ["RAG / LLM", "TypeScript", "Cloudflare", "Anthropic SDK", "SvelteKit", "Networking", "Windows / macOS"],
       metrics: [
-        { k: "Status", v: "Active" },
-        { k: "Client", v: "Brisbane medical clinic" },
-        { k: "Started", v: "2023" },
+        { k: "Status", v: "Active · accepting clients" },
+        { k: "Verticals", v: "Healthtech · small biz" },
+        { k: "Started", v: "2024" },
       ],
       featured: true,
     },
@@ -69,7 +70,7 @@ export const PORTFOLIO_DATA = {
       stack: ["SvelteKit 5", "TypeScript", "Cloudflare Pages Functions", "D1", "Drizzle ORM", "Anthropic SDK", "Vitest", "CF Access"],
       metrics: [
         { k: "Status", v: "Shipped" },
-        { k: "Client", v: "Brisbane paed ortho" },
+        { k: "Client", v: "Brisbane paediatric orthopaedic" },
         { k: "Tests", v: "71 unit + e2e" },
       ],
       featured: true,
@@ -122,13 +123,13 @@ export const PORTFOLIO_DATA = {
 
   experience: [
     {
-      role: "Founder & IT Support Technician",
+      role: "Founder & AI Engineer",
       company: "Tek Monkeys",
-      period: "2023 to present",
+      period: "2024 to present",
       bullets: [
-        "Registered the business under an ABN and run all sides of it: client work, billing, scheduling.",
-        "Ongoing retainer with a local medical clinic for hardware, software, and network troubleshooting.",
-        "Ad-hoc work for residential and small-business clients on referral.",
+        "ABN-registered AI + IT consultancy. RAG pipelines, devops, custom software, and traditional IT support.",
+        "Lead engagement: Brisbane paediatric orthopaedic practice (Tally / Itemate MBS billing copilot, ongoing IT retainer).",
+        "Built to scale across verticals: healthtech, small business, and residential, not locked to one client.",
       ],
     },
   ],
@@ -141,7 +142,7 @@ export const PORTFOLIO_DATA = {
 
   links: {
     github: "https://github.com/nfras4",
-    linkedin: "https://www.linkedin.com/in/nicholas-fraser-547348305/",
+    linkedin: "https://www.linkedin.com/in/nickwfraser/",
     email: "mailto:nickwfraser@gmail.com",
     monkeybarrel: "https://arcade.nickwfraser.dev",
     cv: "/cv.pdf",
