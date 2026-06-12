@@ -1,0 +1,599 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nicholas Fraser · Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: oklch(0.96 0.015 75);
+    --bg-elev: oklch(0.93 0.022 70);
+    --border: oklch(0.78 0.04 70);
+    --border-strong: oklch(0.62 0.06 60);
+    --fg: oklch(0.21 0.04 50);
+    --fg-muted: oklch(0.36 0.05 55);
+    --fg-dim: oklch(0.46 0.05 60);
+    --accent: oklch(0.46 0.16 42);
+
+    --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --font-serif: "Lora", "Iowan Old Style", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 10px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 44px 52px 40px;
+    background: var(--bg);
+  }
+
+  /* ---- Header (full width) ---- */
+  .head {
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 22px;
+  }
+  .head-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 8px;
+    border: 1px solid var(--border-strong);
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+    margin-bottom: 14px;
+  }
+  .head-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+  }
+  .head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+  }
+  .head-name {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+  }
+  .head-tag {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--fg-dim);
+    letter-spacing: 0.04em;
+  }
+  .head-tag .accent { color: var(--accent); }
+  .head-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--fg-muted);
+    text-align: right;
+  }
+  .head-contact a:hover { color: var(--accent); }
+  .head-contact .key { color: var(--fg-dim); margin-right: 8px; }
+
+  /* ---- Two-column body ---- */
+  .body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 30px;
+  }
+  /* prevent grid blowout: children get min-width:0 so long mono strings wrap */
+  .body > * { min-width: 0; }
+
+  /* ---- Section header ---- */
+  .section { margin-bottom: 14px; }
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .section-num::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 22px;
+    height: 1px;
+    background: var(--fg-dim);
+    transform: translateY(-3px);
+  }
+  .section-num .num { color: var(--accent); }
+  .sidebar .section-num::before { width: 16px; }
+
+  /* ---- Sidebar ---- */
+  .sidebar { font-size: 9.5px; min-width: 0; }
+  .sidebar .skills-group { margin-bottom: 12px; }
+  .sidebar .skills-label {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .sidebar .skills-list {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--fg);
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .sidebar .skills-list .sep { color: var(--fg-dim); margin: 0 4px; }
+  .sidebar .skills-prose {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .sb-edu .edu-school {
+    font-family: var(--font-serif);
+    font-size: 11.5px;
+    color: var(--fg);
+    margin: 0 0 1px;
+    letter-spacing: -0.005em;
+  }
+  .sb-edu .edu-degree {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    color: var(--fg-muted);
+    margin-bottom: 3px;
+  }
+  .sb-edu .edu-meta {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    color: var(--fg-dim);
+    margin-bottom: 4px;
+  }
+  .sb-edu .edu-courses {
+    font-family: var(--font-sans);
+    font-size: 9px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+
+  /* ---- Main column ---- */
+  .summary {
+    font-family: var(--font-serif);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--fg);
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+    margin: 0 0 4px;
+  }
+  .summary .muted { color: var(--fg-muted); }
+  .summary .accent { color: var(--accent); }
+
+  /* compact entry (experience + project) */
+  .entry { padding: 4px 0 12px; }
+  .entry + .entry { padding-top: 8px; }
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 2px;
+  }
+  .entry-role {
+    font-family: var(--font-serif);
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    margin: 0;
+    color: var(--fg);
+  }
+  .entry-role .at {
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-size: 9px;
+    color: var(--fg-dim);
+    margin-left: 6px;
+    letter-spacing: 0.04em;
+  }
+  .entry-role .at .accent { color: var(--accent); }
+  .entry-period {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--fg-dim);
+    white-space: nowrap;
+  }
+  .entry-meta {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--fg-muted);
+    margin-bottom: 4px;
+  }
+  .entry-meta .place { color: var(--fg-dim); }
+  .entry-bullets {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .entry-bullets li {
+    display: grid;
+    grid-template-columns: 12px 1fr;
+    gap: 4px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+    text-wrap: pretty;
+    font-size: 10px;
+  }
+  .entry-bullets li::before {
+    content: "·";
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin: 4px 0 0;
+  }
+  .stack-chip {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    letter-spacing: 0.02em;
+    padding: 1px 7px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--fg-muted);
+  }
+
+  /* nested sub-roles (airport venues under Brisbane Airport heading) */
+  .sub-roles {
+    margin-top: 6px;
+    border-left: 1px solid var(--border);
+    padding-left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .sub-role {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .sub-role-name {
+    font-family: var(--font-serif);
+    font-size: 11px;
+    color: var(--fg);
+    margin: 0 0 1px;
+  }
+  .sub-role-name .role-type {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    color: var(--fg-dim);
+    margin-left: 6px;
+    letter-spacing: 0.02em;
+  }
+  .sub-role-desc {
+    font-family: var(--font-sans);
+    font-size: 9.5px;
+    color: var(--fg-muted);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .sub-role-period {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    color: var(--fg-dim);
+    white-space: nowrap;
+  }
+
+  /* ---- Footer ---- */
+  .foot {
+    grid-column: 1 / -1;
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    color: var(--fg-dim);
+    letter-spacing: 0.04em;
+  }
+  .foot a:hover { color: var(--accent); }
+
+  /* ---- Print ---- */
+  @page { size: A4; margin: 0; }
+  @media print {
+    html, body {
+      background: var(--bg);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page {
+      padding: 12mm 14mm 10mm;
+      max-width: none;
+      margin: 0;
+    }
+    .entry { break-inside: avoid; }
+    .sub-role { break-inside: avoid; }
+    .skills-group { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============== HEADER ============== -->
+  <header class="head">
+    <div class="head-status">
+      <span class="head-status-dot"></span>
+      open to grad roles · 2027
+    </div>
+    <div class="head-row">
+      <div>
+        <h1 class="head-name">Nicholas W. Fraser</h1>
+        <div class="head-tag">
+          founder, <span class="accent">tek monkeys</span> · typescript · cloudflare · llm pipelines
+        </div>
+      </div>
+      <div class="head-contact">
+        <div><span class="key">site</span><a href="https://nickwfraser.dev">nickwfraser.dev</a></div>
+        <div><span class="key">mail</span><a href="mailto:nickwfraser@gmail.com">nickwfraser@gmail.com</a></div>
+        <div><span class="key">code</span><a href="https://github.com/nfras4">github.com/nfras4</a></div>
+        <div><span class="key">work</span><a href="https://www.linkedin.com/in/nickwfraser/">linkedin.com/in/nickwfraser</a></div>
+        <div><span class="key">based</span>Wooloowin, QLD &nbsp;·&nbsp; +61 481 006 380</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============== TWO-COLUMN BODY ============== -->
+  <div class="body">
+
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="sidebar">
+
+      <!-- Skills -->
+      <section class="section">
+        <h2 class="section-num"><span class="num">A</span> / skills</h2>
+
+        <div class="skills-group">
+          <div class="skills-label">languages</div>
+          <div class="skills-list">TypeScript<span class="sep">·</span>JS<span class="sep">·</span>Python<span class="sep">·</span>SQL<span class="sep">·</span>R</div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-label">ai engineering</div>
+          <div class="skills-list">Anthropic API<span class="sep">·</span>Claude Code<span class="sep">·</span>agent orchestration<span class="sep">·</span>hybrid LLM + deterministic<span class="sep">·</span>PHI pipelines</div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-label">frameworks</div>
+          <div class="skills-list">SvelteKit 5<span class="sep">·</span>React 19<span class="sep">·</span>Vite<span class="sep">·</span>Bun<span class="sep">·</span>Vitest<span class="sep">·</span>R/Shiny<span class="sep">·</span>pandas<span class="sep">·</span>Chart.js<span class="sep">·</span>MapLibre</div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-label">platforms</div>
+          <div class="skills-list">Cloudflare Workers<span class="sep">·</span>Pages<span class="sep">·</span>Durable Objects<span class="sep">·</span>D1<span class="sep">·</span>KV<span class="sep">·</span>Access<span class="sep">·</span>Drizzle<span class="sep">·</span>Web Crypto<span class="sep">·</span>GitHub Actions</div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-label">data &amp; finance</div>
+          <div class="skills-list">DCF + sensitivity modelling<span class="sep">·</span>derivatives pricing<span class="sep">·</span>interactive dashboards</div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-label">compliance</div>
+          <div class="skills-list">Privacy Act 1988 + APPs<span class="sep">·</span>My Health Records Act 2012<span class="sep">·</span>MBS / HIA 1973</div>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section class="section sb-edu">
+        <h2 class="section-num"><span class="num">B</span> / education</h2>
+        <h3 class="edu-school">University of Queensland</h3>
+        <div class="edu-degree">B. Adv. Business (Hons), Finance</div>
+        <div class="edu-meta">feb 2023 - dec 2027 (penultimate year)</div>
+        <div class="edu-courses">
+          BSAN2205 Machine Learning, BSAN3204 Data Viz, BSAN4204 Business Analytics, Corporate Finance, Asset Pricing, Derivatives.
+        </div>
+      </section>
+
+      <!-- Extras -->
+      <section class="section">
+        <h2 class="section-num"><span class="num">C</span> / additional</h2>
+
+        <div class="skills-group">
+          <div class="skills-label">societies</div>
+          <div class="skills-prose">UQ Economics Society + Business Analytics Network Association (2023-).</div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-label">languages</div>
+          <div class="skills-list">English (native)<span class="sep">·</span>Japanese (JLPT N4)</div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-label">volunteering</div>
+          <div class="skills-prose">Community BBQ for people experiencing homelessness (2020-2022).</div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- ====== MAIN ====== -->
+    <main class="main">
+
+      <!-- Summary -->
+      <section class="section">
+        <h2 class="section-num"><span class="num">01</span> / summary</h2>
+        <p class="summary">
+          Founder of <span class="accent">Tek Monkeys</span>, a Brisbane IT consultancy serving a paediatric orthopaedic
+          practice, where I designed and deployed <span class="accent">Itemate</span>, an MBS billing validator pairing
+          the Anthropic Claude API with a deterministic matcher and a server-side PHI-free
+          data flow. I build production TypeScript and LLM applications on Cloudflare.
+          <span class="muted">Third-year UQ Business (Honours) student, Business Analytics + Finance double major, graduating 2027.</span>
+        </p>
+      </section>
+
+      <!-- Experience -->
+      <section class="section">
+        <h2 class="section-num"><span class="num">02</span> / experience</h2>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3 class="entry-role">
+              Founder &amp; AI Developer
+              <span class="at">@ <span class="accent">Tek Monkeys</span></span>
+            </h3>
+            <div class="entry-period">2024 - present</div>
+          </div>
+          <div class="entry-meta">brisbane it consultancy · paediatric orthopaedic practice · <span class="place">Brisbane, QLD</span></div>
+          <ul class="entry-bullets">
+            <li><span>Scoped, designed, and shipped <strong>Itemate</strong>, the practice's MBS billing validator, after workflow interviews with both surgeons; delivered as a managed service with ongoing iteration.</span></li>
+            <li><span>Sole technical contact for the practice: IT support, hardware, and software, managed within the Privacy Act 1988 (APPs) and the My Health Records Act 2012.</span></li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3 class="entry-role">
+              Hospitality &amp; Customer Service
+              <span class="at">@ <span class="accent">Brisbane Airport</span></span>
+            </h3>
+            <div class="entry-period">2023 - feb 2026</div>
+          </div>
+          <div class="entry-meta">three years across four BNE food &amp; beverage venues spanning the domestic and international terminals</div>
+          <ul class="entry-bullets">
+            <li><span>Three years of high-volume customer service across four food &amp; beverage venues spanning the domestic and international terminals, alongside full-time study.</span></li>
+            <li><span>Progressed from counter service to specialty coffee at an award-winning roaster's flagship.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section class="section">
+        <h2 class="section-num"><span class="num">03</span> / selected projects</h2>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3 class="entry-role">
+              Monkey Barrel
+              <span class="at"><span class="accent">real-time multiplayer web arcade</span></span>
+            </h3>
+            <div class="entry-period">apr 2026 - present</div>
+          </div>
+          <div class="entry-meta"><span class="place">arcade.nickwfraser.dev</span></div>
+          <div class="stack">
+            <span class="stack-chip">TypeScript</span>
+            <span class="stack-chip">SvelteKit 5</span>
+            <span class="stack-chip">Cloudflare Workers</span>
+            <span class="stack-chip">Durable Objects</span>
+            <span class="stack-chip">D1</span>
+            <span class="stack-chip">Web Crypto</span>
+            <span class="stack-chip">Bun</span>
+          </div>
+          <ul class="entry-bullets">
+            <li><span>Built and deployed a multiplayer party-game platform hosting 12+ games plus a 6,400-line idle-RPG sub-app (9 zones, 180 stages). Coordinated authoritative game state through Durable Objects on the WebSocket Hibernation API for near-zero idle cost; ~1,000 games played since launch.</span></li>
+            <li><span>Architected an actor-model room hierarchy (one Durable Object per room) with PBKDF2 + D1-backed session auth via Web Crypto; diagnosed and hotfixed a production incident where Workers' 100k PBKDF2 iteration cap blocked NIST G1 compliance.</span></li>
+            <li><span>Used multi-agent AI code audits (Claude Code) to catch a Durable Object hibernation regression across 5 room subclasses; shipped the fix as a unified connection model with 18 passing integration tests.</span></li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3 class="entry-role">
+              Itemate
+              <span class="at"><span class="accent">MBS billing validator</span></span>
+            </h3>
+            <div class="entry-period">2026 - present</div>
+          </div>
+          <div class="entry-meta"><span class="place">itemate.nickwfraser.dev</span></div>
+          <div class="stack">
+            <span class="stack-chip">TypeScript</span>
+            <span class="stack-chip">SvelteKit 5</span>
+            <span class="stack-chip">CF Pages + D1</span>
+            <span class="stack-chip">Drizzle</span>
+            <span class="stack-chip">Anthropic Claude API</span>
+            <span class="stack-chip">Vitest</span>
+          </div>
+          <ul class="entry-bullets">
+            <li><span>Built and deployed Itemate for a paediatric orthopaedic practice (two surgeons), pairing the Anthropic Claude API (Haiku for dev, Sonnet for prod) for clinical note normalisation with a deterministic keyword-overlap retrieval pass over a 6,039-item MBS index. Deployed at the edge behind Cloudflare Access (Google OAuth).</span></li>
+            <li><span>Engineered a regex-anchored de-identification pipeline that strips PHI server-side before any LLM call; shipped 97 unit tests with GitHub Actions CI. No patient data persists on the server.</span></li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3 class="entry-role">
+              GoCard Insights
+              <span class="at"><span class="accent">QLD transit + mode-choice analytics</span></span>
+            </h3>
+            <div class="entry-period">feb 2026</div>
+          </div>
+          <div class="entry-meta"><span class="place">gocard.nickwfraser.dev</span></div>
+          <div class="stack">
+            <span class="stack-chip">TypeScript</span>
+            <span class="stack-chip">SvelteKit 5</span>
+            <span class="stack-chip">CF Pages + Workers</span>
+            <span class="stack-chip">D1 + KV</span>
+            <span class="stack-chip">Chart.js</span>
+            <span class="stack-chip">MapLibre GL</span>
+          </div>
+          <ul class="entry-bullets">
+            <li><span>Built and shipped the BSAN4204 Business Analytics research project, combining Go Card trip-history analysis with a live mode-choice calculator comparing public transport against driving costs after Translink's 50¢ flat-fare reform.</span></li>
+            <li><span>Engineered a daily fuel-data pipeline as a sibling Cloudflare Worker cron against the QLD FPQ API with KV caching and D1 history retention; validated a pure mode-choice engine across 24 unit tests to within $0.50 per week of manual spreadsheet calculations.</span></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer spans both columns -->
+    <footer class="foot">
+      <div>© 2026 · nicholas fraser · resume rev. 2026-05</div>
+      <div>nickwfraser.dev</div>
+    </footer>
+  </div>
+
+</div>
+</body>
+</html>
