@@ -44,6 +44,7 @@ export default function Showcase() {
           <Link to="/" className="showcase-back">← back to nick/</Link>
           <div className="showcase-title">
             <span className="showcase-title-key">showcase /</span> r3f demos
+            <span className="showcase-title-tag">just for fun!</span>
           </div>
         </div>
       </header>

@@ -1,4 +1,7 @@
-﻿export const PORTFOLIO_DATA = {
+﻿// NOTE: the rendered site does NOT read this file — sections (including the
+// PROJECTS array) are hardcoded in components.jsx. Keep edits there; this file
+// is kept only as a content reference.
+export const PORTFOLIO_DATA = {
   identity: {
     name: "Nicholas W. Fraser",
     pitch: "Building AI software for real problems. Real-time multiplayer arcade games on the side.",
@@ -17,7 +20,7 @@
     { label: "Major", value: "Finance + Business Analytics" },
     { label: "School", value: "UQ" },
     { label: "Grad year", value: "2027" },
-    { label: "Live projects", value: "03" },
+    { label: "Live projects", value: "06" },
   ],
 
   skills: {

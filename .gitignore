@@ -27,6 +27,10 @@ vite.config.ts.timestamp-*
 .omc
 .omc/
 
+# Agent/session state
+.design-import/
+.letta/
+
 # Obsidian junction artifacts (added by vault migration)
 .obsidian/
 .trash/

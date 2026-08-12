@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && bunx wrangler pages deploy dist --project-name=nickwfraser-portfolio --branch=main"
+    "deploy": "vite build && bunx wrangler pages deploy --branch=main",
+    "dev:functions": "vite build && bunx wrangler pages dev --port 8788"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

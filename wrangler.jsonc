@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nickwfraser-portfolio",
+  "compatibility_date": "2026-08-08",
+  "pages_build_output_dir": "dist",
+  // Testimonials submitted at /testimonial. Everything lands under `pending:` and
+  // is only ever read back for the public wall after it has been moved to
+  // `approved:` by hand — see functions/api/testimonial.js.
+  "kv_namespaces": [
+    {
+      "binding": "TESTIMONIALS",
+      "id": "cd71fd92f7e44b4db646435602f1e98c"
+    }
+  ]
+}
