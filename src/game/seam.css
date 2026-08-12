@@ -1,0 +1,204 @@
+/* SEAM — hidden two-phone duel. Reuses the site's :root tokens. */
+
+.seam-root {
+  /* opponent tone: sky, themed. bare :root is the dark palette on this site */
+  --seam-opp: oklch(0.74 0.09 235);
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  overflow: hidden;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  z-index: 100;
+}
+:root[data-theme="light"] .seam-root {
+  --seam-opp: oklch(0.46 0.09 235);
+}
+
+.seam-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* ---------- shared bits ---------- */
+.seam-title {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--text);
+}
+.seam-title .seam-slash { color: var(--accent); }
+.seam-sub {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 260px;
+  text-align: center;
+  line-height: 1.7;
+}
+.seam-btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  padding: 14px 34px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.seam-btn:active { background: var(--bg-3); }
+.seam-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+.seam-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 24px;
+  text-align: center;
+}
+
+/* ---------- host QR ---------- */
+.seam-qr {
+  width: min(72vw, 340px);
+  aspect-ratio: 1;
+  padding: 14px;
+  background: oklch(0.98 0.005 250);
+  border-radius: 10px;
+}
+.seam-qr svg { display: block; width: 100%; height: 100%; color: oklch(0.15 0.01 260); }
+.seam-dots::after {
+  content: "…";
+  display: inline-block;
+  animation: seam-ellipsis 1.4s steps(4) infinite;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+@keyframes seam-ellipsis { 0% { width: 0; } 100% { width: 1.2em; } }
+@media (prefers-reduced-motion: reduce) {
+  .seam-dots::after { animation: none; }
+}
+
+/* ---------- HUD ---------- */
+.seam-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-size: 11px;
+}
+.seam-exit {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  pointer-events: auto;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.seam-badge {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--faint);
+  letter-spacing: 0.14em;
+}
+.seam-pips {
+  position: absolute;
+  top: 40px;
+  display: flex;
+  gap: 5px;
+}
+.seam-pips--me { left: 14px; }
+.seam-pips--them { right: 14px; }
+.seam-pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+}
+.seam-pips--me .seam-pip.on { background: var(--accent); border-color: var(--accent); }
+.seam-pips--them .seam-pip.on { background: var(--seam-opp); border-color: var(--seam-opp); }
+
+/* ---------- countdown / splash / overlays ---------- */
+.seam-count {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: 96px;
+  font-weight: 600;
+  color: var(--text);
+}
+.seam-splash {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+  font-size: 26px;
+  letter-spacing: 0.12em;
+}
+.seam-splash small { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; }
+.seam-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px;
+  text-align: center;
+  background: color-mix(in oklch, var(--bg) 82%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+/* ---------- rotate / desktop gates ---------- */
+.seam-rotate { display: none; }
+@media (orientation: landscape) {
+  .seam-rotate {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+}
+.seam-desktop-qr {
+  width: 180px;
+  aspect-ratio: 1;
+  padding: 10px;
+  background: oklch(0.98 0.005 250);
+  border-radius: 8px;
+}
+.seam-desktop-qr svg { display: block; width: 100%; height: 100%; color: oklch(0.15 0.01 260); }

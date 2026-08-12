@@ -7,6 +7,7 @@ import {
 } from "./components.jsx";
 
 const Showcase = lazy(() => import("./showcase/Showcase.jsx"));
+const Seam = lazy(() => import("./game/Seam.jsx"));
 const Privacy = lazy(() => import("./Privacy.jsx"));
 const Testimonial = lazy(() => import("./Testimonial.jsx"));
 
@@ -54,6 +55,14 @@ export default function App() {
         element={
           <Suspense fallback={<div className="showcase-loading">loading scene…</div>}>
             <Showcase />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/seam"
+        element={
+          <Suspense fallback={<div className="showcase-loading">loading…</div>}>
+            <Seam />
           </Suspense>
         }
       />

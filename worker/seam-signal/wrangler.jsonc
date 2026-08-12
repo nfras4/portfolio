@@ -1,0 +1,13 @@
+// seam-signal — standalone signaling + relay worker for SEAM (/seam on the portfolio).
+// Deployed independently of the Pages project. Sibling pattern to impostor's DOs.
+// Deploy: bunx wrangler deploy --config worker/seam-signal/wrangler.jsonc
+{
+  "name": "seam-signal",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-08",
+  "durable_objects": {
+    "bindings": [{ "name": "SEAM_ROOM", "class_name": "SeamRoom" }]
+  },
+  // Never remove or reorder existing migration entries; new DO classes append a new tag.
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SeamRoom"] }]
+}
