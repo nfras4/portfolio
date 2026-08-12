@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HeroShader from "./flair/HeroShader.jsx";
 import { StickyNote, MvmRaceNote } from "./flair/StickyNotes.jsx";
 import { RetroComputer, ParcelBox } from "./flair/Models.jsx";
@@ -109,14 +110,29 @@ function useNavActive(setActive) {
 export function Nav({ onShowcase, theme, onToggleTheme }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("about");
+  const navigate = useNavigate();
+  const taps = useRef({ n: 0, t: 0 });
   useNavActive(setActive);
 
   const close = () => setOpen(false);
 
+  // easter egg: five quick taps on the brand opens /seam (touch devices only)
+  const onBrandTap = () => {
+    if (!window.matchMedia("(pointer: coarse)").matches) return;
+    const now = Date.now();
+    const s = taps.current;
+    s.n = now - s.t < 2500 ? s.n + 1 : 1;
+    s.t = now;
+    if (s.n >= 5) {
+      s.n = 0;
+      navigate("/seam");
+    }
+  };
+
   return (
     <nav className="nav">
       <div className="shell nav-inner">
-        <a href="#top" className="nav-brand">
+        <a href="#top" className="nav-brand" onClick={onBrandTap}>
           <span className="nav-brand-mark">nick</span>
           <span className="nav-brand-slash">/</span>
           <span className="nav-status">open to roles and work</span>

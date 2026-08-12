@@ -18,7 +18,7 @@ function EmberwoodTag() {
       target="_blank"
       rel="noopener"
       className="showcase-tag"
-      aria-label="Play Emberwood, opens in a new tab"
+      aria-label="NEW! play emberwood (opens in a new tab)"
     >
       <span className="showcase-tag-kicker">↗ NEW!</span>
       <span className="showcase-tag-label">play emberwood</span>
@@ -35,11 +35,14 @@ function Home({ theme, onToggleTheme }) {
       <EmberwoodTag />
       <Nav onShowcase={() => navigate("/showcase")} theme={theme} onToggleTheme={onToggleTheme} />
       <Hero />
-      <AboutSection />
-      <ProjectsSection />
-      <SkillsSection />
-      <ExperienceSection />
-      <ContactSection />
+      {/* landmark for a11y (Lighthouse landmark-one-main) */}
+      <main>
+        <AboutSection />
+        <ProjectsSection />
+        <SkillsSection />
+        <ExperienceSection />
+        <ContactSection />
+      </main>
       <Footer />
     </>
   );
