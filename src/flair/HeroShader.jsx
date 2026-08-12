@@ -47,6 +47,10 @@ const FADE_PERIOD_S = 16; // one full fade-in/out cycle
 const ALPHA_MIN = 0.05;
 const ALPHA_MAX = 0.30;
 const STATIC_ALPHA = 0.14;
+// ≤880px: no rAF loop (battery), one brighter static frame so the texture
+// actually reads on a narrow screen.
+const MOBILE_MQ = "(max-width: 880px)";
+const MOBILE_STATIC_ALPHA = 0.18;
 
 /**
  * Fractal-terrain contour shader (ported from the six-panel generative study,
@@ -63,7 +67,7 @@ export default function HeroShader() {
     const s = stateRef.current;
     if (s.setColor) {
       s.setColor();
-      if (s.staticMode) s.drawFrame(7, STATIC_ALPHA);
+      if (s.staticMode) s.drawFrame(7, s.staticAlpha ?? STATIC_ALPHA);
     }
   });
 
@@ -99,7 +103,14 @@ export default function HeroShader() {
     const uColor = gl.getUniformLocation(prog, "u_color");
 
     const s = stateRef.current;
-    s.staticMode = reduced;
+    // Static (single-frame) mode when the user prefers reduced motion OR on
+    // mobile-width viewports; mobile gets a brighter frame so it reads.
+    const mobileMq = window.matchMedia(MOBILE_MQ);
+    const applyMode = () => {
+      s.staticMode = reduced || mobileMq.matches;
+      s.staticAlpha = mobileMq.matches ? MOBILE_STATIC_ALPHA : STATIC_ALPHA;
+    };
+    applyMode();
 
     s.setColor = () => {
       const [r, g, b] = cssVarToRGB("--accent");
@@ -124,7 +135,7 @@ export default function HeroShader() {
     resize();
     const ro = new ResizeObserver(() => {
       resize();
-      if (s.staticMode) s.drawFrame(7, STATIC_ALPHA);
+      if (s.staticMode) s.drawFrame(7, s.staticAlpha);
     });
     ro.observe(canvas.parentElement);
 
@@ -169,8 +180,20 @@ export default function HeroShader() {
     const onVis = () => (document.hidden ? stop() : start());
     document.addEventListener("visibilitychange", onVis);
 
+    // Flip between animated and static when the viewport crosses 880px.
+    const onMqChange = () => {
+      applyMode();
+      if (s.staticMode) {
+        stop();
+        s.drawFrame(7, s.staticAlpha);
+      } else {
+        start();
+      }
+    };
+    mobileMq.addEventListener("change", onMqChange);
+
     if (s.staticMode) {
-      s.drawFrame(7, STATIC_ALPHA);
+      s.drawFrame(7, s.staticAlpha);
     } else {
       start();
     }
@@ -180,6 +203,7 @@ export default function HeroShader() {
       io.disconnect();
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
+      mobileMq.removeEventListener("change", onMqChange);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [reduced]);

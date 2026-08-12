@@ -152,6 +152,8 @@ export function Nav({ onShowcase, theme, onToggleTheme }) {
           >
             <ThemeIcon theme={theme} />
           </button>
+          {/* mobile menu footer line; display:none outside the ≤880px open menu */}
+          <span className="nav-status nav-status--menu">open to roles and work</span>
         </div>
       </div>
     </nav>
@@ -211,7 +213,9 @@ export function Hero() {
         <div className="hero-links fade-up" style={{ transitionDelay: "0.36s" }}>
           <a href="https://arcade.nickwfraser.dev/" className="hero-link">
             <span className="hero-link-key">→ side project!</span>
-            <span className="hero-link-val">arcade.nickwfraser.dev <span className="hero-link-arrow">↗</span></span>
+            {/* suffix span is nested (not a direct flex item) so desktop spacing is unchanged;
+                hidden at ≤640px where the compact grid shows "arcade ↗" */}
+            <span className="hero-link-val"><span>arcade<span className="hero-link-val-ext">.nickwfraser.dev</span></span> <span className="hero-link-arrow">↗</span></span>
           </a>
           <a href="https://github.com/nfras4" className="hero-link">
             <span className="hero-link-key">→ code</span>
@@ -391,12 +395,20 @@ export function ProjectsSection() {
               target="_blank"
               rel="noopener"
               data-flip={p.flip ? "true" : "false"}
-              aria-label={`Open ${p.name}`}
             >
               <div className="proj-media">
                 <img src={p.img} alt={p.alt} loading="lazy" />
               </div>
               <div className="proj-body">
+                <div className="proj-year mono">{p.year}</div>
+                <h3 className="proj-name">
+                  {p.name}<span className="proj-arrow">↗</span>
+                </h3>
+                <div className="proj-url mono">{p.url}</div>
+                <p className="proj-tagline">{p.tagline}</p>
+                {/* note sits after the tagline so its ≤640px in-flow position lands between
+                    tagline and stack chips; on desktop it is position:absolute (top-right),
+                    so DOM order has no visual effect there */}
                 {p.note ? (
                   <div className="proj-note">
                     <StickyNote size="sm" {...p.note} />
@@ -407,12 +419,6 @@ export function ProjectsSection() {
                     <MvmRaceNote size="sm" {...p.liveNote} />
                   </div>
                 ) : null}
-                <div className="proj-year mono">{p.year}</div>
-                <h3 className="proj-name">
-                  {p.name}<span className="proj-arrow">↗</span>
-                </h3>
-                <div className="proj-url mono">{p.url}</div>
-                <p className="proj-tagline">{p.tagline}</p>
                 <div className="proj-stack">
                   {p.stack.map((s) => (
                     <span key={s} className="proj-stack-chip">{s}</span>

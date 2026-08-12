@@ -1,0 +1,373 @@
+{
+  "meta": {
+    "url": "http://localhost:4300/",
+    "date": "2026-08-12T13:43:44.360Z"
+  },
+  "widths": {
+    "360": {
+      "docHeight": 9050,
+      "scrollWidth": 360,
+      "innerWidth": 360,
+      "sections": {
+        "nav": 65,
+        "hero": 688,
+        "about": 1003,
+        "projects": 3360,
+        "skills": 1480,
+        "experience": 1833,
+        "contact": 475,
+        "footer": 210
+      }
+    },
+    "390": {
+      "docHeight": 8722,
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "sections": {
+        "nav": 65,
+        "hero": 649,
+        "about": 952,
+        "projects": 3232,
+        "skills": 1439,
+        "experience": 1765,
+        "contact": 475,
+        "footer": 210
+      }
+    },
+    "414": {
+      "docHeight": 8400,
+      "scrollWidth": 414,
+      "innerWidth": 414,
+      "sections": {
+        "nav": 65,
+        "hero": 626,
+        "about": 952,
+        "projects": 3190,
+        "skills": 1358,
+        "experience": 1676,
+        "contact": 388,
+        "footer": 210
+      }
+    },
+    "430": {
+      "docHeight": 8292,
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "sections": {
+        "nav": 65,
+        "hero": 626,
+        "about": 927,
+        "projects": 3131,
+        "skills": 1358,
+        "experience": 1652,
+        "contact": 388,
+        "footer": 210
+      }
+    }
+  },
+  "tapTargets390": {
+    "showcaseTag": {
+      "sel": ".showcase-tag",
+      "text": "↗ NEW!play emberwood",
+      "w": 162.7,
+      "h": 40.8,
+      "font": "16px",
+      "padding": "10px 16px",
+      "visible": true
+    },
+    "navBrand": {
+      "sel": ".nav-brand",
+      "text": "nick/open to roles and work",
+      "w": 74,
+      "h": 45.6,
+      "font": "16px",
+      "padding": "10px 8px",
+      "visible": true
+    },
+    "navToggle": {
+      "sel": ".nav-toggle",
+      "text": "",
+      "w": 44,
+      "h": 44,
+      "font": "13.3333px",
+      "padding": "14px 11px",
+      "visible": true
+    },
+    "heroLinks": [
+      {
+        "sel": ".hero-link",
+        "text": "→ side project!arcade.nickwfraser.de",
+        "w": 170,
+        "h": 50,
+        "font": "16px",
+        "padding": "12px 14px",
+        "visible": true
+      },
+      {
+        "sel": ".hero-link",
+        "text": "→ codegithub ↗",
+        "w": 170,
+        "h": 50,
+        "font": "16px",
+        "padding": "12px 14px",
+        "visible": true
+      },
+      {
+        "sel": ".hero-link",
+        "text": "→ worklinkedin ↗",
+        "w": 170,
+        "h": 50,
+        "font": "16px",
+        "padding": "12px 14px",
+        "visible": true
+      },
+      {
+        "sel": ".hero-link",
+        "text": "→ resumecv.pdf ↗",
+        "w": 170,
+        "h": 50,
+        "font": "16px",
+        "padding": "12px 14px",
+        "visible": true
+      },
+      {
+        "sel": ".hero-link",
+        "text": "→ contactnickwfraser@gmail.com ↗",
+        "w": 350,
+        "h": 50,
+        "font": "16px",
+        "padding": "12px 14px",
+        "visible": true
+      }
+    ],
+    "aboutPhotoCredit": {
+      "sel": ".about-photo-credit",
+      "text": "photo: Kgbo · CC BY-SA 4.0",
+      "w": 244,
+      "h": 44,
+      "font": "10px",
+      "padding": "14px 6px",
+      "visible": true
+    },
+    "projRows": [
+      {
+        "sel": ".proj-row",
+        "text": "2026Itemate↗item",
+        "w": 350,
+        "h": 647.4,
+        "font": "16px",
+        "padding": "0px",
+        "visible": true
+      },
+      {
+        "sel": ".proj-row",
+        "text": "2025 to presentE",
+        "w": 350,
+        "h": 648.8,
+        "font": "16px",
+        "padding": "0px",
+        "visible": true
+      },
+      {
+        "sel": ".proj-row",
+        "text": "2025 to presentM",
+        "w": 350,
+        "h": 544.1,
+        "font": "16px",
+        "padding": "0px",
+        "visible": true
+      },
+      {
+        "sel": ".proj-row",
+        "text": "2025 to presentG",
+        "w": 350,
+        "h": 489.8,
+        "font": "16px",
+        "padding": "0px",
+        "visible": true
+      },
+      {
+        "sel": ".proj-row",
+        "text": "2026Monkey vs Ma",
+        "w": 350,
+        "h": 670.3,
+        "font": "16px",
+        "padding": "0px",
+        "visible": true
+      }
+    ],
+    "certCards": [
+      {
+        "w": 350,
+        "h": 119.6
+      },
+      {
+        "w": 350,
+        "h": 119.6
+      },
+      {
+        "w": 350,
+        "h": 119.6
+      }
+    ],
+    "inlineLink": {
+      "sel": ".inline-link",
+      "text": "// projects",
+      "w": 95.1,
+      "h": 47.1,
+      "font": "13.8px",
+      "padding": "12px 2px",
+      "visible": true
+    },
+    "contactEmail": {
+      "sel": ".contact-email",
+      "text": "nickwfraser@gmail.com↗",
+      "w": 261.9,
+      "h": 55.2,
+      "font": "17px",
+      "padding": "13px 20px",
+      "visible": true
+    },
+    "footerLinks": [
+      {
+        "sel": ".footer-inner a",
+        "text": "github",
+        "w": 54.8,
+        "h": 44.8,
+        "font": "13px",
+        "padding": "12px 4px",
+        "visible": true
+      },
+      {
+        "sel": ".footer-inner a",
+        "text": "linkedin",
+        "w": 70.4,
+        "h": 44.8,
+        "font": "13px",
+        "padding": "12px 4px",
+        "visible": true
+      },
+      {
+        "sel": ".footer-inner a",
+        "text": "arcade.nickwfraser.dev",
+        "w": 179.6,
+        "h": 44.8,
+        "font": "13px",
+        "padding": "12px 4px",
+        "visible": true
+      },
+      {
+        "sel": ".footer-inner a",
+        "text": "privacy",
+        "w": 62.6,
+        "h": 44.8,
+        "font": "13px",
+        "padding": "12px 4px",
+        "visible": true
+      }
+    ],
+    "heroMetaItems": [
+      {
+        "w": 348,
+        "h": 42.4
+      },
+      {
+        "w": 348,
+        "h": 64.8
+      },
+      {
+        "w": 348,
+        "h": 64.8
+      }
+    ]
+  },
+  "shader": {
+    "canvasPresent": true,
+    "display": "block",
+    "size": {
+      "w": 409,
+      "h": 680
+    },
+    "maskImage": "linear-gradient(rgb(0, 0, 0), rgba(0, 0, 0, ",
+    "rafCallsIn2s": 0
+  },
+  "heroStaticStrip": {
+    "stripPx": 79200,
+    "diffPx": 0
+  },
+  "notes390": [
+    {
+      "position": "static",
+      "visible": true,
+      "w": 312,
+      "h": 44.9,
+      "betweenTaglineAndStack": true,
+      "transform": "none",
+      "bg": "oklch(0.86 0.07 235)",
+      "text": "used by a Brisbane clinic"
+    },
+    {
+      "position": "static",
+      "visible": true,
+      "w": 312,
+      "h": 104.9,
+      "betweenTaglineAndStack": true,
+      "transform": "none",
+      "bg": "oklch(0.87 0.09 62)",
+      "text": "no enginehand-rolled 3Dthree.js + glsl"
+    },
+    {
+      "position": "static",
+      "visible": true,
+      "w": 312,
+      "h": 126.4,
+      "betweenTaglineAndStack": true,
+      "transform": "none",
+      "bg": "oklch(0.87 0.08 155)",
+      "text": "todayML $11,278🐒 $10,320machine ahead ·"
+    }
+  ],
+  "navOpen390": {
+    "navLink": {
+      "w": 326,
+      "h": 53,
+      "font": "15px",
+      "display": "flex",
+      "text": "about"
+    },
+    "navTheme": {
+      "w": 44,
+      "h": 44,
+      "font": "13.3333px",
+      "display": "flex",
+      "text": ""
+    },
+    "navStatusMenu": {
+      "w": 132.6,
+      "h": 35.2,
+      "font": "12px",
+      "display": "flex",
+      "text": "open to roles and work"
+    }
+  },
+  "dark390": {
+    "theme": "dark",
+    "notes": [
+      {
+        "bg": "oklch(0.36 0.06 235)",
+        "ink": "oklch(0.95 0.01 80)",
+        "visible": true
+      },
+      {
+        "bg": "oklch(0.38 0.08 55)",
+        "ink": "oklch(0.95 0.01 80)",
+        "visible": true
+      },
+      {
+        "bg": "oklch(0.36 0.06 155)",
+        "ink": "oklch(0.95 0.01 80)",
+        "visible": true
+      }
+    ]
+  }
+}

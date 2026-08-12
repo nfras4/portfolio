@@ -439,10 +439,12 @@
   margin-top: 3px;
   font-size: 9px;
   letter-spacing: 0.08em;
-  opacity: 0.7;
-  transition: opacity 0.18s ease;
+  /* --muted (not inherited --faint at 0.7 opacity): the credit is a CC licence
+     requirement and must pass 4.5:1 — Lighthouse contrast fix, all themes */
+  color: var(--muted);
+  transition: color 0.18s ease;
 }
-.about-photo-credit:hover { opacity: 1; }
+.about-photo-credit:hover { color: var(--text); }
 #contact { position: relative; }
 .contact-box {
   position: absolute;
@@ -461,8 +463,36 @@
 @media (max-width: 880px) {
   .about-grid { grid-template-columns: 1fr; gap: 32px; }
   .about-photo { justify-self: center; }
+  /* portrait mask: the 105° desktop sweep hides most of a narrow screen —
+     keep the contours mostly visible top-to-bottom instead */
+  .hero-shader {
+    -webkit-mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.25) 100%);
+    mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.25) 100%);
+  }
 }
 @media (max-width: 640px) {
-  /* not enough body width to share with the project title */
-  .proj-note { display: none; }
+  /* sticky notes come in-flow: a small un-rotated chip between the tagline
+     and the stack chips (the notes are content, not decor) */
+  .proj-note {
+    position: static;
+    margin: 12px 0 0;
+    pointer-events: none;
+  }
+  .proj-note .sticky-note {
+    transform: none;
+    width: fit-content;
+    min-width: 0;
+    max-width: 100%;
+  }
+  /* about keeps its tighter rhythm in step with .section 56px */
+  #about.section { padding: 56px 0; }
+  /* the campus photo earns less of a 390px column */
+  .about-photo { transform: none; }
+  .about-photo img { width: 232px; height: 248px; }
+  .about-photo-credit {
+    font-size: 10px;
+    /* pad the tap target without shifting the caption's layout */
+    padding: 14px 6px;
+    margin: -10px -6px -8px;
+  }
 }
