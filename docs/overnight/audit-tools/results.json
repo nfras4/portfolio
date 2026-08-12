@@ -1,0 +1,1389 @@
+{
+  "meta": {
+    "url": "http://localhost:4174/",
+    "date": "2026-08-12T13:10:07.751Z"
+  },
+  "desktop": {
+    "typography": {
+      "body": {
+        "selector": "body",
+        "fontSize": "17px",
+        "lineHeight": "27.2px",
+        "fontWeight": "400",
+        "text": "↗ NEW!play emberwoodnick/open to roles a"
+      },
+      "h1_heroPitch": {
+        "selector": "h1.hero-pitch",
+        "fontSize": "76px",
+        "lineHeight": "79.04px",
+        "fontWeight": "600",
+        "text": "I build software forBrisbane clinicians"
+      },
+      "heroName": {
+        "selector": ".hero-name",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "fontWeight": "400",
+        "text": "Nicholas W. Fraser · Brisbane"
+      },
+      "sectionNumLabel": {
+        "selector": ".section-num-label",
+        "fontSize": "14px",
+        "lineHeight": "22.4px",
+        "fontWeight": "500",
+        "text": "about"
+      },
+      "lead": {
+        "selector": ".lead",
+        "fontSize": "22px",
+        "lineHeight": "33px",
+        "fontWeight": "400",
+        "text": "Finance + Business Analytics student at "
+      },
+      "bItem": {
+        "selector": ".b-item",
+        "fontSize": "17.5px",
+        "lineHeight": "27.125px",
+        "fontWeight": "400",
+        "text": "Finishing Advanced Business (Honours) at"
+      },
+      "projName": {
+        "selector": ".proj-name",
+        "fontSize": "30px",
+        "lineHeight": "48px",
+        "fontWeight": "600",
+        "text": "Itemate↗"
+      },
+      "projTagline": {
+        "selector": ".proj-tagline",
+        "fontSize": "15.5px",
+        "lineHeight": "24.8px",
+        "fontWeight": "400",
+        "text": "MBS billing copilot for surgical practic"
+      },
+      "projMetricDd": {
+        "selector": ".proj-metric dd",
+        "fontSize": "13.5px",
+        "lineHeight": "18.225px",
+        "fontWeight": "500",
+        "text": "Commercial · live"
+      },
+      "skillItem": {
+        "selector": ".skill-items li",
+        "fontSize": "14px",
+        "lineHeight": "22.4px",
+        "fontWeight": "400",
+        "text": "TypeScript"
+      },
+      "expRole": {
+        "selector": ".exp-role",
+        "fontSize": "21px",
+        "lineHeight": "33.6px",
+        "fontWeight": "600",
+        "text": "Founder & AI Engineer"
+      },
+      "expBullet": {
+        "selector": ".exp-bullets li",
+        "fontSize": "15px",
+        "lineHeight": "24px",
+        "fontWeight": "400",
+        "text": "The only technical contact the practice "
+      },
+      "contactPitch": {
+        "selector": ".contact-pitch",
+        "fontSize": "44px",
+        "lineHeight": "49.28px",
+        "fontWeight": "600",
+        "text": "Hiring interns or grads in healthtech an"
+      },
+      "contactEmail": {
+        "selector": ".contact-email .mono",
+        "fontSize": "16px",
+        "lineHeight": "25.6px",
+        "fontWeight": "500",
+        "text": "↗"
+      },
+      "navLink": {
+        "selector": ".nav-link",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "fontWeight": "400",
+        "text": "about"
+      },
+      "heroLinkVal": {
+        "selector": ".hero-link-val",
+        "fontSize": "14px",
+        "lineHeight": "22.4px",
+        "fontWeight": "500",
+        "text": "arcade.nickwfraser.dev ↗"
+      },
+      "heroLinkKey": {
+        "selector": ".hero-link-key",
+        "fontSize": "11px",
+        "lineHeight": "17.6px",
+        "fontWeight": "400",
+        "text": "→ side project!"
+      },
+      "heroMetaVal": {
+        "selector": ".hero-meta-val",
+        "fontSize": "15px",
+        "lineHeight": "24px",
+        "fontWeight": "400",
+        "text": "Brisbane, Australia"
+      },
+      "footer": {
+        "selector": ".footer-inner",
+        "fontSize": "12.5px",
+        "lineHeight": "20px",
+        "fontWeight": "400",
+        "text": "© 2026 · built solo · react + vitegithub"
+      },
+      "small": {
+        "selector": ".proj-year",
+        "fontSize": "12px",
+        "lineHeight": "19.2px",
+        "fontWeight": "400",
+        "text": "2026"
+      }
+    },
+    "spacing": {
+      "sections": [
+        {
+          "id": "nav",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "height": 65
+        },
+        {
+          "id": "top",
+          "paddingTop": "112px",
+          "paddingBottom": "88px",
+          "height": 649
+        },
+        {
+          "id": "about",
+          "paddingTop": "60px",
+          "paddingBottom": "60px",
+          "height": 546
+        },
+        {
+          "id": "projects",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 2427
+        },
+        {
+          "id": "skills",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 791
+        },
+        {
+          "id": "education",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 1462
+        },
+        {
+          "id": "contact",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 566
+        },
+        {
+          "id": "footer",
+          "paddingTop": "40px",
+          "paddingBottom": "56px",
+          "height": 116
+        }
+      ],
+      "shellPadding": "0px 32px",
+      "docHeight": 6558,
+      "innerHeight": 900
+    },
+    "decorative": {
+      "heroShaderCanvas": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 1440,
+          "h": 648,
+          "inDocFlowTop": 0
+        }
+      ],
+      "heroComputer3D": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 190,
+          "h": 190,
+          "inDocFlowTop": 138
+        }
+      ],
+      "contactBox3D": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 190,
+          "h": 190,
+          "inDocFlowTop": 6006
+        }
+      ],
+      "workspaceModel": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 300,
+          "h": 360,
+          "inDocFlowTop": 4609
+        }
+      ],
+      "expModelRail": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 300,
+          "h": 361,
+          "inDocFlowTop": 4609
+        }
+      ],
+      "pixelBox": [
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 190,
+          "h": 190,
+          "inDocFlowTop": 6006
+        }
+      ],
+      "retroComputer": [
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 143,
+          "h": 143,
+          "inDocFlowTop": 138
+        }
+      ],
+      "stickyNotes": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 181,
+          "h": 73,
+          "inDocFlowTop": 1385
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 164,
+          "h": 112,
+          "inDocFlowTop": 1860
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 168,
+          "h": 134,
+          "inDocFlowTop": 3169
+        }
+      ],
+      "sectionNum": [
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 1056,
+          "h": 22,
+          "inDocFlowTop": 709
+        },
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 1056,
+          "h": 22,
+          "inDocFlowTop": 1288
+        },
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 1056,
+          "h": 22,
+          "inDocFlowTop": 3715
+        },
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 1056,
+          "h": 22,
+          "inDocFlowTop": 4506
+        }
+      ],
+      "sectionNumLine": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 720
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 1299
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 3726
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 4516
+        }
+      ],
+      "projNote": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 178,
+          "h": 66,
+          "inDocFlowTop": 1389
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 160,
+          "h": 106,
+          "inDocFlowTop": 1862
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 164,
+          "h": 128,
+          "inDocFlowTop": 3172
+        }
+      ],
+      "navStatus": [
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 171,
+          "h": 19,
+          "inDocFlowTop": 1993
+        }
+      ],
+      "canvases": [
+        {
+          "cls": "hero-shader",
+          "w": 1440,
+          "h": 648,
+          "display": "block",
+          "backingW": 1008,
+          "backingH": 454
+        },
+        {
+          "cls": "",
+          "w": 300,
+          "h": 360,
+          "display": "block",
+          "backingW": 300,
+          "backingH": 360
+        }
+      ]
+    }
+  },
+  "m360": {
+    "overflow": {
+      "scrollWidth": 360,
+      "innerWidth": 360,
+      "overflow": 0,
+      "offenders": []
+    },
+    "spacing": {
+      "sections": [
+        {
+          "id": "nav",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "height": 65
+        },
+        {
+          "id": "top",
+          "paddingTop": "112px",
+          "paddingBottom": "88px",
+          "height": 963
+        },
+        {
+          "id": "about",
+          "paddingTop": "60px",
+          "paddingBottom": "60px",
+          "height": 1159
+        },
+        {
+          "id": "projects",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 4366
+        },
+        {
+          "id": "skills",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 2010
+        },
+        {
+          "id": "education",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 2038
+        },
+        {
+          "id": "contact",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 659
+        },
+        {
+          "id": "footer",
+          "paddingTop": "40px",
+          "paddingBottom": "56px",
+          "height": 192
+        }
+      ],
+      "shellPadding": "0px 20px",
+      "docHeight": 11387,
+      "innerHeight": 800
+    }
+  },
+  "m390": {
+    "overflow": {
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "overflow": 0,
+      "offenders": []
+    },
+    "spacing": {
+      "sections": [
+        {
+          "id": "nav",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "height": 65
+        },
+        {
+          "id": "top",
+          "paddingTop": "112px",
+          "paddingBottom": "88px",
+          "height": 900
+        },
+        {
+          "id": "about",
+          "paddingTop": "60px",
+          "paddingBottom": "60px",
+          "height": 1078
+        },
+        {
+          "id": "projects",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 4298
+        },
+        {
+          "id": "skills",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 1989
+        },
+        {
+          "id": "education",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 1969
+        },
+        {
+          "id": "contact",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 659
+        },
+        {
+          "id": "footer",
+          "paddingTop": "40px",
+          "paddingBottom": "56px",
+          "height": 192
+        }
+      ],
+      "shellPadding": "0px 20px",
+      "docHeight": 11085,
+      "innerHeight": 844
+    },
+    "typography": {
+      "body": {
+        "selector": "body",
+        "fontSize": "16px",
+        "lineHeight": "25.6px",
+        "fontWeight": "400",
+        "text": "↗ NEW!play emberwoodnick/open to roles a"
+      },
+      "h1_heroPitch": {
+        "selector": "h1.hero-pitch",
+        "fontSize": "38px",
+        "lineHeight": "39.52px",
+        "fontWeight": "600",
+        "text": "I build software forAPI dashboards"
+      },
+      "heroName": {
+        "selector": ".hero-name",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "fontWeight": "400",
+        "text": "Nicholas W. Fraser · Brisbane"
+      },
+      "sectionNumLabel": {
+        "selector": ".section-num-label",
+        "fontSize": "14px",
+        "lineHeight": "22.4px",
+        "fontWeight": "500",
+        "text": "about"
+      },
+      "lead": {
+        "selector": ".lead",
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "fontWeight": "400",
+        "text": "Finance + Business Analytics student at "
+      },
+      "bItem": {
+        "selector": ".b-item",
+        "fontSize": "17.5px",
+        "lineHeight": "27.125px",
+        "fontWeight": "400",
+        "text": "Finishing Advanced Business (Honours) at"
+      },
+      "projName": {
+        "selector": ".proj-name",
+        "fontSize": "30px",
+        "lineHeight": "48px",
+        "fontWeight": "600",
+        "text": "Itemate↗"
+      },
+      "projTagline": {
+        "selector": ".proj-tagline",
+        "fontSize": "15.5px",
+        "lineHeight": "24.8px",
+        "fontWeight": "400",
+        "text": "MBS billing copilot for surgical practic"
+      },
+      "projMetricDd": {
+        "selector": ".proj-metric dd",
+        "fontSize": "13.5px",
+        "lineHeight": "18.225px",
+        "fontWeight": "500",
+        "text": "Commercial · live"
+      },
+      "skillItem": {
+        "selector": ".skill-items li",
+        "fontSize": "14px",
+        "lineHeight": "22.4px",
+        "fontWeight": "400",
+        "text": "TypeScript"
+      },
+      "expRole": {
+        "selector": ".exp-role",
+        "fontSize": "21px",
+        "lineHeight": "33.6px",
+        "fontWeight": "600",
+        "text": "Founder & AI Engineer"
+      },
+      "expBullet": {
+        "selector": ".exp-bullets li",
+        "fontSize": "15px",
+        "lineHeight": "24px",
+        "fontWeight": "400",
+        "text": "The only technical contact the practice "
+      },
+      "contactPitch": {
+        "selector": ".contact-pitch",
+        "fontSize": "26px",
+        "lineHeight": "29.12px",
+        "fontWeight": "600",
+        "text": "Hiring interns or grads in healthtech an"
+      },
+      "contactEmail": {
+        "selector": ".contact-email .mono",
+        "fontSize": "16px",
+        "lineHeight": "25.6px",
+        "fontWeight": "500",
+        "text": "↗"
+      },
+      "navLink": {
+        "selector": ".nav-link",
+        "fontSize": "13px",
+        "lineHeight": "20.8px",
+        "fontWeight": "400",
+        "text": "about"
+      },
+      "heroLinkVal": {
+        "selector": ".hero-link-val",
+        "fontSize": "14px",
+        "lineHeight": "22.4px",
+        "fontWeight": "500",
+        "text": "arcade.nickwfraser.dev ↗"
+      },
+      "heroLinkKey": {
+        "selector": ".hero-link-key",
+        "fontSize": "11px",
+        "lineHeight": "17.6px",
+        "fontWeight": "400",
+        "text": "→ side project!"
+      },
+      "heroMetaVal": {
+        "selector": ".hero-meta-val",
+        "fontSize": "15px",
+        "lineHeight": "24px",
+        "fontWeight": "400",
+        "text": "Brisbane, Australia"
+      },
+      "footer": {
+        "selector": ".footer-inner",
+        "fontSize": "12.5px",
+        "lineHeight": "20px",
+        "fontWeight": "400",
+        "text": "© 2026 · built solo · react + vitegithub"
+      },
+      "small": {
+        "selector": ".proj-year",
+        "fontSize": "12px",
+        "lineHeight": "19.2px",
+        "fontWeight": "400",
+        "text": "2026"
+      }
+    },
+    "tapTargets": [
+      {
+        "tag": "a",
+        "cls": "showcase-tag",
+        "text": "↗ NEW!play emberwood",
+        "w": 142.8,
+        "h": 58.8,
+        "fontSize": "16px",
+        "padding": "10px 16px 10px 14px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "nav-brand",
+        "text": "nick/open to roles and work",
+        "w": 58,
+        "h": 25.6,
+        "fontSize": "16px",
+        "padding": "0px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "button",
+        "cls": "nav-toggle",
+        "text": "Open menu",
+        "w": 38,
+        "h": 32,
+        "fontSize": "13.3333px",
+        "padding": "8px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "nav-link",
+        "text": "about",
+        "w": 326,
+        "h": 53.8,
+        "fontSize": "13px",
+        "padding": "16px 0px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "nav-link",
+        "text": "projects",
+        "w": 326,
+        "h": 53.8,
+        "fontSize": "13px",
+        "padding": "16px 0px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "nav-link",
+        "text": "skills",
+        "w": 326,
+        "h": 53.8,
+        "fontSize": "13px",
+        "padding": "16px 0px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "nav-link",
+        "text": "experience",
+        "w": 326,
+        "h": 53.8,
+        "fontSize": "13px",
+        "padding": "16px 0px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "nav-link",
+        "text": "contact",
+        "w": 326,
+        "h": 53.8,
+        "fontSize": "13px",
+        "padding": "16px 0px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "button",
+        "cls": "nav-theme",
+        "text": "Switch to dark mode",
+        "w": 32,
+        "h": 18,
+        "fontSize": "13.3333px",
+        "padding": "0px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "hero-link",
+        "text": "→ side project!arcade.nickwfraser.dev ↗",
+        "w": 210.1,
+        "h": 69,
+        "fontSize": "16px",
+        "padding": "12px 18px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "hero-link",
+        "text": "→ codegithub ↗",
+        "w": 97.8,
+        "h": 69,
+        "fontSize": "16px",
+        "padding": "12px 18px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "hero-link",
+        "text": "→ worklinkedin ↗",
+        "w": 105.3,
+        "h": 69,
+        "fontSize": "16px",
+        "padding": "12px 18px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "hero-link",
+        "text": "→ resumecv.pdf ↗",
+        "w": 95.8,
+        "h": 69,
+        "fontSize": "16px",
+        "padding": "12px 18px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "hero-link hero-link--primary",
+        "text": "→ contactnickwfraser@gmail.com ↗",
+        "w": 215.6,
+        "h": 69,
+        "fontSize": "16px",
+        "padding": "12px 18px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "about-photo-credit",
+        "text": "photo: Kgbo · CC BY-SA 4.0",
+        "w": 280.3,
+        "h": 22.2,
+        "fontSize": "9px",
+        "padding": "0px",
+        "display": "block",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "proj-row",
+        "text": "used by a Brisbane clinic2026Itemate↗itemate.netMB",
+        "w": 350,
+        "h": 834.2,
+        "fontSize": "16px",
+        "padding": "0px",
+        "display": "grid",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "proj-row",
+        "text": "no enginehand-rolled 3Dthree.js + glsl2025 to pres",
+        "w": 350,
+        "h": 749.2,
+        "fontSize": "16px",
+        "padding": "0px",
+        "display": "grid",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "proj-row",
+        "text": "2025 to presentMonkey Barrel↗arcade.nickwfraser.de",
+        "w": 350,
+        "h": 784.6,
+        "fontSize": "16px",
+        "padding": "0px",
+        "display": "grid",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "proj-row",
+        "text": "2025 to presentGoCard Insights↗gocard.nickwfraser.",
+        "w": 350,
+        "h": 784.6,
+        "fontSize": "16px",
+        "padding": "0px",
+        "display": "grid",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "proj-row",
+        "text": "todayML $11,278🐒 $10,320machine ahead · live2026M",
+        "w": 350,
+        "h": 774,
+        "fontSize": "16px",
+        "padding": "0px",
+        "display": "grid",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "cert-card",
+        "text": "AnthropicBuilding with the Claude APIMay 2026verif",
+        "w": 350,
+        "h": 131.6,
+        "fontSize": "16px",
+        "padding": "20px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "cert-card",
+        "text": "AnthropicAI Fluency: Framework & FoundationsMay 20",
+        "w": 350,
+        "h": 131.6,
+        "fontSize": "16px",
+        "padding": "20px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "cert-card",
+        "text": "AnthropicAI Fluency for Small BusinessesMay 2026ve",
+        "w": 350,
+        "h": 131.6,
+        "fontSize": "16px",
+        "padding": "20px",
+        "display": "flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "inline-link",
+        "text": "// projects",
+        "w": 91.1,
+        "h": 19,
+        "fontSize": "13.8px",
+        "padding": "0px",
+        "display": "inline",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "contact-email",
+        "text": "nickwfraser@gmail.com↗",
+        "w": 303,
+        "h": 70.8,
+        "fontSize": "18px",
+        "padding": "20px 30px",
+        "display": "inline-flex",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "text": "github",
+        "w": 45,
+        "h": 20,
+        "fontSize": "12.5px",
+        "padding": "0px",
+        "display": "block",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "text": "linkedin",
+        "w": 60,
+        "h": 20,
+        "fontSize": "12.5px",
+        "padding": "0px",
+        "display": "block",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "text": "arcade.nickwfraser.dev",
+        "w": 165,
+        "h": 20,
+        "fontSize": "12.5px",
+        "padding": "0px",
+        "display": "block",
+        "visible": true
+      },
+      {
+        "tag": "a",
+        "cls": "",
+        "text": "privacy",
+        "w": 52.5,
+        "h": 20,
+        "fontSize": "12.5px",
+        "padding": "0px",
+        "display": "block",
+        "visible": true
+      }
+    ],
+    "decorative": {
+      "heroShaderCanvas": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 390,
+          "h": 899,
+          "inDocFlowTop": 0
+        }
+      ],
+      "heroComputer3D": [
+        {
+          "display": "none",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        }
+      ],
+      "contactBox3D": [
+        {
+          "display": "none",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        }
+      ],
+      "workspaceModel": {
+        "present": false
+      },
+      "expModelRail": [
+        {
+          "display": "none",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        }
+      ],
+      "pixelBox": {
+        "present": false
+      },
+      "retroComputer": [
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        }
+      ],
+      "stickyNotes": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        }
+      ],
+      "sectionNum": [
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 350,
+          "h": 22,
+          "inDocFlowTop": 960
+        },
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 350,
+          "h": 22,
+          "inDocFlowTop": 2070
+        },
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 350,
+          "h": 22,
+          "inDocFlowTop": 6368
+        },
+        {
+          "display": "flex",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 350,
+          "h": 22,
+          "inDocFlowTop": 8357
+        }
+      ],
+      "sectionNumLine": [
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 970
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 2080
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 6378
+        },
+        {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 56,
+          "h": 1,
+          "inDocFlowTop": 8367
+        }
+      ],
+      "projNote": [
+        {
+          "display": "none",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        },
+        {
+          "display": "none",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        },
+        {
+          "display": "none",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        }
+      ],
+      "navStatus": [
+        {
+          "display": "none",
+          "visibility": "visible",
+          "opacity": "1",
+          "w": 0,
+          "h": 0,
+          "inDocFlowTop": 4656
+        }
+      ],
+      "canvases": [
+        {
+          "cls": "hero-shader",
+          "w": 390,
+          "h": 899,
+          "display": "block",
+          "backingW": 409,
+          "backingH": 944
+        }
+      ]
+    },
+    "navOpenTapTargets": [
+      {
+        "cls": "nav-toggle",
+        "text": "",
+        "w": 38,
+        "h": 32,
+        "fontSize": "13.3333px"
+      },
+      {
+        "cls": "nav-link",
+        "text": "about",
+        "w": 326,
+        "h": 54,
+        "fontSize": "13px"
+      },
+      {
+        "cls": "nav-link",
+        "text": "projects",
+        "w": 326,
+        "h": 54,
+        "fontSize": "13px"
+      },
+      {
+        "cls": "nav-link",
+        "text": "skills",
+        "w": 326,
+        "h": 54,
+        "fontSize": "13px"
+      },
+      {
+        "cls": "nav-link",
+        "text": "experience",
+        "w": 326,
+        "h": 54,
+        "fontSize": "13px"
+      },
+      {
+        "cls": "nav-link",
+        "text": "contact",
+        "w": 326,
+        "h": 54,
+        "fontSize": "13px"
+      },
+      {
+        "cls": "nav-theme",
+        "text": "",
+        "w": 32,
+        "h": 32,
+        "fontSize": "13.3333px"
+      }
+    ]
+  },
+  "m414": {
+    "overflow": {
+      "scrollWidth": 414,
+      "innerWidth": 414,
+      "overflow": 0,
+      "offenders": []
+    },
+    "spacing": {
+      "sections": [
+        {
+          "id": "nav",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "height": 65
+        },
+        {
+          "id": "top",
+          "paddingTop": "112px",
+          "paddingBottom": "88px",
+          "height": 900
+        },
+        {
+          "id": "about",
+          "paddingTop": "60px",
+          "paddingBottom": "60px",
+          "height": 1078
+        },
+        {
+          "id": "projects",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 4242
+        },
+        {
+          "id": "skills",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 1989
+        },
+        {
+          "id": "education",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 1880
+        },
+        {
+          "id": "contact",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 659
+        },
+        {
+          "id": "footer",
+          "paddingTop": "40px",
+          "paddingBottom": "56px",
+          "height": 192
+        }
+      ],
+      "shellPadding": "0px 20px",
+      "docHeight": 10940,
+      "innerHeight": 896
+    }
+  },
+  "m430": {
+    "overflow": {
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "overflow": 0,
+      "offenders": []
+    },
+    "spacing": {
+      "sections": [
+        {
+          "id": "nav",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "height": 65
+        },
+        {
+          "id": "top",
+          "paddingTop": "112px",
+          "paddingBottom": "88px",
+          "height": 900
+        },
+        {
+          "id": "about",
+          "paddingTop": "60px",
+          "paddingBottom": "60px",
+          "height": 1051
+        },
+        {
+          "id": "projects",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 4257
+        },
+        {
+          "id": "skills",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 1989
+        },
+        {
+          "id": "education",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 1856
+        },
+        {
+          "id": "contact",
+          "paddingTop": "92px",
+          "paddingBottom": "92px",
+          "height": 659
+        },
+        {
+          "id": "footer",
+          "paddingTop": "40px",
+          "paddingBottom": "56px",
+          "height": 152
+        }
+      ],
+      "shellPadding": "0px 20px",
+      "docHeight": 10864,
+      "innerHeight": 932
+    }
+  }
+}

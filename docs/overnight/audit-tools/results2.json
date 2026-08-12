@@ -1,0 +1,38 @@
+{
+  "shaderIdle": {
+    "rafFpsIdle": 61,
+    "canvasPresent": true,
+    "canvasBacking": {
+      "w": 409,
+      "h": 944
+    },
+    "webglContext": true
+  },
+  "mobileChunksLoaded": {
+    "three": false,
+    "workspaceModel": false,
+    "showcase": false,
+    "all": [
+      "index-BoY_a7RZ.js"
+    ]
+  },
+  "scrollPerf4x": {
+    "frames": 361,
+    "avgMs": 16.6,
+    "p50": 16.7,
+    "p90": 17.4,
+    "p99": 18.6,
+    "worst": 24.8,
+    "framesOver33ms": 0,
+    "framesOver100ms": 0,
+    "effectiveFps": 60.1
+  },
+  "heroIdle4x": {
+    "rafFps": 60
+  },
+  "navClosedClip": {
+    "maxHeight": "0px",
+    "overflow": "hidden",
+    "rectH": 17
+  }
+}
