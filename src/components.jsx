@@ -394,6 +394,23 @@ const PROJECTS = [
     ],
     liveNote: { tone: "c", rotate: -2 },
   },
+  {
+    flip: true,
+    img: "/projects/rsna.png",
+    alt: "RSNA Knee Abnormality Detection competition page on Kaggle",
+    year: "2026",
+    name: "RSNA Knee Abnormality Detection",
+    url: "kaggle.com",
+    href: "https://www.kaggle.com/competitions/rsna-knee-abnormality-detection",
+    tagline:
+      "Teaching neural networks to spot knee injuries on MRI scans, for the RSNA's Kaggle competition. Entered for the efficiency prize, so the models have to score well and run fast: five PyTorch models trained on 4,407 scans, combined into one entry that runs in about ten minutes.",
+    stack: ["Python", "PyTorch", "DICOM", "Kaggle"],
+    metrics: [
+      { dt: "Public LB", dd: "0.799" },
+      { dt: "Scale", dd: "4,407 studies" },
+      { dt: "Status", dd: "Closes Oct 2026" },
+    ],
+  },
 ];
 
 export function ProjectsSection() {
