@@ -407,7 +407,7 @@ const PROJECTS = [
     stack: ["Python", "PyTorch", "DICOM", "Kaggle"],
     metrics: [
       { dt: "Public LB", dd: "0.799" },
-      { dt: "Scale", dd: "4,407 studies" },
+      { dt: "Rank", dd: "786 / 1,314 teams" },
       { dt: "Status", dd: "Closes Oct 2026" },
     ],
   },
