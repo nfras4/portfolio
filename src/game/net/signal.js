@@ -2,11 +2,10 @@
 // Carries JSON signaling ({t:"offer"|"answer"|"ice"|"ready"|"role"|"peer-joined"|
 // "peer-left"|"relay"}) and, in relay mode, raw binary state packets.
 
-// TODO(deploy morning): replace PLACEHOLDER with the real workers.dev subdomain
-// (or custom domain) after `bunx wrangler deploy --config worker/seam-signal/wrangler.jsonc`.
+// Deployed 2026-08-13: `bunx wrangler deploy --config worker/seam-signal/wrangler.jsonc`
 export const SIGNAL_URL = import.meta.env.DEV
   ? `ws://${location.hostname}:8787`
-  : "wss://seam-signal.PLACEHOLDER.workers.dev";
+  : "wss://seam-signal.nickwfraser-b09.workers.dev";
 
 const HB_INTERVAL = 30_000; // keepalive so the DO's 10-min idle alarm never fires mid-match
 

@@ -34,10 +34,19 @@ export const sfx = {
   tick() {
     blip({ type: "sine", from: 1250, to: 1100, dur: 0.045, gain: 0.045 });
   },
+  // chip damage: short mid knock — lighter than the kill thud
+  hurt() {
+    blip({ type: "triangle", from: 300, to: 140, dur: 0.12, gain: 0.1 });
+  },
   // hit thud: low drop
   thud() {
     blip({ type: "triangle", from: 180, to: 46, dur: 0.28, gain: 0.16 });
     blip({ type: "square", from: 90, to: 40, dur: 0.2, gain: 0.07 });
+  },
+  // dry fire: dull double click, no ammo
+  dry() {
+    blip({ type: "square", from: 140, to: 120, dur: 0.03, gain: 0.05 });
+    blip({ type: "square", from: 110, to: 95, dur: 0.03, gain: 0.04, delay: 0.06 });
   },
   // countdown beeps: 3-2-1 same tone, "go" a fifth up
   beep(final = false) {

@@ -1,5 +1,68 @@
 # MORNING-REVIEW.md — overnight session 2026-08-13
 
+> **ADDENDUM — day session 2026-08-13 (uncommitted on top of the 6 commits).**
+> Nick-directed expansion, all working-tree only:
+>
+> **Mobile layout:** the three 3D models now SHOW on mobile (retro computer
+> in-flow at hero top, workspace wireframe under the Tek Monkeys bullets,
+> parcel box after the contact CTA — `ContactBox` moved to end of section in
+> JSX; desktop unaffected, it's absolutely positioned there). Hero shader
+> ANIMATES on mobile again (reverses overnight's static-frame battery call —
+> one line in `HeroShader.jsx` to flip back). Chasing its invisibility found
+> a real bug: **StrictMode's dev double-mount permanently killed the WebGL
+> context** (`loseContext()` in cleanup, remount gets the dead context back).
+> Fixed with full context-loss recovery — stash the `WEBGL_lose_context` ext
+> while healthy (getExtension returns null once lost), a persistent
+> `preventDefault` guard on `webglcontextlost` (restore is refused without
+> it), and a deferred retry (the lost event dispatches AFTER cleanup→effect).
+> Recovery also covers real GPU context drops on phones.
+>
+> **SEAM expansion (DUAL! homage deepened, per the dossier's ship-framework
+> pattern):**
+> - **Ammo economy** — per-fighter pool + regen, tap costs 1, charge up to 3,
+>   charge ring honestly caps at what ammo affords, dry-fire click + flash,
+>   diamond pips HUD.
+> - **Three fighters** (`engine/fighters.js`): dart (single bolt / heavy
+>   slug), swarm (3-fan / 5-fan curved, quick ship, ammo 4), orb (slow
+>   2-bounce heavy / SEAM-BREAKER that splits into 3 at the seam, weighty
+>   ship). All bullet motion deterministic from spawn params (ax curve,
+>   bounce budget, split flag) — no live homing, both sims stay identical;
+>   split verified mirror-consistent in a bun harness.
+> - **Fighter select** phase (online: pick + lock in, host starts when clock
+>   sync AND both fighters land; AI: pick + difficulty + fight). Rematch
+>   keeps fighters.
+> - **2D movement** — ship roams its own half (y ∈ [0.06, 0.6]), touch drag
+>   is 2D, state packet now 23 bytes (x, y, vx, vy, charge). Opponent ghost
+>   tick scales with THEIR seam proximity (big tick = shots arrive sooner).
+> - **Tilt controls** — DeviceOrientation steering (DUAL!'s confirmed input),
+>   ±22° range, neutral auto-calibrated at each round's "go", iOS permission
+>   via the tilt chip tap, touch stays as fallback/default without a sensor.
+>   ⚠ NEVER tested with a real gyro — beta/gamma signs may need flipping on
+>   a real phone; check first.
+> - **vs the machine** (`engine/bot.js`) — local AI: a full mirrored sim as a
+>   headless second client (reuses the exact netplay sim/spawn path), dodge/
+>   stalk/trigger-discipline brain, three difficulties (breezy/even/ruthless).
+>   The dossier notes a solo mode was DUAL!'s most-requested missing feature.
+> - e2e updated for the select phase — **ALL PASS p2p + relay** post-change
+>   (run from `docs/overnight/audit-tools/`, copy e2e.mjs beside its
+>   node_modules). `seam-live.mjs` there launches two visible windows for
+>   one-human testing. AI difficulty balance is untested by a human.
+> - **HP model** (Nick: one-tap kills made charging pointless): 3 HP per
+>   round, chip damage — dart charged slug 2, orb slam 2 (split children 1),
+>   swarm darts 1. State packet 24 bytes (hp u8), `hurt` event for instant
+>   shooter feedback, HP bars both corners, hurt blink + lighter sfx.
+> - **Desktop play**: /seam's desktop QR gate is GONE — full menu on desktop,
+>   arrows/WASD move, space charges/fires, arena constrained to a centered
+>   phone-proportion column. Desktop can host a duel a phone joins by QR.
+>
+> **DEPLOYED 2026-08-13**: `seam-signal` worker LIVE at
+> `seam-signal.nickwfraser-b09.workers.dev` (URL now real in signal.js), site
+> deployed to production (`7c6fba7d` deployment). Boot-verified on
+> nickwfraser.dev: mobile hero + models, /seam host QR against the live
+> worker, an AI round on mobile touch AND desktop keys, orb seam-split with
+> ammo drain. ⚠ **ALL OF THIS IS STILL UNCOMMITTED** — production now serves
+> code that exists only in this working tree. Commit before touching anything.
+
 Branch: **`overnight/mobile-dual`** (6 commits on top of `409cfeb`). Nothing
 pushed, nothing deployed, `main` untouched. `DECISIONS.md` has every judgement
 call; research/plans/evidence live in `docs/overnight/`.

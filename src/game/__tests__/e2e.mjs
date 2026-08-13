@@ -108,6 +108,17 @@ try {
   const joinUrl = RELAY ? roomUrl.replace("/seam#", "/seam?forcerelay=1#") : roomUrl;
   await b.goto(joinUrl, { waitUntil: "networkidle2" });
 
+  // --- fighter select: both pick and lock in ---
+  async function pickAndLock(page, fighter, label) {
+    await page.waitForSelector(`.seam-card[data-fighter="${fighter}"]`, { timeout: 20000 });
+    await page.tap(`.seam-card[data-fighter="${fighter}"]`);
+    await page.waitForSelector(".seam-lock:not([disabled])", { timeout: 5000 });
+    await page.tap(".seam-lock");
+    console.log(`  ${label} locked ${fighter}`);
+  }
+  await pickAndLock(a, "dart", "A");
+  await pickAndLock(b, "swarm", "B");
+
   // --- countdown → round ---
   const aCount = await waitPhase(a, ["countdown", "round"], 40000, "A");
   const bCount = await waitPhase(b, ["countdown", "round"], 40000, "B");

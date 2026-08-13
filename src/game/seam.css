@@ -178,6 +178,84 @@
   backdrop-filter: blur(6px);
 }
 
+/* ---------- fighter select ---------- */
+.seam-select { gap: 14px; justify-content: center; }
+.seam-select-head { letter-spacing: 0.14em; text-transform: uppercase; font-size: 11px; }
+.seam-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(88vw, 340px);
+}
+.seam-card {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-2);
+  color: var(--text);
+  font-family: var(--mono);
+  padding: 11px 14px;
+  cursor: pointer;
+}
+.seam-card.sel {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 9%, var(--bg-2));
+}
+.seam-card:disabled { opacity: 0.55; cursor: default; }
+.seam-card.sel:disabled { opacity: 1; }
+.seam-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+.seam-card-head i { font-style: normal; font-size: 10px; color: var(--accent); letter-spacing: 0.12em; }
+.seam-card-line { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.seam-card-ammo { color: var(--faint); font-size: 10px; letter-spacing: 0.06em; }
+
+.seam-chiprow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.seam-chiplabel { font-size: 10px; color: var(--faint); letter-spacing: 0.12em; text-transform: uppercase; }
+.seam-chip {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.seam-chip.on {
+  color: var(--accent-fg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.seam-hint { font-size: 10px; color: var(--faint); max-width: 250px; text-align: center; line-height: 1.6; }
+.seam-btn--ai { filter: saturate(0.6) brightness(0.94); }
+.seam-vs {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.14em;
+  text-align: center;
+}
+.seam-count { flex-direction: column; }
+
 /* ---------- rotate / desktop gates ---------- */
 .seam-rotate { display: none; }
 @media (orientation: landscape) {
@@ -194,6 +272,21 @@
     letter-spacing: 0.08em;
   }
 }
+/* desktop play: the arena keeps a phone-ish column, centered; a wall-to-wall
+   1440px arena would make vertical crossings feel instant relative to x */
+.seam-root--desktop .seam-canvas,
+.seam-root--desktop .seam-hud {
+  left: 50%;
+  right: auto; /* both elements are inset:0 — right would fight the width */
+  transform: translateX(-50%);
+  width: min(100%, calc(100dvh * 0.52));
+}
+.seam-root--desktop .seam-canvas {
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+.seam-root--desktop .seam-rotate { display: none !important; }
+
 .seam-desktop-qr {
   width: 180px;
   aspect-ratio: 1;
