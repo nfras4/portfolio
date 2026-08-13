@@ -638,7 +638,6 @@ export function ExperienceSection() {
 export function ContactSection() {
   return (
     <section className="section" id="contact" aria-labelledby="hd-contact">
-      <ContactBox />
       <div className="shell contact-block reveal">
         <h2 className="section-num" id="hd-contact">
           <span className="section-num-line" aria-hidden="true" />
@@ -659,6 +658,8 @@ export function ContactSection() {
           </div>
         </div>
       </div>
+      {/* absolute on desktop (order irrelevant), in-flow under the CTA on mobile */}
+      <ContactBox />
     </section>
   );
 }

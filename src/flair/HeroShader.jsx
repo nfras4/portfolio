@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cssVarToRGB, usePrefersReducedMotion, useThemeChange } from "./hooks.js";
 import "./flair.css";
 
@@ -62,6 +62,10 @@ export default function HeroShader() {
   const canvasRef = useRef(null);
   const stateRef = useRef({});
   const reduced = usePrefersReducedMotion();
+  // Bumped when a lost WebGL context is restored so the effect re-runs.
+  // Covers StrictMode's dev double-mount (cleanup loses the context, the
+  // remount gets the same dead one back) and real GPU context loss on phones.
+  const [glEpoch, setGlEpoch] = useState(0);
 
   useThemeChange(() => {
     const s = stateRef.current;
@@ -74,6 +78,13 @@ export default function HeroShader() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    // Persistent guard, once per canvas element: the browser refuses
+    // restoreContext() unless webglcontextlost was preventDefault'ed, and the
+    // loss happens during effect teardown — after per-effect listeners are gone.
+    if (!canvas.dataset.glGuard) {
+      canvas.dataset.glGuard = "1";
+      canvas.addEventListener("webglcontextlost", (e) => e.preventDefault());
+    }
     const gl = canvas.getContext("webgl2", {
       alpha: true,
       premultipliedAlpha: false,
@@ -81,6 +92,30 @@ export default function HeroShader() {
       powerPreference: "low-power",
     });
     if (!gl) return; // no WebGL2 → plain hero, no shader
+    if (gl.isContextLost()) {
+      // getExtension returns null on a lost context — restore needs the ext
+      // object stashed while the context was healthy (stateRef survives the
+      // StrictMode remount).
+      const ext = stateRef.current.loseExt;
+      if (!ext) return;
+      const onRestored = () => setGlEpoch((n) => n + 1);
+      canvas.addEventListener("webglcontextrestored", onRestored, { once: true });
+      // The webglcontextlost event dispatches as a task AFTER the synchronous
+      // cleanup→effect re-run; restoring before it fires warns "not allowed"
+      // and no-ops (it doesn't throw). Retry on a short timer until it takes.
+      let tries = 0;
+      let timer = 0;
+      const tryRestore = () => {
+        if (!gl.isContextLost()) return; // done; the restored event re-runs us
+        ext.restoreContext();
+        if (++tries < 5) timer = setTimeout(tryRestore, 50);
+      };
+      timer = setTimeout(tryRestore, 0);
+      return () => {
+        clearTimeout(timer);
+        canvas.removeEventListener("webglcontextrestored", onRestored);
+      };
+    }
 
     const compile = (type, src) => {
       const sh = gl.createShader(type);
@@ -103,11 +138,13 @@ export default function HeroShader() {
     const uColor = gl.getUniformLocation(prog, "u_color");
 
     const s = stateRef.current;
+    s.loseExt = gl.getExtension("WEBGL_lose_context");
     // Static (single-frame) mode when the user prefers reduced motion OR on
     // mobile-width viewports; mobile gets a brighter frame so it reads.
     const mobileMq = window.matchMedia(MOBILE_MQ);
     const applyMode = () => {
-      s.staticMode = reduced || mobileMq.matches;
+      // Nick 2026-08-13: animate on mobile too — static only under reduced motion.
+      s.staticMode = reduced;
       s.staticAlpha = mobileMq.matches ? MOBILE_STATIC_ALPHA : STATIC_ALPHA;
     };
     applyMode();
@@ -180,6 +217,16 @@ export default function HeroShader() {
     const onVis = () => (document.hidden ? stop() : start());
     document.addEventListener("visibilitychange", onVis);
 
+    // Live context loss (GPU reset, backgrounded mobile tab): stop drawing,
+    // let the browser restore, then re-run the effect via the epoch bump.
+    const onCtxLost = (e) => {
+      e.preventDefault(); // required, or webglcontextrestored never fires
+      stop();
+    };
+    const onCtxRestored = () => setGlEpoch((n) => n + 1);
+    canvas.addEventListener("webglcontextlost", onCtxLost);
+    canvas.addEventListener("webglcontextrestored", onCtxRestored);
+
     // Flip between animated and static when the viewport crosses 880px.
     const onMqChange = () => {
       applyMode();
@@ -204,9 +251,13 @@ export default function HeroShader() {
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
       mobileMq.removeEventListener("change", onMqChange);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      // Listeners must go BEFORE loseContext, or our own teardown re-triggers
+      // the restore cycle.
+      canvas.removeEventListener("webglcontextlost", onCtxLost);
+      canvas.removeEventListener("webglcontextrestored", onCtxRestored);
+      s.loseExt?.loseContext();
     };
-  }, [reduced]);
+  }, [reduced, glEpoch]);
 
   return <canvas ref={canvasRef} className="hero-shader" aria-hidden="true" />;
 }

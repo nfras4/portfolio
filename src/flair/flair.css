@@ -454,11 +454,18 @@
   right: clamp(46px, calc((100vw - 1140px) * 0.48 + 46px), 190px);
 }
 
-/* ---------- responsive: degrade gracefully ---------- */
+/* ---------- responsive: 3D objects stay, scaled down (Nick 2026-08-13) ---------- */
 @media (max-width: 1099px) {
-  /* 3D objects disappear on small screens. */
-  .hero-computer,
-  .contact-box { display: none; }
+  .hero-computer .rc-wrap { transform: scale(0.6); }
+  /* workspace wireframe drops below the venue text instead of a side rail */
+  .exp-model-rail { display: block; margin-top: 20px; }
+  .workspace-model { height: 240px; }
+  /* parcel box comes in-flow under the contact CTA */
+  .contact-box {
+    position: static;
+    margin: 56px 0 0;
+  }
+  .contact-box .pb-wrap { transform: scale(0.85); }
 }
 @media (max-width: 880px) {
   .about-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -471,6 +478,19 @@
   }
 }
 @media (max-width: 640px) {
+  /* the retro computer can't overlay a 390px hero (headline spans the full
+     width) — it flows in-line at the top instead, centered above the kicker */
+  .hero-computer {
+    position: static;
+    display: flex;
+    justify-content: center;
+    height: 132px; /* scale() doesn't shrink the layout box; clamp it */
+    margin: 4px 0 22px;
+  }
+  .hero-computer .rc-wrap { transform: scale(0.55); transform-origin: center top; }
+  .workspace-model { height: 210px; }
+  .contact-box .pb-wrap { transform: scale(0.72); }
+  .contact-box { margin-top: 40px; }
   /* sticky notes come in-flow: a small un-rotated chip between the tagline
      and the stack chips (the notes are content, not decor) */
   .proj-note {
