@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeroShader from "./flair/HeroShader.jsx";
 import { StickyNote, MvmRaceNote } from "./flair/StickyNotes.jsx";
@@ -116,15 +116,19 @@ export function Nav({ onShowcase, theme, onToggleTheme }) {
 
   const close = () => setOpen(false);
 
-  // easter egg: five quick taps on the brand opens /seam (touch devices only)
+  // easter egg: five quick taps OR clicks on the brand opens /seam
   const onBrandTap = () => {
-    if (!window.matchMedia("(pointer: coarse)").matches) return;
     const now = Date.now();
     const s = taps.current;
     s.n = now - s.t < 2500 ? s.n + 1 : 1;
     s.t = now;
     if (s.n >= 5) {
       s.n = 0;
+      try {
+        sessionStorage.setItem("seam-boot", "1"); // CRT power-on on arrival
+      } catch {
+        /* private mode — plain entry */
+      }
       navigate("/seam");
     }
   };
@@ -202,9 +206,7 @@ export function Hero() {
     <header className="hero" id="top">
       <HeroShader />
       <div className="shell hero-shell">
-        <div className="hero-computer">
-          <RetroComputer />
-        </div>
+        <HeroComputerPortal />
         <div className="hero-name fade-up" style={{ transitionDelay: "0.1s" }}>
           Nicholas W. Fraser · Brisbane
         </div>
@@ -545,6 +547,81 @@ const VENUES = [
     date: "2023",
   },
 ];
+
+// The hero's retro computer doubles as the arcade cabinet: click it and the
+// camera dives into its screen — a fixed overlay grows from the CRT's exact
+// rect to fill the viewport while the computer swings face-on, then /seam
+// boots with its power-on flash. Reduced motion skips straight there.
+function HeroComputerPortal() {
+  const navigate = useNavigate();
+  const ref = useRef(null);
+
+  const enterSeam = useCallback(() => {
+    try {
+      sessionStorage.setItem("seam-boot", "1");
+    } catch {
+      /* private mode — plain entry */
+    }
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const host = ref.current;
+    const screen = host?.querySelector(".rc-screen");
+    if (reduced || !screen) {
+      navigate("/seam");
+      return;
+    }
+    host.classList.add("hero-computer--zoom");
+    const rect = screen.getBoundingClientRect();
+    // the overlay IS the tube: dark glass with scanlines while it zooms, then
+    // it splits open from the center — two shutters with glowing edges — to
+    // reveal the game underneath. No flat black card, no page squashing.
+    const ov = document.createElement("div");
+    ov.className = "seam-warp";
+    ov.innerHTML =
+      '<div class="seam-warp-half seam-warp-half--top"></div>' +
+      '<div class="seam-warp-half seam-warp-half--bottom"></div>';
+    Object.assign(ov.style, {
+      left: `${rect.left}px`,
+      top: `${rect.top}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+    });
+    document.body.appendChild(ov);
+    const s = Math.max(
+      (window.innerWidth * 1.15) / rect.width,
+      (window.innerHeight * 1.15) / rect.height
+    );
+    const dx = window.innerWidth / 2 - (rect.left + rect.width / 2);
+    const dy = window.innerHeight / 2 - (rect.top + rect.height / 2);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ov.style.transform = `translate(${dx}px, ${dy}px) scale(${s})`;
+      });
+    });
+    setTimeout(() => navigate("/seam"), 640);
+    setTimeout(() => ov.classList.add("seam-warp--open"), 760); // shutters part
+    setTimeout(() => ov.remove(), 1400);
+  }, [navigate]);
+
+  return (
+    <div
+      ref={ref}
+      className="hero-computer"
+      role="button"
+      tabIndex={0}
+      aria-label="power on the old computer — it runs seam, a hidden duel"
+      title="power on"
+      onClick={enterSeam}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          enterSeam();
+        }
+      }}
+    >
+      <RetroComputer />
+    </div>
+  );
+}
 
 function WorkspaceRail() {
   const ref = useRef(null);

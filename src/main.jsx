@@ -7,7 +7,7 @@ import "./styles.css";
 // easter-egg hint for dev-tools visitors
 if (!import.meta.env.DEV) {
   console.log(
-    "%cnick/%c hiring? nickwfraser@gmail.com · on a phone, the slash counts to five.",
+    "%cnick/%c hiring? nickwfraser@gmail.com · the slash counts to five — or power on the old computer.",
     "font-family:monospace;font-weight:700;font-size:14px",
     "font-family:monospace;color:#888"
   );

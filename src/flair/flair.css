@@ -397,7 +397,82 @@
   top: 26px;
   right: 8px;
   z-index: 2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
+.hero-computer:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 10px;
+}
+/* the dive: computer swings face-on and toward the camera while the warp
+   overlay (below) grows out of its screen */
+.hero-computer--zoom .rc-scene {
+  animation: none;
+  transition: transform 0.64s cubic-bezier(0.55, 0.04, 0.3, 1);
+  transform: rotateY(-3deg) rotateX(1deg) scale(1.55);
+}
+.seam-warp {
+  position: fixed;
+  z-index: 999;
+  border-radius: 8px;
+  overflow: hidden;
+  transform-origin: center;
+  will-change: transform;
+  transition: transform 0.64s cubic-bezier(0.55, 0.04, 0.3, 1);
+  pointer-events: none;
+}
+/* each half is CRT glass: dark, faintly scanlined, a whisper of center glow */
+.seam-warp-half {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50.5%; /* tiny overlap so no hairline gap mid-zoom */
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(120% 90% at 50% 100%, oklch(0.24 0.02 264) 0%, oklch(0.16 0.01 264) 70%),
+    oklch(0.16 0.01 264);
+  transition: transform 0.42s cubic-bezier(0.5, 0, 0.8, 0.4);
+}
+.seam-warp-half--top { top: 0; }
+.seam-warp-half--bottom {
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(120% 90% at 50% 0%, oklch(0.24 0.02 264) 0%, oklch(0.16 0.01 264) 70%),
+    oklch(0.16 0.01 264);
+}
+/* phosphor edge where the tube will ignite */
+.seam-warp-half--top::after,
+.seam-warp-half--bottom::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 2%, oklch(0.92 0.09 85) 18%, oklch(0.99 0.03 85) 50%, oklch(0.92 0.09 85) 82%, transparent 98%);
+  box-shadow: 0 0 12px 2px oklch(0.9 0.1 85 / 0.85), 0 0 34px 6px oklch(0.85 0.12 70 / 0.45);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.seam-warp-half--top::after { bottom: 0; }
+.seam-warp-half--bottom::after { top: 0; }
+/* the reveal: edges ignite, shutters part */
+.seam-warp--open .seam-warp-half--top { transform: translateY(-102%); }
+.seam-warp--open .seam-warp-half--bottom { transform: translateY(102%); }
+.seam-warp--open .seam-warp-half::after { opacity: 1; }
 .hero-computer .rc-wrap {
   transform: scale(0.75);
   transform-origin: top right;

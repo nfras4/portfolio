@@ -55,6 +55,19 @@
 >   arrows/WASD move, space charges/fires, arena constrained to a centered
 >   phone-proportion column. Desktop can host a duel a phone joins by QR.
 >
+> **Round 3 (2026-08-13, uncommitted): the arcade dress-up.** Clicking the
+> hero computer dives INTO its screen (overlay grows from the CRT's rect,
+> computer swings face-on, /seam boots with a power-on flash); nick/ ×5 now
+> works with mouse clicks too, same boot. SEAM wears a full CRT filter:
+> canvas backing at 0.45× with nearest-neighbour upscale (PIXEL_SCALE in
+> render.js), scanlines + aperture grille + vignette + phosphor breathe
+> (.seam-crt), reduced-motion safe. ⚠ the boot animation scales the root, so
+> the canvas measured mid-boot was 2px tall — the frame loop now self-heals
+> size every 500ms. ⚠ verification traps hit twice: isolated-world probes
+> can't see main-world CSSOM writes OR pump rAF — trust console.log from the
+> real code path, not evaluate reads. ⚠ an orphaned vite held :5173 serving
+> stale transforms after a kill — check the dev-server port banner.
+>
 > **DEPLOYED 2026-08-13**: `seam-signal` worker LIVE at
 > `seam-signal.nickwfraser-b09.workers.dev` (URL now real in signal.js), site
 > deployed to production (`7c6fba7d` deployment). Boot-verified on

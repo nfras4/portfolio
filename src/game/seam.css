@@ -183,10 +183,30 @@
 .seam-select-head { letter-spacing: 0.14em; text-transform: uppercase; font-size: 11px; }
 .seam-cards {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: min(88vw, 340px);
+  flex-direction: row;
+  gap: 12px;
+  width: min(88vw, 360px);
 }
+/* double class: must outrank the base .seam-card rule wherever it sits */
+.seam-card.seam-card--pic {
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 8px 12px;
+  text-align: center;
+}
+.seam-card-ship {
+  width: 58px;
+  height: 62px;
+  color: var(--accent);
+  display: block;
+}
+.seam-card-name {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.seam-card.sel .seam-card-name { color: var(--text); }
 .seam-card {
   appearance: none;
   display: flex;
@@ -207,16 +227,6 @@
 }
 .seam-card:disabled { opacity: 0.55; cursor: default; }
 .seam-card.sel:disabled { opacity: 1; }
-.seam-card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  font-size: 15px;
-  letter-spacing: 0.08em;
-}
-.seam-card-head i { font-style: normal; font-size: 10px; color: var(--accent); letter-spacing: 0.12em; }
-.seam-card-line { font-size: 11px; color: var(--muted); line-height: 1.5; }
-.seam-card-ammo { color: var(--faint); font-size: 10px; letter-spacing: 0.06em; }
 
 .seam-chiprow {
   display: flex;
@@ -255,6 +265,20 @@
   text-align: center;
 }
 .seam-count { flex-direction: column; }
+
+/* CRT power-on: phosphor settling — brightness/saturation only, NEVER a
+   transform (a scaled root poisons every layout measurement taken mid-boot) */
+@media (prefers-reduced-motion: no-preference) {
+  .seam-root--crtboot {
+    animation: seam-crt-on 0.65s ease-out both;
+  }
+  @keyframes seam-crt-on {
+    0% { filter: brightness(2.1) saturate(0.4) contrast(1.15); }
+    35% { filter: brightness(1.15) saturate(0.9); }
+    55% { filter: brightness(1.45) saturate(0.75); } /* one flicker */
+    100% { filter: none; }
+  }
+}
 
 /* ---------- rotate / desktop gates ---------- */
 .seam-rotate { display: none; }

@@ -13,7 +13,7 @@ import { getFighter, splitChildren } from "./fighters.js";
 
 export const TICK = 1 / 120;
 export const SHIP_R = 0.032; // ship hit radius, x-units
-export const HP_MAX = 3; // hits to lose a round — charge shots deal 2
+export const HP_MAX = 6; // hits to lose a round — charge shots deal 2
 // 2D movement bounds: the ship roams its own half, not just a lane
 export const X_MIN = 0.05;
 export const X_MAX = 0.95;

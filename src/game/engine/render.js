@@ -41,8 +41,8 @@ export function resize(r) {
   r.dpr = Math.min(2, window.devicePixelRatio || 1);
   r.w = Math.max(1, Math.round(rect.width));
   r.h = Math.max(1, Math.round(rect.height));
-  r.canvas.width = r.w * r.dpr;
-  r.canvas.height = r.h * r.dpr;
+  r.canvas.width = Math.max(1, Math.round(r.w * r.dpr));
+  r.canvas.height = Math.max(1, Math.round(r.h * r.dpr));
 }
 
 export function shake(r) {

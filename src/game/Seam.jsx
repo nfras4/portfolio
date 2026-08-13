@@ -75,24 +75,27 @@ function Pips({ n, side }) {
   );
 }
 
+// ship glyphs, mirroring render.js drawShip — the picture IS the card
+const SHIP_PATHS = {
+  dart: "M0 -1.25 L1 0.75 L0 0.15 L-1 0.75 Z",
+  swarm:
+    "M0 -1.45 L0.55 0.35 L1.1 0.9 L0.25 0.55 L0 0.25 L-0.25 0.55 L-1.1 0.9 L-0.55 0.35 Z",
+  orb: "M0 -1.05 L0.909 -0.525 L0.909 0.525 L0 1.05 L-0.909 0.525 L-0.909 -0.525 Z",
+};
+
 function FighterCard({ f, selected, locked, onPick }) {
   return (
     <button
-      className={`seam-card${selected ? " sel" : ""}`}
+      className={`seam-card seam-card--pic${selected ? " sel" : ""}`}
       data-fighter={f.id}
       disabled={locked}
       onClick={() => onPick(f.id)}
+      aria-label={`${f.name} — ${f.shotDesc}; charge: ${f.chargeDesc}`}
     >
-      <span className="seam-card-head">
-        <b>{f.name}</b>
-        <i>{f.tag}</i>
-      </span>
-      <span className="seam-card-line">shot — {f.shotDesc}</span>
-      <span className="seam-card-line">charge — {f.chargeDesc}</span>
-      <span className="seam-card-line seam-card-ammo">
-        ammo {f.ammoMax} · regen {f.regen >= 1 ? "fast" : f.regen >= 0.7 ? "steady" : "slow"}
-        {" · "}ship {f.shipSpeed > 1 ? "quick" : f.shipSpeed < 1 ? "weighty" : "true"}
-      </span>
+      <svg viewBox="-1.6 -1.8 3.2 3.4" className="seam-card-ship" aria-hidden="true">
+        <path d={SHIP_PATHS[f.id] || SHIP_PATHS.dart} fill="currentColor" />
+      </svg>
+      <span className="seam-card-name">{f.name}</span>
     </button>
   );
 }
@@ -117,6 +120,18 @@ export default function Seam() {
   const [difficulty, setDifficulty] = useState("even");
   const [controlMode, setControlMode] = useState(isDesktop() ? "keys" : "touch"); // "touch" | "tilt" | "keys"
   const [tiltAvail, setTiltAvail] = useState(false);
+  // CRT power-on flash when arriving through the computer / brand gesture
+  const [crtBoot, setCrtBoot] = useState(() => {
+    try {
+      if (sessionStorage.getItem("seam-boot")) {
+        sessionStorage.removeItem("seam-boot");
+        return true;
+      }
+    } catch {
+      /* private mode */
+    }
+    return false;
+  });
 
   const canvasRef = useRef(null);
   const refs = useRef({
@@ -161,6 +176,17 @@ export default function Seam() {
   useEffect(() => {
     window.__seamDebug = refs.current.debug;
   }, []);
+
+  useEffect(() => {
+    if (!crtBoot) return undefined;
+    const t = setTimeout(() => {
+      setCrtBoot(false);
+      // the power-on animation scales the root — anything measured mid-boot
+      // (canvas backing store!) is undersized; re-measure now that it's over
+      window.dispatchEvent(new Event("resize"));
+    }, 850);
+    return () => clearTimeout(t);
+  }, [crtBoot]);
 
   const hostNow = () => Date.now() + refs.current.offset;
 
@@ -629,9 +655,23 @@ export default function Seam() {
     window.addEventListener("resize", onResize);
 
     let last = performance.now();
+    let lastSizeCheck = 0;
     const frame = (now) => {
       const dt = (now - last) / 1000;
       last = now;
+      // self-healing size: the CRT boot animation scales the root, so any
+      // measurement taken mid-boot undersizes the backing store. Cheap
+      // half-second check beats trusting one perfectly-timed remeasure.
+      if (now - lastSizeCheck > 500) {
+        lastSizeCheck = now;
+        const rect = canvas.getBoundingClientRect();
+        if (
+          Math.abs(rect.width - R.renderer.w) > 1 ||
+          Math.abs(rect.height - R.renderer.h) > 1
+        ) {
+          onResize();
+        }
+      }
       if (R.phase === "round") {
         // keyboard steering (desktop)
         if (R.control === "keys") {
@@ -856,7 +896,9 @@ export default function Seam() {
     myFighter && oppFighter ? `${myFighter} vs ${oppFighter}` : null;
 
   return (
-    <div className={`seam-root${desktop ? " seam-root--desktop" : ""}`}>
+    <div
+      className={`seam-root${desktop ? " seam-root--desktop" : ""}${crtBoot ? " seam-root--crtboot" : ""}`}
+    >
       <canvas
         ref={canvasRef}
         className="seam-canvas"
@@ -885,7 +927,7 @@ export default function Seam() {
               ? "a phone scans the qr to join — or fight the machine right here with arrows + space"
               : "the other phone joins by scanning — nothing to install"}
           </p>
-          <button className="seam-btn" onClick={() => navigate("/")}>back</button>
+          <button className="seam-btn" onClick={() => navigate("/")}>← back to portfolio</button>
         </div>
       )}
 
@@ -984,6 +1026,15 @@ export default function Seam() {
               {lockedIn && oppFighter && (
                 <p className="seam-sub">they picked {oppFighter}</p>
               )}
+              <button
+                className="seam-btn"
+                onClick={() => {
+                  cleanup(refs.current);
+                  navigate("/");
+                }}
+              >
+                ← back to portfolio
+              </button>
             </>
           )}
         </div>
@@ -1039,7 +1090,7 @@ export default function Seam() {
             {rematchWait ? "waiting…" : "rematch"}
           </button>
           <button className="seam-btn" onClick={() => { cleanup(refs.current); navigate("/"); }}>
-            exit
+            ← back to portfolio
           </button>
         </div>
       )}
