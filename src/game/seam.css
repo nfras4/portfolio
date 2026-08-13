@@ -254,6 +254,59 @@
   border-color: var(--accent);
 }
 .seam-hint { font-size: 10px; color: var(--faint); max-width: 250px; text-align: center; line-height: 1.6; }
+.seam-hint--warn { color: var(--accent); }
+
+/* ---------- menu demo ---------- */
+.seam-demo {
+  display: block;
+  width: min(340px, 86vw);
+  height: 150px;
+  margin: -6px 0;
+}
+
+/* ---------- tilt meter (select screen) ---------- */
+.seam-tiltmeter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.seam-tiltbox {
+  position: relative;
+  width: 84px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.seam-tiltbox::before,
+.seam-tiltbox::after {
+  content: "";
+  position: absolute;
+  background: var(--line);
+  opacity: 0.55;
+}
+.seam-tiltbox::before { width: 1px; height: 12px; }
+.seam-tiltbox::after { width: 12px; height: 1px; }
+.seam-tiltdot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+  position: relative;
+  z-index: 1;
+}
+.seam-tiltdot.live { background: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .seam-tiltdot:not(.live) { animation: seam-tiltwait 1.6s ease-in-out infinite; }
+}
+@keyframes seam-tiltwait {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.9; }
+}
+.seam-tiltlabel { font-size: 10px; color: var(--faint); letter-spacing: 0.06em; }
 .seam-btn--ai { filter: saturate(0.6) brightness(0.94); }
 .seam-vs {
   display: block;

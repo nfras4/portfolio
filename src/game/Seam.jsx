@@ -20,6 +20,7 @@ import {
 import { createRenderer, readColors, resize, draw, shake } from "./engine/render.js";
 import { ensureAudio, sfx } from "./engine/audio.js";
 import { qrPath } from "./qr.js";
+import SeamDemo from "./Demo.jsx";
 import "./seam.css";
 
 const WIN_SCORE = 5;
@@ -30,6 +31,8 @@ const FORCE_RELAY =
 const TILT_RANGE_DEG = 22;
 const TILT_VX = 1.5;
 const TILT_VY = 1.05;
+const TILT_DEADZONE_DEG = 1.3; // sensor noise + hand tremor stay still
+const TILT_SMOOTH = 0.3; // per-event low-pass factor
 
 function genRoomId() {
   const bytes = crypto.getRandomValues(new Uint8Array(16)); // 128 bits
@@ -83,6 +86,41 @@ const SHIP_PATHS = {
   orb: "M0 -1.05 L0.909 -0.525 L0.909 0.525 L0 1.05 L-0.909 0.525 L-0.909 -0.525 Z",
 };
 
+// Live tilt preview: a dot that moves as you tilt, so the sensor is proven
+// working (and its direction learnable) before a round ever starts. The first
+// reading after mount becomes the meter's own neutral, mirroring how the game
+// calibrates at "go".
+function TiltMeter({ game, avail }) {
+  const dotRef = useRef(null);
+  useEffect(() => {
+    let raf = 0;
+    let neutral = null;
+    const tick = () => {
+      const t = game.current.tilt;
+      const d = dotRef.current;
+      if (d && t.sGamma != null) {
+        if (!neutral) neutral = { g: t.sGamma, b: t.sBeta };
+        const nx = Math.max(-1, Math.min(1, (t.sGamma - neutral.g) / TILT_RANGE_DEG));
+        const ny = Math.max(-1, Math.min(1, (t.sBeta - neutral.b) / TILT_RANGE_DEG));
+        d.style.transform = `translate(${(nx * 26).toFixed(1)}px, ${(ny * 12).toFixed(1)}px)`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [game]);
+  return (
+    <div className="seam-tiltmeter" aria-hidden="true">
+      <div className="seam-tiltbox">
+        <span ref={dotRef} className={`seam-tiltdot${avail ? " live" : ""}`} />
+      </div>
+      <span className="seam-tiltlabel">
+        {avail ? "tilt your phone — the dot is you" : "waiting for motion…"}
+      </span>
+    </div>
+  );
+}
+
 function FighterCard({ f, selected, locked, onPick }) {
   return (
     <button
@@ -118,8 +156,10 @@ export default function Seam() {
   const [lockedIn, setLockedIn] = useState(false);
   const [aiMode, setAiMode] = useState(false);
   const [difficulty, setDifficulty] = useState("even");
-  const [controlMode, setControlMode] = useState(isDesktop() ? "keys" : "touch"); // "touch" | "tilt" | "keys"
+  // DUAL!'s scheme: tilt is the default on a phone; touch is the opt-out
+  const [controlMode, setControlMode] = useState(isDesktop() ? "keys" : "tilt"); // "touch" | "tilt" | "keys"
   const [tiltAvail, setTiltAvail] = useState(false);
+  const [tiltNote, setTiltNote] = useState(null);
   // CRT power-on flash when arriving through the computer / brand gesture
   const [crtBoot, setCrtBoot] = useState(() => {
     try {
@@ -158,9 +198,10 @@ export default function Seam() {
     wakeLock: null,
     pointerId: null,
     lastPointer: null,
-    control: isDesktop() ? "keys" : "touch",
+    control: isDesktop() ? "keys" : "tilt",
     keys: { left: false, right: false, up: false, down: false },
-    tilt: { gamma: null, beta: null, neutral: null },
+    tilt: { gamma: null, beta: null, sGamma: null, sBeta: null, neutral: null },
+    tiltGranted: false,
     debug: {
       packetsIn: 0, packetsOut: 0, bulletsSpawned: 0, remoteBullets: 0,
       phase: "menu", kind: null,
@@ -237,7 +278,7 @@ export default function Seam() {
         clearInterval(R.countTimer);
         sfx.beep(true);
         // tilt: this instant's orientation is "hands at rest" — calibrate
-        R.tilt.neutral = { gamma: R.tilt.gamma ?? 0, beta: R.tilt.beta ?? 0 };
+        R.tilt.neutral = { gamma: R.tilt.sGamma ?? 0, beta: R.tilt.sBeta ?? 0 };
         setPhase("round");
       }
     }, 50);
@@ -533,6 +574,7 @@ export default function Seam() {
   }, []);
 
   const startHost = useCallback(() => {
+    ensureTiltReady(); // this tap is the iOS permission gesture
     const id = genRoomId();
     setRoomId(id);
     connectRoom(id, false);
@@ -544,6 +586,7 @@ export default function Seam() {
   const startAiSelect = useCallback(() => {
     const R = refs.current;
     ensureAudio();
+    ensureTiltReady(); // this tap is the iOS permission gesture
     setAiMode(true);
     R.role = "host";
     R.debug.role = "host";
@@ -552,9 +595,10 @@ export default function Seam() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const startAiMatch = useCallback(() => {
+  const startAiMatch = useCallback(async () => {
     const R = refs.current;
     if (!R.fighters.me) return;
+    await ensureTiltReady(); // last chance to grant motion before the round
     const botFighter = pickBotFighter(R.fighters.me);
     R.bot = createBot(difficulty, botFighter);
     R.fighters.them = botFighter;
@@ -586,8 +630,19 @@ export default function Seam() {
     const R = refs.current;
     const onOrient = (e) => {
       if (e.gamma === null || e.gamma === undefined) return;
-      R.tilt.gamma = e.gamma;
-      R.tilt.beta = e.beta;
+      // upside-down portrait flips both axes relative to what the player sees
+      const flip =
+        typeof screen !== "undefined" &&
+        screen.orientation?.type === "portrait-secondary"
+          ? -1
+          : 1;
+      const g = e.gamma * flip;
+      const b = e.beta * flip;
+      R.tilt.gamma = g;
+      R.tilt.beta = b;
+      // low-pass: phone orientation sensors jitter at 60 Hz
+      R.tilt.sGamma = R.tilt.sGamma == null ? g : R.tilt.sGamma + TILT_SMOOTH * (g - R.tilt.sGamma);
+      R.tilt.sBeta = R.tilt.sBeta == null ? b : R.tilt.sBeta + TILT_SMOOTH * (b - R.tilt.sBeta);
       // first live reading proves the sensor exists
       setTiltAvail((v) => v || true);
     };
@@ -595,30 +650,62 @@ export default function Seam() {
     return () => window.removeEventListener("deviceorientation", onOrient);
   }, [desktop]);
 
-  // sensor found and the user hasn't chosen? default to tilt (DUAL!'s scheme)
-  useEffect(() => {
+  // iOS: motion access needs a same-gesture requestPermission. Returns
+  // true (usable), false (explicitly denied), or null (couldn't ask —
+  // not a gesture; try again on the next tap).
+  const requestTiltPermission = useCallback(async () => {
     const R = refs.current;
-    if (tiltAvail && !R.controlChosen) {
-      R.control = "tilt";
-      setControlMode("tilt");
+    if (
+      typeof DeviceOrientationEvent === "undefined" ||
+      typeof DeviceOrientationEvent.requestPermission !== "function"
+    ) {
+      return true; // Android / older iOS: events just flow
     }
-  }, [tiltAvail]);
+    if (R.tiltGranted) return true;
+    try {
+      const res = await DeviceOrientationEvent.requestPermission();
+      if (res === "granted") {
+        R.tiltGranted = true;
+        return true;
+      }
+      return false;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const fallBackToTouch = useCallback((note) => {
+    const R = refs.current;
+    R.control = "touch";
+    setControlMode("touch");
+    setTiltNote(note);
+  }, []);
+
+  // Called inside a tap handler while tilt is the chosen scheme: ask iOS for
+  // motion access if we haven't; on refusal drop to touch (the match still
+  // plays). Never blocks a match from starting.
+  const ensureTiltReady = useCallback(async () => {
+    const R = refs.current;
+    if (desktop || R.control !== "tilt") return;
+    const ok = await requestTiltPermission();
+    if (ok === false) fallBackToTouch("motion access denied — using touch");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [desktop]);
 
   const chooseControl = useCallback(async (mode) => {
     const R = refs.current;
     R.controlChosen = true;
-    if (mode === "tilt" && typeof DeviceOrientationEvent !== "undefined" &&
-        typeof DeviceOrientationEvent.requestPermission === "function") {
-      // iOS: permission must come from a user gesture — this tap is one
-      try {
-        const res = await DeviceOrientationEvent.requestPermission();
-        if (res !== "granted") return;
-      } catch {
+    if (mode === "tilt") {
+      const ok = await requestTiltPermission();
+      if (ok === false) {
+        fallBackToTouch("motion access denied — using touch");
         return;
       }
     }
+    setTiltNote(null);
     R.control = mode;
     setControlMode(mode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pickFighter = useCallback((fid) => {
@@ -629,9 +716,10 @@ export default function Seam() {
     setMyFighter(fid);
   }, []);
 
-  const lockFighter = useCallback(() => {
+  const lockFighter = useCallback(async () => {
     const R = refs.current;
     if (!R.fighters.me) return;
+    await ensureTiltReady(); // guests join via URL — this tap is their gesture
     setLockedIn(true);
     R.transport?.sendEvent(ev.fighter(R.fighters.me));
     if (R.role === "host") maybeStart();
@@ -684,13 +772,18 @@ export default function Seam() {
             moveShip(R.sim, vx * dt, vy * dt, vx, vy);
           }
         }
-        // tilt steering: relative to the neutral captured at "go"
-        if (R.control === "tilt" && R.tilt.neutral && R.tilt.gamma !== null) {
-          const g = Math.max(-TILT_RANGE_DEG, Math.min(TILT_RANGE_DEG, R.tilt.gamma - R.tilt.neutral.gamma));
-          const b = Math.max(-TILT_RANGE_DEG, Math.min(TILT_RANGE_DEG, R.tilt.beta - R.tilt.neutral.beta));
-          const vx = (g / TILT_RANGE_DEG) * TILT_VX;
-          const vy = (-b / TILT_RANGE_DEG) * TILT_VY; // tilt top AWAY = advance
-          moveShip(R.sim, vx * dt, vy * dt, vx, vy);
+        // tilt steering: relative to the neutral captured at "go", smoothed,
+        // with a deadzone so a resting hand holds still
+        if (R.control === "tilt" && R.tilt.neutral && R.tilt.sGamma != null) {
+          const shape = (raw) => {
+            const c = Math.max(-TILT_RANGE_DEG, Math.min(TILT_RANGE_DEG, raw));
+            const m = Math.abs(c);
+            if (m < TILT_DEADZONE_DEG) return 0;
+            return (Math.sign(c) * (m - TILT_DEADZONE_DEG)) / (TILT_RANGE_DEG - TILT_DEADZONE_DEG);
+          };
+          const vx = shape(R.tilt.sGamma - R.tilt.neutral.gamma) * TILT_VX;
+          const vy = -shape(R.tilt.sBeta - R.tilt.neutral.beta) * TILT_VY; // tilt top AWAY = advance
+          if (vx || vy) moveShip(R.sim, vx * dt, vy * dt, vx, vy);
         }
 
         const events = advance(R.sim, dt);
@@ -743,6 +836,9 @@ export default function Seam() {
         R.debug.ammo = R.sim.me.ammo;
         R.debug.hp = R.sim.me.hp;
         R.debug.oppHp = R.sim.opp.hp;
+        R.debug.shipX = R.sim.me.x;
+        R.debug.shipY = R.sim.me.y;
+        R.debug.control = R.control;
       }
       draw(R.renderer, R.sim, R.phase === "round" || R.phase === "countdown" || R.phase === "score");
       R.raf = requestAnimationFrame(frame);
@@ -795,7 +891,10 @@ export default function Seam() {
   const onPointerMove = useCallback((e) => {
     const R = refs.current;
     if (e.pointerId !== R.pointerId || !R.lastPointer) return;
-    if (R.control === "tilt") return; // tilt steers; the finger only fires
+    // tilt steers and the finger only fires — but if the sensor has never
+    // produced a reading (no gyro, blocked permission), drag must still steer
+    // or the ship is a brick
+    if (R.control === "tilt" && R.tilt.gamma !== null) return;
     const now = performance.now();
     const dtMove = Math.max(1, now - R.lastPointer.t) / 1000;
     const w = R.renderer?.w || 1;
@@ -915,6 +1014,7 @@ export default function Seam() {
             a duel across two phones. bullets fired off the top of your screen
             come down on theirs.
           </p>
+          <SeamDemo />
           {error && <p className="seam-sub" style={{ color: "var(--accent)" }}>{error}</p>}
           <button className="seam-btn seam-btn--primary" onClick={startHost}>
             host a duel
@@ -984,8 +1084,15 @@ export default function Seam() {
                 </button>
               </div>
               {controlMode === "tilt" && (
-                <p className="seam-hint">hold the phone comfy at “go” — that pose is your center</p>
+                <>
+                  <TiltMeter game={refs} avail={tiltAvail} />
+                  <p className="seam-hint">
+                    tilt steers, finger fires — hold the phone comfy at “go”,
+                    that pose is your center
+                  </p>
+                </>
               )}
+              {tiltNote && <p className="seam-hint seam-hint--warn">{tiltNote}</p>}
             </>
           )}
 
