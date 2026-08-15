@@ -37,10 +37,12 @@ export function readColors(r) {
 }
 
 export function resize(r) {
-  const rect = r.canvas.getBoundingClientRect();
+  // clientWidth/Height are LAYOUT sizes, unaffected by CSS transforms — the
+  // landscape fallback rotates the stage 90°, and getBoundingClientRect of a
+  // rotated element returns the axis-aligned box (w/h swapped).
   r.dpr = Math.min(2, window.devicePixelRatio || 1);
-  r.w = Math.max(1, Math.round(rect.width));
-  r.h = Math.max(1, Math.round(rect.height));
+  r.w = Math.max(1, r.canvas.clientWidth);
+  r.h = Math.max(1, r.canvas.clientHeight);
   r.canvas.width = Math.max(1, Math.round(r.w * r.dpr));
   r.canvas.height = Math.max(1, Math.round(r.h * r.dpr));
 }

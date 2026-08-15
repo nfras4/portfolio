@@ -19,6 +19,23 @@
   --seam-opp: oklch(0.46 0.09 235);
 }
 
+/* the stage: canvas + fight HUD, flipped to landscape as one unit */
+.seam-stage {
+  position: absolute;
+  inset: 0;
+}
+/* landscape fallback (iOS can't lock orientation): render the fight rotated
+   90° inside the portrait viewport. Width/height are the viewport's SWAPPED
+   dimensions so the rotated box exactly fills the screen. */
+.seam-root--rot .seam-stage {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  width: 100dvh;
+  height: 100dvw;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
 .seam-canvas {
   position: absolute;
   inset: 0;
@@ -72,9 +89,38 @@
   text-align: center;
 }
 
-/* ---------- host QR ---------- */
+/* ---------- host QR + room code ---------- */
+.seam-code {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em; /* recenter: tracking pads the right edge only */
+  color: var(--accent);
+}
+.seam-joinrow {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.seam-codeinput {
+  width: 128px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 22px;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  padding: 10px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-2);
+  color: var(--text);
+}
+.seam-codeinput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
 .seam-qr {
-  width: min(72vw, 340px);
+  width: min(60vw, 300px);
   aspect-ratio: 1;
   padding: 14px;
   background: oklch(0.98 0.005 250);
@@ -333,21 +379,24 @@
   }
 }
 
-/* ---------- rotate / desktop gates ---------- */
-.seam-rotate { display: none; }
-@media (orientation: landscape) {
-  .seam-rotate {
-    display: flex;
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    color: var(--muted);
-    font-size: 14px;
-    letter-spacing: 0.08em;
-  }
+/* ---------- rotate hint / desktop gates ---------- */
+/* Non-blocking: the rotated fallback underneath is fully playable, the toast
+   just nudges the player to turn the phone (which swaps to native landscape). */
+.seam-rotate {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: color-mix(in oklch, var(--bg) 88%, transparent);
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  pointer-events: none;
 }
 /* desktop play: the arena keeps a phone-ish column, centered; a wall-to-wall
    1440px arena would make vertical crossings feel instant relative to x */
@@ -361,6 +410,11 @@
 .seam-root--desktop .seam-canvas {
   border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
+}
+/* fights are landscape (2026-08-14): widen the desktop arena for the match */
+.seam-root--desktop.seam-root--fight .seam-canvas,
+.seam-root--desktop.seam-root--fight .seam-hud {
+  width: min(100%, calc(100dvh * 1.85));
 }
 .seam-root--desktop .seam-rotate { display: none !important; }
 

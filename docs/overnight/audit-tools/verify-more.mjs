@@ -66,13 +66,14 @@ const startTiltDrive = (page) =>
 const drive = (page, beta, gamma) =>
   page.evaluate((v) => Object.assign(window.__tiltDrive, v), { beta, gamma });
 
-async function dragCanvas(page, dx) {
+async function dragCanvas(page, dx, dy = 0) {
   const box = await (await page.$(".seam-canvas")).boundingBox();
-  const y = box.y + box.height * 0.6;
+  let y = box.y + box.height / 2;
   let x = box.x + box.width / 2;
   await page.touchscreen.touchStart(x, y);
   for (let i = 0; i < 6; i++) {
     x += dx / 6;
+    y += dy / 6;
     await page.touchscreen.touchMove(x, y);
     await sleep(28);
   }
@@ -99,9 +100,11 @@ async function dragCanvas(page, dx) {
   await page.waitForFunction(() => window.__seamDebug?.phase === "round", { timeout: 15000, polling: 100 });
   await sleep(200);
   const d0 = await dbg(page);
-  await dragCanvas(page, 110);
+  check("A: rotated fallback active in fight", d0.rot === true, `rot=${d0.rot}`);
+  // rotated stage: player-right = viewport-down, so a downward drag steers right
+  await dragCanvas(page, 0, 120);
   const d1 = await dbg(page);
-  check("A: drag steers in touch mode", d1.shipX > d0.shipX + 0.05, `${d0.shipX?.toFixed(3)} → ${d1.shipX?.toFixed(3)}`);
+  check("A: drag steers in touch mode (remapped)", d1.shipX > d0.shipX + 0.05, `${d0.shipX?.toFixed(3)} → ${d1.shipX?.toFixed(3)}`);
   check("A: control mode is touch", d1.control === "touch", d1.control);
   check("A: no page errors", errors.length === 0, errors.join("; "));
   await browser.close();
@@ -139,8 +142,9 @@ async function dragCanvas(page, dx) {
   await sleep(300); // neutral captured at "go" while both sit at beta 45, gamma 0
   const [a0, b0] = await Promise.all([dbg(a), dbg(b)]);
   check("B: both in tilt mode", a0.control === "tilt" && b0.control === "tilt", `A=${a0.control} B=${b0.control}`);
-  await drive(a, 45, 14); // A tilts right
-  await drive(b, 45, -14); // B tilts left
+  // rotated landscape fallback: screen-x ← beta (angle-270 mapping)
+  await drive(a, 59, 0); // A tilts right
+  await drive(b, 31, 0); // B tilts left
   await sleep(1000);
   const [a1, b1] = await Promise.all([dbg(a), dbg(b)]);
   check("B: tilt steers host in match", a1.shipX > a0.shipX + 0.08, `${a0.shipX?.toFixed(3)} → ${a1.shipX?.toFixed(3)}`);

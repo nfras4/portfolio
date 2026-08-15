@@ -13,7 +13,8 @@ import { getFighter, splitChildren } from "./fighters.js";
 
 export const TICK = 1 / 120;
 export const SHIP_R = 0.032; // ship hit radius, x-units
-export const HP_MAX = 6; // hits to lose a round — charge shots deal 2
+export const HP_MAX = 3; // hits to lose a round — charge shots deal 2 (halved 2026-08-14)
+export const WIN_SCORE = 3; // rounds to take the match (was 5)
 // 2D movement bounds: the ship roams its own half, not just a lane
 export const X_MIN = 0.05;
 export const X_MAX = 0.95;
@@ -22,8 +23,10 @@ export const Y_MAX = 0.6;
 export const SHIP_START_Y = 0.12;
 export const COOLDOWN_S = 0.26;
 export const CHARGE_S = 0.9; // hold time for full charge (after the 150ms tap window)
-const BULLET_VX_INHERIT = 0.35; // bullet inherits ship vx × this
-const BULLET_VX_MAX = 0.4;
+// doubled with projectile speed (2026-08-14) so inherited momentum bends the
+// flight path the same amount per unit of distance travelled
+const BULLET_VX_INHERIT = 0.7; // bullet inherits ship vx × this
+const BULLET_VX_MAX = 0.8;
 
 export function createSim(fighterId = "dart") {
   const f = getFighter(fighterId);

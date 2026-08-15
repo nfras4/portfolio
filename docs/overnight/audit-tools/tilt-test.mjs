@@ -117,40 +117,73 @@ try {
   const drive = (beta, gamma) =>
     page.evaluate((v) => Object.assign(window.__tiltDrive, v), { beta, gamma });
 
-  let d0 = await dbg();
-  check("control mode in round is tilt", d0.control === "tilt", d0.control);
+  // With HP 3 and doubled bullets the bot ends rounds mid-measurement, and
+  // each new round recalibrates neutral at "go". Hold a tilt only while the
+  // phase is "round" (returning to neutral between rounds so recalibration
+  // stays clean) and sample only in-round readings.
+  const steerAndSample = async (beta, gamma, ms) => {
+    let active = 0;
+    let last = null;
+    const deadline = Date.now() + ms + 15000;
+    while ((active < ms || !last) && Date.now() < deadline) {
+      const d = await dbg();
+      if (d.phase === "round") {
+        await drive(beta, gamma);
+        await sleep(140);
+        active += 140;
+        const s = await dbg();
+        if (s.phase === "round") last = s;
+      } else {
+        if (d.phase === "end") {
+          // the bot took the match mid-test — rematch and keep measuring
+          await page.evaluate(() => {
+            [...document.querySelectorAll(".seam-btn")]
+              .find((b) => /rematch/.test(b.textContent))
+              ?.click();
+          });
+        }
+        await drive(45, 0);
+        await sleep(200);
+      }
+    }
+    return last || dbg();
+  };
+  // same round ⇔ same score tally (rounds only reset after a score change)
+  const sameRound = (a, b) =>
+    (a.scoreMe || 0) === (b.scoreMe || 0) && (a.scoreThem || 0) === (b.scoreThem || 0);
 
-  // gamma + → ship moves right
-  await drive(45, 14);
-  await sleep(900);
-  let d1 = await dbg();
+  let d0 = await steerAndSample(45, 0, 300);
+  check("control mode in round is tilt", d0.control === "tilt", d0.control);
+  // fights are landscape now; headless portrait viewport can't lock, so the
+  // CSS-rotated fallback must be active — tilt axes are remapped (angle 270:
+  // screen-x ← beta, screen-y ← −gamma)
+  check("rotated landscape fallback engaged", d0.rot === true, `rot=${d0.rot}`);
+
+  // beta + (player tilts right while holding sideways) → ship moves right
+  const d1 = await steerAndSample(59, 0, 900);
   check("tilt right moves ship right", d1.shipX > d0.shipX + 0.08, `${d0.shipX?.toFixed(3)} → ${d1.shipX?.toFixed(3)}`);
 
-  // gamma − → ship moves left
-  await drive(45, -14);
-  await sleep(1400);
-  let d2 = await dbg();
+  // beta − → ship moves left
+  const d2 = await steerAndSample(31, 0, 1400);
   check("tilt left moves ship left", d2.shipX < d1.shipX - 0.08, `${d1.shipX?.toFixed(3)} → ${d2.shipX?.toFixed(3)}`);
 
-  // deadzone: near-neutral tilt holds still
-  await drive(45, 0);
-  await sleep(800);
-  const d3 = await dbg();
-  await drive(45.6, 0.6);
-  await sleep(800);
-  const d4 = await dbg();
+  // deadzone: near-neutral tilt holds still — both samples must come from
+  // the SAME round or the mid-round respawn to x=0.5 poisons the delta
+  let d3 = d2;
+  let d4 = d2;
+  for (let t = 0; t < 5; t++) {
+    d3 = await steerAndSample(45.6, 0.6, 400);
+    d4 = await steerAndSample(45.6, 0.6, 600);
+    if (sameRound(d3, d4)) break;
+  }
   check("deadzone holds the ship still", Math.abs(d4.shipX - d3.shipX) < 0.01, `Δ=${Math.abs(d4.shipX - d3.shipX).toFixed(4)}`);
 
-  // beta down (top tilted away) → ship advances (y up)
-  await drive(33, 0);
-  await sleep(900);
-  const d5 = await dbg();
+  // gamma + (visual top tilted away in the sideways hold) → ship advances
+  const d5 = await steerAndSample(45, 12, 900);
   check("tilt top away advances ship", d5.shipY > d4.shipY + 0.05, `${d4.shipY?.toFixed(3)} → ${d5.shipY?.toFixed(3)}`);
 
-  // beta up (toward you) → ship retreats
-  await drive(57, 0);
-  await sleep(1400);
-  const d6 = await dbg();
+  // gamma − (toward you) → ship retreats
+  const d6 = await steerAndSample(45, -12, 1400);
   check("tilt toward you retreats ship", d6.shipY < d5.shipY - 0.05, `${d5.shipY?.toFixed(3)} → ${d6.shipY?.toFixed(3)}`);
 } finally {
   await browser.close().catch(() => {});

@@ -57,7 +57,7 @@ try {
     menu.machineBtn && menu.portfolioBtn &&
     select.picCards === 3 && select.textLines === 0 &&
     d.phase === "round" && d.bulletsSpawned >= 1 &&
-    d.hp === 6 && canvas.pixelated === "none";
+    d.hp === 3 && canvas.pixelated === "none"; // HP_MAX halved 2026-08-14
   console.log(ok ? "PROD VERIFY: ALL PASS" : "PROD VERIFY: FAILURES — see above");
   process.exitCode = ok ? 0 : 1;
 } finally {

@@ -1,6 +1,7 @@
 // SignalClient — the WebSocket to the seam-signal worker.
 // Carries JSON signaling ({t:"offer"|"answer"|"ice"|"ready"|"role"|"peer-joined"|
 // "peer-left"|"relay"}) and, in relay mode, raw binary state packets.
+import { slog } from "./log.js";
 
 // Deployed 2026-08-13: `bunx wrangler deploy --config worker/seam-signal/wrangler.jsonc`
 export const SIGNAL_URL = import.meta.env.DEV
@@ -20,6 +21,7 @@ export class SignalClient {
   }
 
   connect(roomId) {
+    slog("signal:connect", { roomId });
     return new Promise((resolve, reject) => {
       const ws = new WebSocket(`${SIGNAL_URL}/room/${roomId}`);
       ws.binaryType = "arraybuffer";
@@ -27,6 +29,7 @@ export class SignalClient {
       let settled = false;
 
       ws.onopen = () => {
+        slog("signal:open", { roomId });
         this._hb = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) ws.send('{"t":"hb"}');
         }, HB_INTERVAL);
@@ -46,6 +49,7 @@ export class SignalClient {
         if (msg.t === "role" && !settled) {
           settled = true;
           this.role = msg.role;
+          slog("signal:role", { role: msg.role });
           resolve(msg.role);
           return;
         }
@@ -53,13 +57,15 @@ export class SignalClient {
       };
 
       ws.onerror = () => {
+        slog("signal:error", { settled });
         if (!settled) {
           settled = true;
           reject(new Error("signal connect failed"));
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (e) => {
+        slog("signal:close", { code: e.code, reason: e.reason, settled });
         clearInterval(this._hb);
         if (!settled) {
           settled = true;

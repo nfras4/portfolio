@@ -10,8 +10,9 @@ import { createTransport } from "./net/transport.js";
 import { encodeState, decodeState, seqNewer, PKT_STATE, ev } from "./net/protocol.js";
 import {
   createSim, resetRound, advance, moveShip, startCharge, releaseCharge,
-  spawnRemote, setOpp, setFighter,
+  spawnRemote, setOpp, setFighter, WIN_SCORE,
 } from "./engine/sim.js";
+import { slog } from "./net/log.js";
 import { FIGHTERS, FIGHTER_IDS, getFighter } from "./engine/fighters.js";
 import {
   createBot, resetBot, botUpdate, botSeePlayer, botReceiveSpawn,
@@ -23,7 +24,6 @@ import { qrPath } from "./qr.js";
 import SeamDemo from "./Demo.jsx";
 import "./seam.css";
 
-const WIN_SCORE = 5;
 const FORCE_RELAY =
   import.meta.env.DEV && typeof location !== "undefined" && location.search.includes("forcerelay");
 
@@ -34,11 +34,13 @@ const TILT_VY = 1.05;
 const TILT_DEADZONE_DEG = 1.3; // sensor noise + hand tremor stay still
 const TILT_SMOOTH = 0.3; // per-event low-pass factor
 
-function genRoomId() {
-  const bytes = crypto.getRandomValues(new Uint8Array(16)); // 128 bits
-  let n = 0n;
-  for (const b of bytes) n = (n << 8n) | BigInt(b);
-  return n.toString(36).padStart(8, "0");
+// The room id IS the 4-digit join code — QR and typed-code joins resolve to
+// the same DO room by construction. Collisions with a concurrently active
+// room surface as role!=="host" on connect and are retried with a new code;
+// the code dies with the room (10-min idle alarm in the worker).
+function genRoomCode() {
+  const n = crypto.getRandomValues(new Uint32Array(1))[0] % 9000;
+  return String(1000 + n);
 }
 
 function roomUrl(roomId) {
@@ -47,8 +49,64 @@ function roomUrl(roomId) {
 }
 
 function hashRoomId() {
-  const m = /r=([a-z0-9]{8,64})/.exec(location.hash || "");
+  const m = /r=([a-z0-9]{4,64})/.exec(location.hash || "");
   return m ? m[1] : null;
+}
+
+// ---------- fight orientation (landscape) ----------
+
+const FIGHT_PHASES = ["countdown", "round", "score"];
+
+// Android path: orientation.lock needs fullscreen in most browsers; both are
+// best-effort. iOS Safari supports neither — the CSS-rotation fallback in
+// seam.css (.seam-root--rot) covers it. Must be called from a tap gesture.
+async function acquireLandscape(rootEl) {
+  try {
+    if (rootEl && !document.fullscreenElement && rootEl.requestFullscreen) {
+      await rootEl.requestFullscreen({ navigationUI: "hide" });
+    }
+  } catch {
+    /* fullscreen refused — lock may still work, or the fallback handles it */
+  }
+  try {
+    await screen.orientation.lock("landscape");
+    slog("orient:locked", {});
+    return true;
+  } catch (e) {
+    slog("orient:lock-failed", { err: String(e?.name || e) });
+    return false;
+  }
+}
+
+function releaseLandscape() {
+  try {
+    screen.orientation.unlock?.();
+  } catch {
+    /* was never locked */
+  }
+  if (document.fullscreenElement) {
+    document.exitFullscreen?.().catch?.(() => {});
+  }
+}
+
+// Map raw device-frame tilt (gamma/beta) into the SCREEN frame the player
+// sees, so tilt-right always steers right regardless of how the fight got to
+// landscape (real lock vs CSS-rotated fallback).
+//   angle 270 ≡ device top pointing LEFT (also the CSS fallback's posture)
+//   angle 90  ≡ device top pointing RIGHT
+function effectiveTilt(R) {
+  const t = R.tilt;
+  if (t.sGamma == null) return null;
+  let angle = 0;
+  if (R.rotActive) {
+    angle = 270;
+  } else {
+    const so = typeof screen !== "undefined" ? screen.orientation : null;
+    if (so && /landscape/.test(so.type || "")) angle = so.angle === 90 ? 90 : 270;
+  }
+  if (angle === 90) return { g: -t.sBeta, b: t.sGamma };
+  if (angle === 270) return { g: t.sBeta, b: -t.sGamma };
+  return { g: t.sGamma, b: t.sBeta };
 }
 
 function isDesktop() {
@@ -160,6 +218,9 @@ export default function Seam() {
   const [controlMode, setControlMode] = useState(isDesktop() ? "keys" : "tilt"); // "touch" | "tilt" | "keys"
   const [tiltAvail, setTiltAvail] = useState(false);
   const [tiltNote, setTiltNote] = useState(null);
+  const [rotFallback, setRotFallback] = useState(false); // CSS-rotated fight (portrait viewport, no lock)
+  const [joinCode, setJoinCode] = useState("");
+  const [showJoin, setShowJoin] = useState(false);
   // CRT power-on flash when arriving through the computer / brand gesture
   const [crtBoot, setCrtBoot] = useState(() => {
     try {
@@ -174,6 +235,7 @@ export default function Seam() {
   });
 
   const canvasRef = useRef(null);
+  const rootRef = useRef(null);
   const refs = useRef({
     signal: null,
     transport: null,
@@ -202,6 +264,8 @@ export default function Seam() {
     keys: { left: false, right: false, up: false, down: false },
     tilt: { gamma: null, beta: null, sGamma: null, sBeta: null, neutral: null },
     tiltGranted: false,
+    rotActive: false, // CSS-rotated fallback engaged → remap touch + tilt
+    locked: false, // screen.orientation.lock succeeded
     debug: {
       packetsIn: 0, packetsOut: 0, bulletsSpawned: 0, remoteBullets: 0,
       phase: "menu", kind: null,
@@ -230,6 +294,36 @@ export default function Seam() {
   }, [crtBoot]);
 
   const hostNow = () => Date.now() + refs.current.offset;
+
+  // Landscape fallback: during a fight on a portrait viewport (iOS Safari
+  // can't lock orientation), rotate the stage 90° via CSS and remap inputs.
+  // Rotating the phone for real flips the viewport to landscape and this
+  // backs off automatically — so the fight LOOKS landscape either way, and a
+  // mid-fight gyro flip just swaps which mechanism renders it.
+  useEffect(() => {
+    const R = refs.current;
+    const compute = () => {
+      const fighting = FIGHT_PHASES.includes(refs.current.phase);
+      const portrait = matchMedia("(orientation: portrait)").matches;
+      const rot = !desktop && fighting && portrait;
+      if (rot !== R.rotActive) {
+        R.rotActive = rot;
+        R.debug.rot = rot;
+        setRotFallback(rot);
+        slog("orient:fallback", { rot });
+        // stage geometry changed under the canvas — remeasure next frame
+        requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+      }
+    };
+    compute();
+    const mq = matchMedia("(orientation: portrait)");
+    mq.addEventListener("change", compute);
+    window.addEventListener("resize", compute);
+    return () => {
+      mq.removeEventListener("change", compute);
+      window.removeEventListener("resize", compute);
+    };
+  }, [desktop, phase]);
 
   // ---------- match orchestration ----------
 
@@ -277,8 +371,10 @@ export default function Seam() {
       if (left <= 0) {
         clearInterval(R.countTimer);
         sfx.beep(true);
-        // tilt: this instant's orientation is "hands at rest" — calibrate
-        R.tilt.neutral = { gamma: R.tilt.sGamma ?? 0, beta: R.tilt.sBeta ?? 0 };
+        // tilt: this instant's orientation is "hands at rest" — calibrate in
+        // the SCREEN frame so landscape (locked or CSS-rotated) maps right
+        const eff = effectiveTilt(R);
+        R.tilt.neutral = eff ? { g: eff.g, b: eff.b } : { g: 0, b: 0 };
         setPhase("round");
       }
     }, 50);
@@ -424,7 +520,12 @@ export default function Seam() {
     if (R.phase === "connecting") {
       if (R.role === "host") {
         // guest bounced before the match (e.g. dev StrictMode remount,
-        // failed scan) — the QR is still valid, go back to waiting
+        // failed scan) — the QR is still valid, go back to waiting. The old
+        // transport is spent (single-shot negotiation, possibly already
+        // settled relay), so wire a fresh one for the next scanner.
+        R.transport?.close();
+        if (R.wireTransport) R.wireTransport();
+        slog("host:transport-rebuilt", {});
         setPhase("host");
       } else {
         setError("lost the other phone");
@@ -457,6 +558,8 @@ export default function Seam() {
 
   const resetToMenu = useCallback(() => {
     const R = refs.current;
+    releaseLandscape();
+    R.locked = false;
     R.peerGoneActive = false;
     R.role = null;
     R.offset = 0;
@@ -488,96 +591,143 @@ export default function Seam() {
 
   // ---------- connection ----------
 
+  // Returns "ok" | "collision" | "empty" | "error" so startHost can retry
+  // 4-digit code collisions.
   const connectRoom = useCallback(async (id, joining) => {
     const R = refs.current;
     ensureAudio();
     setError(null);
+    slog("join:start", { id, joining: !!joining });
     const signal = new SignalClient();
     R.signal = signal;
     let role;
     try {
       role = await signal.connect(id);
-    } catch {
+    } catch (err) {
+      slog("join:signal-failed", { err: String(err?.message || err) });
       setError(joining ? "room full or expired" : "can't reach the signal server");
       setPhase("menu");
-      return;
+      return "error";
     }
     if (joining && role !== "guest") {
-      // The host is gone; we'd be hosting a dead QR's room. Bail.
+      // The host is gone; we'd be hosting a dead room. Bail.
       signal.close();
-      setError("that duel expired — host a new one");
+      slog("join:room-empty", { id });
+      setError("that room is empty or expired — check the code or host a new duel");
       setPhase("menu");
-      return;
+      return "empty";
+    }
+    if (!joining && role !== "host") {
+      // someone else is already hosting on this 4-digit code — caller retries
+      signal.close();
+      slog("host:code-collision", { id });
+      return "collision";
     }
     R.role = role;
     R.debug.role = role;
 
-    const transport = createTransport({ signal, role, forceRelay: FORCE_RELAY });
-    R.transport = transport;
-    transport.onSignal = (msg) => {
-      if (msg.t === "peer-joined") {
-        setPhase("connecting");
-        // guest's "ready" will start negotiation
-      } else if (msg.t === "peer-left") {
-        onPeerLeft();
-      } else if (msg.t === "ready") {
-        // host: guest is set → create the offer
-        transport.begin();
+    const onTransportConnected = async (k) => {
+      R.debug.kind = k;
+      slog("transport:up", { kind: k, role });
+      // pick fighters while the clock syncs underneath
+      setPhase("select");
+      // my fighter may already be locked (host picked while waiting for the scan)
+      if (R.fighters.me) R.transport?.sendEvent(ev.fighter(R.fighters.me));
+      if (role === "guest") {
+        for (let i = 0; i < 3; i++) {
+          R.transport?.sendEvent(ev.ping(Date.now()));
+          await new Promise((res) => setTimeout(res, 130));
+        }
+        R.transport?.sendEvent({ t: "clockdone" });
+      } else {
+        // fallback: if clockdone never arrives, start anyway once fighters are in
+        const t = setTimeout(() => {
+          if (!R.clockDone) {
+            R.clockDone = true;
+            maybeStart();
+          }
+        }, 3000);
+        R.hostTimers.push(t);
       }
     };
-    transport.onEvent = onGameEvent;
-    transport.onState = (buf) => {
-      const p = decodeState(buf);
-      if (p.type !== PKT_STATE) return;
-      if (R.lastOppSeq >= 0 && !seqNewer(p.seq, R.lastOppSeq)) return;
-      R.lastOppSeq = p.seq;
-      setOpp(R.sim, p.x, p.vx, p.charge, p.y, undefined, p.hp);
-      R.debug.packetsIn += 1;
+
+    // WebRTC negotiation is single-shot per transport, so each guest attempt
+    // needs a FRESH transport. Kept re-callable: onPeerLeft rebuilds via
+    // R.wireTransport when a guest bounces mid-handshake (the old spent
+    // transport swallowing the next guest's "ready" was why pairing used to
+    // work only on the second scan).
+    const wireTransport = () => {
+      const transport = createTransport({ signal, role, forceRelay: FORCE_RELAY });
+      R.transport = transport;
+      R.lastOppSeq = -1;
+      transport.onSignal = (msg) => {
+        if (msg.t === "peer-joined") {
+          slog("host:peer-joined", {});
+          setPhase("connecting");
+          // guest's "ready" will start negotiation
+        } else if (msg.t === "peer-left") {
+          onPeerLeft();
+        } else if (msg.t === "ready") {
+          slog("host:ready-recv", {});
+          transport.begin();
+        }
+      };
+      transport.onEvent = onGameEvent;
+      transport.onState = (buf) => {
+        const p = decodeState(buf);
+        if (p.type !== PKT_STATE) return;
+        if (R.lastOppSeq >= 0 && !seqNewer(p.seq, R.lastOppSeq)) return;
+        R.lastOppSeq = p.seq;
+        setOpp(R.sim, p.x, p.vx, p.charge, p.y, undefined, p.hp);
+        R.debug.packetsIn += 1;
+      };
+      transport.onKind = (k) => {
+        setKind(k);
+        R.debug.kind = k;
+      };
+      transport.connected.then((k) => {
+        if (R.transport !== transport) return; // superseded by a rebuild
+        onTransportConnected(k);
+      });
+      return transport;
     };
-    transport.onKind = (k) => {
-      setKind(k);
-      R.debug.kind = k;
-    };
+    R.wireTransport = wireTransport;
+    wireTransport();
     signal.onClose = () => onPeerLeft();
 
     if (role === "guest") {
       setPhase("connecting");
       signal.send(ev.ready()); // raw signaling message (not relay-wrapped)
-      transport.begin();
+      slog("guest:ready-sent", {});
+      R.transport.begin();
     } else {
       setPhase(joining ? "connecting" : "host");
     }
-
-    const k = await transport.connected;
-    R.debug.kind = k;
-    // pick fighters while the clock syncs underneath
-    setPhase("select");
-    // my fighter may already be locked (host picked while waiting for the scan)
-    if (R.fighters.me) R.transport?.sendEvent(ev.fighter(R.fighters.me));
-    if (role === "guest") {
-      for (let i = 0; i < 3; i++) {
-        transport.sendEvent(ev.ping(Date.now()));
-        await new Promise((res) => setTimeout(res, 130));
-      }
-      transport.sendEvent({ t: "clockdone" });
-    } else {
-      // fallback: if clockdone never arrives, start anyway once fighters are in
-      const t = setTimeout(() => {
-        if (!R.clockDone) {
-          R.clockDone = true;
-          maybeStart();
-        }
-      }, 3000);
-      R.hostTimers.push(t);
-    }
+    return "ok";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const startHost = useCallback(() => {
+  const startHost = useCallback(async () => {
     ensureTiltReady(); // this tap is the iOS permission gesture
-    const id = genRoomId();
-    setRoomId(id);
-    connectRoom(id, false);
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const id = genRoomCode();
+      setRoomId(id);
+      const res = await connectRoom(id, false);
+      if (res === "ok") return;
+      if (res !== "collision") return; // real error — already surfaced
+      slog("host:retry", { attempt });
+    }
+    setError("couldn't grab a free room code — try again");
+    setPhase("menu");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const joinByCode = useCallback((code) => {
+    if (!/^\d{4}$/.test(code || "")) return;
+    ensureTiltReady(); // this tap is the iOS permission gesture
+    slog("join:by-code", { code });
+    setPhase("connecting");
+    connectRoom(code, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -598,6 +748,7 @@ export default function Seam() {
   const startAiMatch = useCallback(async () => {
     const R = refs.current;
     if (!R.fighters.me) return;
+    if (!desktop) acquireLandscape(rootRef.current).then((ok) => { R.locked = ok; });
     await ensureTiltReady(); // last chance to grant motion before the round
     const botFighter = pickBotFighter(R.fighters.me);
     R.bot = createBot(difficulty, botFighter);
@@ -719,6 +870,7 @@ export default function Seam() {
   const lockFighter = useCallback(async () => {
     const R = refs.current;
     if (!R.fighters.me) return;
+    if (!desktop) acquireLandscape(rootRef.current).then((ok) => { R.locked = ok; });
     await ensureTiltReady(); // guests join via URL — this tap is their gesture
     setLockedIn(true);
     R.transport?.sendEvent(ev.fighter(R.fighters.me));
@@ -752,10 +904,11 @@ export default function Seam() {
       // half-second check beats trusting one perfectly-timed remeasure.
       if (now - lastSizeCheck > 500) {
         lastSizeCheck = now;
-        const rect = canvas.getBoundingClientRect();
+        // clientWidth/Height: layout size, immune to the rotated stage's
+        // transform (a rotated element's bounding rect has w/h swapped)
         if (
-          Math.abs(rect.width - R.renderer.w) > 1 ||
-          Math.abs(rect.height - R.renderer.h) > 1
+          Math.abs(canvas.clientWidth - R.renderer.w) > 1 ||
+          Math.abs(canvas.clientHeight - R.renderer.h) > 1
         ) {
           onResize();
         }
@@ -773,17 +926,21 @@ export default function Seam() {
           }
         }
         // tilt steering: relative to the neutral captured at "go", smoothed,
-        // with a deadzone so a resting hand holds still
-        if (R.control === "tilt" && R.tilt.neutral && R.tilt.sGamma != null) {
-          const shape = (raw) => {
-            const c = Math.max(-TILT_RANGE_DEG, Math.min(TILT_RANGE_DEG, raw));
-            const m = Math.abs(c);
-            if (m < TILT_DEADZONE_DEG) return 0;
-            return (Math.sign(c) * (m - TILT_DEADZONE_DEG)) / (TILT_RANGE_DEG - TILT_DEADZONE_DEG);
-          };
-          const vx = shape(R.tilt.sGamma - R.tilt.neutral.gamma) * TILT_VX;
-          const vy = -shape(R.tilt.sBeta - R.tilt.neutral.beta) * TILT_VY; // tilt top AWAY = advance
-          if (vx || vy) moveShip(R.sim, vx * dt, vy * dt, vx, vy);
+        // with a deadzone so a resting hand holds still. effectiveTilt maps
+        // the device axes into the screen frame the player actually sees.
+        if (R.control === "tilt" && R.tilt.neutral) {
+          const eff = effectiveTilt(R);
+          if (eff) {
+            const shape = (raw) => {
+              const c = Math.max(-TILT_RANGE_DEG, Math.min(TILT_RANGE_DEG, raw));
+              const m = Math.abs(c);
+              if (m < TILT_DEADZONE_DEG) return 0;
+              return (Math.sign(c) * (m - TILT_DEADZONE_DEG)) / (TILT_RANGE_DEG - TILT_DEADZONE_DEG);
+            };
+            const vx = shape(eff.g - R.tilt.neutral.g) * TILT_VX;
+            const vy = -shape(eff.b - R.tilt.neutral.b) * TILT_VY; // tilt top AWAY = advance
+            if (vx || vy) moveShip(R.sim, vx * dt, vy * dt, vx, vy);
+          }
         }
 
         const events = advance(R.sim, dt);
@@ -899,8 +1056,14 @@ export default function Seam() {
     const dtMove = Math.max(1, now - R.lastPointer.t) / 1000;
     const w = R.renderer?.w || 1;
     const h = R.renderer?.h || 1;
-    const dx = ((e.clientX - R.lastPointer.x) / w) * 1.4;
-    const dy = (-(e.clientY - R.lastPointer.y) / h) * 1.2; // screen up = arena up
+    const dxc = e.clientX - R.lastPointer.x;
+    const dyc = e.clientY - R.lastPointer.y;
+    // rotated fallback: the stage is turned 90° cw and the player holds the
+    // phone sideways, so player-right = viewport-down, player-up = viewport-left
+    const px = R.rotActive ? dyc : dxc;
+    const py = R.rotActive ? -dxc : dyc;
+    const dx = (px / w) * 1.4;
+    const dy = (-py / h) * 1.2; // screen up = arena up
     const vx = Math.max(-3, Math.min(3, dx / dtMove));
     const vy = Math.max(-3, Math.min(3, dy / dtMove));
     moveShip(R.sim, dx, dy, vx, vy);
@@ -994,18 +1157,47 @@ export default function Seam() {
   const vsLine =
     myFighter && oppFighter ? `${myFighter} vs ${oppFighter}` : null;
 
+  const fighting = FIGHT_PHASES.includes(phase);
+
   return (
     <div
-      className={`seam-root${desktop ? " seam-root--desktop" : ""}${crtBoot ? " seam-root--crtboot" : ""}`}
+      ref={rootRef}
+      className={
+        `seam-root${desktop ? " seam-root--desktop" : ""}${crtBoot ? " seam-root--crtboot" : ""}` +
+        `${fighting ? " seam-root--fight" : ""}${rotFallback ? " seam-root--rot" : ""}`
+      }
     >
-      <canvas
-        ref={canvasRef}
-        className="seam-canvas"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-      />
+      {/* the stage holds everything that must flip to landscape as one unit */}
+      <div className="seam-stage">
+        <canvas
+          ref={canvasRef}
+          className="seam-canvas"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        />
+        {(phase === "countdown" || phase === "round" || phase === "score") && (
+          <div className="seam-hud">
+            {exitBtn}
+            {kind && <span className="seam-badge">{kind}</span>}
+            <Pips n={score.me} side="me" />
+            <Pips n={score.them} side="them" />
+            {phase === "countdown" && (
+              <div className="seam-count">
+                {count > 0 ? count : "go"}
+                {vsLine && <small className="seam-vs">{vsLine}</small>}
+              </div>
+            )}
+            {phase === "score" && splash && (
+              <div className="seam-splash">
+                <span>{splash.title}</span>
+                <small>{splash.sub}</small>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {phase === "menu" && (
         <div className="seam-center">
@@ -1022,19 +1214,53 @@ export default function Seam() {
           <button className="seam-btn seam-btn--primary seam-btn--ai" onClick={startAiSelect}>
             fight the machine
           </button>
+          {showJoin ? (
+            <form
+              className="seam-joinrow"
+              onSubmit={(e) => {
+                e.preventDefault();
+                joinByCode(joinCode);
+              }}
+            >
+              <input
+                className="seam-codeinput"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={4}
+                placeholder="0000"
+                autoFocus
+                aria-label="room code"
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value.replace(/\D/g, "").slice(0, 4))}
+              />
+              <button
+                type="submit"
+                className="seam-btn seam-btn--primary"
+                disabled={joinCode.length !== 4}
+              >
+                join
+              </button>
+            </form>
+          ) : (
+            <button className="seam-btn" onClick={() => setShowJoin(true)}>
+              join with a code
+            </button>
+          )}
           <p className="seam-sub">
             {desktop
-              ? "a phone scans the qr to join — or fight the machine right here with arrows + space"
-              : "the other phone joins by scanning — nothing to install"}
+              ? "a phone scans the qr or types the code to join — or fight the machine right here with arrows + space"
+              : "the other phone joins by scanning or typing the code — nothing to install"}
           </p>
           <button className="seam-btn" onClick={() => navigate("/")}>← back to portfolio</button>
         </div>
       )}
 
       {phase === "host" && roomId && (
-        <div className="seam-center" data-room-url={roomUrl(roomId)}>
+        <div className="seam-center" data-room-url={roomUrl(roomId)} data-room-code={roomId}>
           <p className="seam-sub">scan with the other phone's camera</p>
           <div className="seam-qr"><Qr text={roomUrl(roomId)} /></div>
+          <div className="seam-code">{roomId}</div>
+          <p className="seam-sub">or type this code under “join with a code”</p>
           <p className="seam-sub seam-dots">waiting for your opponent</p>
           <button className="seam-btn" onClick={() => { cleanup(refs.current); resetToMenu(); }}>
             cancel
@@ -1147,27 +1373,6 @@ export default function Seam() {
         </div>
       )}
 
-      {(phase === "countdown" || phase === "round" || phase === "score") && (
-        <div className="seam-hud">
-          {exitBtn}
-          {kind && <span className="seam-badge">{kind}</span>}
-          <Pips n={score.me} side="me" />
-          <Pips n={score.them} side="them" />
-          {phase === "countdown" && (
-            <div className="seam-count">
-              {count > 0 ? count : "go"}
-              {vsLine && <small className="seam-vs">{vsLine}</small>}
-            </div>
-          )}
-          {phase === "score" && splash && (
-            <div className="seam-splash">
-              <span>{splash.title}</span>
-              <small>{splash.sub}</small>
-            </div>
-          )}
-        </div>
-      )}
-
       {phase === "end" && (
         <div className="seam-center">
           <div className="seam-title">
@@ -1178,6 +1383,11 @@ export default function Seam() {
             className="seam-btn seam-btn--primary"
             onClick={() => {
               const R = refs.current;
+              // this tap can restore landscape if the lock lapsed (back
+              // gesture, fullscreen exit) — best-effort like the original
+              if (!desktop && !R.locked) {
+                acquireLandscape(rootRef.current).then((ok) => { R.locked = ok; });
+              }
               if (R.bot) {
                 R.tally = { host: 0, guest: 0 };
                 R.lastHostScore = 0;
@@ -1219,7 +1429,9 @@ export default function Seam() {
         </div>
       )}
 
-      <div className="seam-rotate">rotate your phone — seam is portrait</div>
+      {rotFallback && (
+        <div className="seam-rotate">rotate your phone — fights play landscape</div>
+      )}
     </div>
   );
 }
@@ -1242,6 +1454,8 @@ function requestWakeLock(R) {
 }
 
 function cleanup(R) {
+  releaseLandscape();
+  R.locked = false;
   clearInterval(R.countTimer);
   clearInterval(R.goneTimer);
   R.hostTimers?.forEach(clearTimeout);

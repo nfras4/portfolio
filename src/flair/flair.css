@@ -560,7 +560,9 @@
     display: flex;
     justify-content: center;
     height: 132px; /* scale() doesn't shrink the layout box; clamp it */
-    margin: 4px 0 22px;
+    /* 20px top: the 3D scene leans ~16px above its layout box and the hero
+       clips it against the top bar at 4px (Nick, 2026-08-14) */
+    margin: 20px 0 22px;
   }
   .hero-computer .rc-wrap { transform: scale(0.55); transform-origin: center top; }
   .workspace-model { height: 210px; }

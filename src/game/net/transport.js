@@ -5,6 +5,8 @@
 // Host creates the offer once the guest's "ready" arrives (fixed roles, so
 // perfect-negotiation-lite: exactly one offerer, no glare possible).
 
+import { slog } from "./log.js";
+
 const DEFAULT_ICE = [
   { urls: "stun:stun.cloudflare.com:3478" },
   { urls: "stun:stun.l.google.com:19302" },
@@ -16,8 +18,11 @@ const UNREACHABLE_ICE = [
   { urls: "turn:192.0.2.1:3478?transport=udp", username: "seam", credential: "seam" },
 ];
 
-const FALLBACK_AFTER_GATHER_MS = 7000; // not connected 7s after ICE gathering completes
-const FALLBACK_HARD_CAP_MS = 10000; // in case gathering never completes
+// Tightened 2026-08-14: a 7-10s dead "connecting" screen reads as a failed
+// scan and players re-scan before the relay fallback ever fires. Cross-network
+// ICE either succeeds within ~3s or won't; fail over to relay fast.
+const FALLBACK_AFTER_GATHER_MS = 3500; // not connected 3.5s after ICE gathering completes
+const FALLBACK_HARD_CAP_MS = 6000; // in case gathering never completes
 
 export function createTransport({ signal, role, forceRelay = false }) {
   const t = {
@@ -75,6 +80,7 @@ export function createTransport({ signal, role, forceRelay = false }) {
   function settle(kind) {
     if (settled) return;
     settled = true;
+    slog("transport:settle", { role, kind });
     timers.forEach(clearTimeout);
     timers = [];
     t.kind = kind;
@@ -127,6 +133,7 @@ export function createTransport({ signal, role, forceRelay = false }) {
       }
     };
     pc.onconnectionstatechange = () => {
+      slog("transport:pcstate", { role, state: pc?.connectionState });
       if (!settled && (pc?.connectionState === "failed" || pc?.connectionState === "closed")) {
         settle("relay");
       }
@@ -137,8 +144,17 @@ export function createTransport({ signal, role, forceRelay = false }) {
 
   let begun = false;
   async function begin() {
-    if (begun || settled) return;
+    // A repeated begin() (host: a fresh guest re-sent "ready") is logged so a
+    // stuck handshake is visible; the transport itself is single-shot — the
+    // GAME must build a new one per guest attempt (Seam.jsx does, since
+    // 2026-08-14; a spent transport swallowing the second guest's ready was
+    // why pairing only worked on the second scan).
+    if (begun || settled) {
+      slog("transport:begin-ignored", { role, begun, settled, kind: t.kind });
+      return;
+    }
     begun = true;
+    slog("transport:begin", { role });
     timers.push(
       setTimeout(() => {
         if (!settled) settle("relay");

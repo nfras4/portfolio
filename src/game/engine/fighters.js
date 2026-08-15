@@ -8,7 +8,12 @@
 // No live homing — "seek" is a fixed lateral acceleration baked in at fire
 // time from where the opponent WAS (dodgeable, and identical on both sims).
 
-const BASE_VY = 0.55 * 2; // matches sim.js: units are the two-half arena
+// 2026-08-14: every projectile flies twice as fast. SPEED scales forward and
+// lateral velocity ×2 and lateral accel ×4, so each bullet traces the SAME
+// spatial path as before, just in half the time (x(t)=vx·t+½ax·t²: halving t
+// while doubling vx needs 4× ax for identical x-per-y).
+const SPEED = 2;
+const BASE_VY = 0.55 * 2 * SPEED; // matches sim.js: units are the two-half arena
 const BULLET_R = 0.011;
 
 export const FIGHTERS = {
@@ -20,7 +25,7 @@ export const FIGHTERS = {
     chargeDesc: "heavy slug — bigger, faster",
     shipSpeed: 1.0,
     ammoMax: 3,
-    regen: 0.8, // units per second
+    regen: 1.2, // units per second (raised from 0.8, 2026-08-14)
     // cost: quick tap 1, full charge 2
     cost: (c) => (c > 0.05 ? 2 : 1),
     fire(me, charge) {
@@ -47,7 +52,7 @@ export const FIGHTERS = {
     chargeDesc: "five-wide fan, curved inward",
     shipSpeed: 1.18,
     ammoMax: 4,
-    regen: 1.1,
+    regen: 1.65, // raised from 1.1, 2026-08-14
     cost: (c) => (c > 0.05 ? 2 : 1),
     fire(me, charge) {
       const n = charge > 0.35 ? 5 : 3;
@@ -57,10 +62,10 @@ export const FIGHTERS = {
         const t = n === 1 ? 0 : i / (n - 1) - 0.5; // -0.5..0.5
         out.push({
           dx: t * 0.02,
-          vx: t * 2 * spread,
+          vx: t * 2 * spread * SPEED,
           // outer darts curve gently back toward center so the fan converges
           // near the far baseline instead of hitting the walls
-          ax: -t * 2 * 0.18,
+          ax: -t * 2 * 0.18 * SPEED * SPEED,
           vy: BASE_VY * 1.18,
           r: BULLET_R * 0.72,
           maxBounce: 1,
@@ -80,7 +85,7 @@ export const FIGHTERS = {
     chargeDesc: "seam-breaker — splits into three at the seam",
     shipSpeed: 0.85,
     ammoMax: 3,
-    regen: 0.55,
+    regen: 0.85, // raised from 0.55, 2026-08-14
     // orb shots are dear: tap 1, charged split costs 3
     cost: (c) => (c > 0.5 ? 3 : c > 0.05 ? 2 : 1),
     fire(me, charge) {
@@ -88,7 +93,7 @@ export const FIGHTERS = {
       return [
         {
           dx: 0,
-          vx: me.vx * 0.2,
+          vx: me.vx * 0.2 * SPEED,
           vy: BASE_VY * (0.62 + 0.25 * charge),
           r: BULLET_R * (1.9 + 1.1 * charge),
           ax: 0,
@@ -115,7 +120,8 @@ export function splitChildren(parent) {
   return [-1, 0, 1].map((k) => ({
     x: parent.x,
     y: parent.y,
-    vx: parent.vx + k * 0.22,
+    vx: parent.vx + k * 0.22 * SPEED, // parent.vx already carries SPEED
+
     vy: parent.vy * 1.15,
     ax: 0,
     r: parent.r * 0.55,

@@ -18,7 +18,9 @@ const ORIGIN_ALLOW = [
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const match = url.pathname.match(/^\/room\/([a-z0-9]{8,64})$/);
+    // {4,64}: room ids are 4-digit join codes since 2026-08-14 (old long ids
+    // still accepted so stale QR links fail gracefully in the room, not here)
+    const match = url.pathname.match(/^\/room\/([a-z0-9]{4,64})$/);
     if (!match) return new Response("not found", { status: 404 });
 
     if (request.headers.get("Upgrade") !== "websocket") {
